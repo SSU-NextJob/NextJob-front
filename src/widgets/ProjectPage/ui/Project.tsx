@@ -84,6 +84,6 @@ const dummyProjects = [
     rolesNeeded: ["WebRTC Developer", "Frontend Developer"],
   },
 ];
-export const ProjectList = () => {
+export const Project = () => {
   return <ProjectCard projects={dummyProjects} />;
 };

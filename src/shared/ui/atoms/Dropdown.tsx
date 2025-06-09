@@ -66,42 +66,36 @@ export const MultiSelector = ({
   };
 
   return (
-    <div style={{ width: "300px", position: "relative" }}>
-      <button onClick={toggleOpen} style={{ width: "100%" }}>
+    <div className="relative w-[300px]">
+      <button
+        onClick={toggleOpen}
+        className="w-full border border-gray-300 px-4 py-2 rounded-md text-left bg-white shadow-sm hover:border-gray-400 transition"
+      >
         {selectedValues.length === 0
           ? "Select options"
           : `Selected (${selectedValues.length})`}
       </button>
 
       {isOpen && (
-        <div
-          style={{
-            position: "absolute",
-            width: "100%",
-            border: "1px solid #ccc",
-            background: "#fff",
-            maxHeight: "200px",
-            overflowY: "auto",
-            zIndex: 100,
-            padding: "0.5rem",
-          }}
-        >
-          <label>
+        <div className="absolute w-full border border-gray-300 bg-white max-h-52 overflow-y-auto z-50 p-3 mt-2 rounded-md shadow-md">
+          <label className="block text-sm">
             <input
               type="checkbox"
+              className="mr-2"
               checked={selectedValues.length === totalSelected.current}
               onChange={handleSelectAll}
             />
             Select All
           </label>
-          <hr />
+          <hr className="my-2" />
           {options.map((opt) => (
             <label
               key={opt.value}
-              style={{ display: "block", marginTop: "4px" }}
+              className="block text-sm mt-1 cursor-pointer"
             >
               <input
                 type="checkbox"
+                className="mr-2"
                 checked={selectedValues.includes(opt.value)}
                 onChange={() => handleCheck(opt.value)}
               />
