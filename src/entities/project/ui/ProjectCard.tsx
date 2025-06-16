@@ -1,3 +1,4 @@
+import { Button } from "@/shared/ui/atoms/Button";
 import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -112,22 +113,14 @@ export const ProjectCard = ({ projects }: { projects: Project[] }) => {
                   </div>
                 </div>
 
-                <button
+                <Button
+                  content={"참가하기"}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleOpenApplyModal(project);
                   }}
-                  disabled={
-                    project.participatingCount >= project.recruitingCount
-                  }
-                  className={`text-sm px-4 py-1.5 rounded-md transition ml-auto ${
-                    project.participatingCount >= project.recruitingCount
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-gray-900 text-white hover:bg-black"
-                  }`}
-                >
-                  참가하기
-                </button>
+                  color={"blue"}
+                />
               </div>
             </div>
           );

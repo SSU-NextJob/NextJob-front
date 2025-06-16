@@ -1,3 +1,4 @@
+import { Button } from "@/shared/ui/atoms/Button";
 import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -36,13 +37,12 @@ export const ProjectDetailCard = ({ project }: { project: Project }) => {
     <>
       <div className="w-full min-h-screen bg-white text-gray-800 p-10">
         {/* 뒤로가기 */}
-        <div className="mb-6">
-          <button
+        <div className="mb-6 flex justify-start">
+          <Button
+            content={"← 뒤로가기"}
             onClick={() => navigate(-1)}
-            className="bg-blue-50 text-blue-600 text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-100 transition block"
-          >
-            ← 뒤로가기
-          </button>
+            color={"white"}
+          />
         </div>
 
         {/* 전체 레이아웃 */}
@@ -139,17 +139,14 @@ export const ProjectDetailCard = ({ project }: { project: Project }) => {
 
           {/* 참가 버튼 */}
           <div className="flex justify-end">
-            <button
+            <Button
+              content={"참가하기"}
               onClick={(e) => {
                 e.stopPropagation();
                 handleOpenApplyModal(project);
               }}
-              className={
-                "text-sm px-4 py-1.5 rounded-md transition ml-auto bg-gray-900 text-white hover:bg-black"
-              }
-            >
-              참가하기
-            </button>
+              color={"blue"}
+            />
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { Button } from "@/shared/ui/atoms/Button";
 import { useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { HeaderAlarm } from "./HeaderAlarm";
@@ -121,9 +122,7 @@ export const Header = () => {
         )}
 
         {/* Sign Out */}
-        <button className="flex items-center gap-2 border px-4 py-1.5 rounded-lg text-sm font-medium text-gray-800 hover:bg-gray-50">
-          로그아웃
-        </button>
+        <Button content={"로그아웃"} onClick={{}} color={"white"} />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { Button } from "@/shared/ui/atoms/Button";
 import React from "react";
 
 interface ConfirmApplyModalProps {
@@ -19,12 +20,7 @@ export const ConfirmApplyModal = ({
         {/* Title */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">프로젝트 지원</h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:cursor-pointer focus:outline-none focus:ring-0 active:ring-0"
-          >
-            &times;
-          </button>
+          <Button content={"X"} onClick={onClose} color={"none"} />
         </div>
 
         {/* Description */}
@@ -34,18 +30,8 @@ export const ConfirmApplyModal = ({
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 mt-6">
-          <button
-            onClick={onClose}
-            className="text-sm px-4 py-1.5 rounded-md transition border text-gray-800 bg-gray-100 hover:bg-gray-200"
-          >
-            취소
-          </button>
-          <button
-            onClick={onApply}
-            className="text-sm px-4 py-1.5 rounded-md transition bg-gray-900 text-white hover:bg-black"
-          >
-            지원하기
-          </button>
+          <Button content={"취소"} onClick={onClose} color={"gray"} />
+          <Button content={"지원하기"} onClick={onApply} color={"blue"} />
         </div>
       </div>
     </div>

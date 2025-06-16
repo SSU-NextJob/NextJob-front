@@ -1,3 +1,4 @@
+import { Button } from "@/shared/ui/atoms/Button";
 import { useState } from "react";
 
 interface Post {
@@ -96,23 +97,13 @@ export const SuggestModal = ({
         </div>
 
         <div className="flex justify-between">
-          <button
-            onClick={onClose}
-            className="text-sm px-4 py-1.5  border rounded-md py-2 text-sm hover:bg-gray-100"
-          >
-            취소
-          </button>
-          <button
+          <Button content={"취소"} onClick={onClose} color={"gray"} />
+          <Button
+            content={"제안하기"}
             disabled={selectedId === null}
             onClick={() => selectedId && onSubmit(selectedId)}
-            className={`text-sm px-4 py-1.5  rounded-md py-2 text-sm font-semibold text-white ${
-              selectedId !== null
-                ? "bg-gray-900 text-white hover:bg-black"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}
-          >
-            제안하기
-          </button>
+            color={"blue"}
+          />
         </div>
       </div>
     </div>

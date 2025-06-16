@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { SuggestModal } from "@/widgets/Modal/ui/SuggestModal";
+import { Button } from "@/shared/ui/atoms/Button";
 
 interface Member {
   id: number;
@@ -68,12 +69,11 @@ export const UserCard = ({ members }: { members: Member[] }) => {
 
             {/* 제안 버튼 */}
             <div className="flex justify-end">
-              <button
+              <Button
+                content={"제안하기"}
                 onClick={() => openSuggestModal(member.id)}
-                className="text-sm px-4 py-1.5 rounded-md transition ml-auto bg-gray-900 text-white hover:bg-black"
-              >
-                제안하기
-              </button>
+                color={"blue"}
+              />
             </div>
           </div>
         ))}
