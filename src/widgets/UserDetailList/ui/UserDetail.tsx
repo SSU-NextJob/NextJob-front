@@ -1,4 +1,4 @@
-import { UserDetailCard } from "@/entities/project/ui/UserDetailCard";
+import { UserDetailCard } from "@/entities/user/ui/UserDetailCard";
 
 const userDetail = {
   name: "알렉스 로드리게즈",

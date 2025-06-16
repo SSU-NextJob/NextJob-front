@@ -1,4 +1,4 @@
-import { UserCard } from "@/entities/project/ui/UserCard";
+import { UserCard } from "@/entities/user/ui/UserCard";
 import React from "react";
 
 const members = [
