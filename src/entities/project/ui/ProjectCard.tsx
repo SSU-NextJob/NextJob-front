@@ -1,3 +1,7 @@
+import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 interface Project {
   id: number;
   title: string;
@@ -7,105 +11,137 @@ interface Project {
   summary: string;
   recruitmentSummary: string;
   rolesNeeded: string[];
+  participatingCount: number;
+  recruitingCount: number;
 }
 
 export const ProjectCard = ({ projects }: { projects: Project[] }) => {
+  const navigate = useNavigate();
+  const [isApplyModalOpen, setApplyModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const handleOpenApplyModal = (project: Project) => {
+    if (project.participatingCount >= project.recruitingCount) return;
+    setSelectedProject(project);
+    setApplyModalOpen(true);
+  };
+
+  const handleApply = () => {
+    console.log("지원 완료:", selectedProject?.title);
+    setApplyModalOpen(false);
+  };
+
   return (
     <>
-      <div className="w-full px-8 py-12 bg-white">
-        <div className="max-w-[1440px] mx-auto text-white grid grid-cols-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {projects.map((project) => {
-            const daysLeft = Math.ceil(
-              (new Date(project.deadline).getTime() - Date.now()) /
-                (1000 * 60 * 60 * 24)
-            );
+      <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        {projects.map((project) => {
+          const badgeClass =
+            project.type === "해커톤"
+              ? "bg-blue-600 text-white"
+              : project.type === "공모전"
+                ? "bg-red-500 text-white"
+                : "bg-gray-200 text-gray-700";
 
-            const badgeColor =
-              project.type === "hackathon"
-                ? "bg-blue-600"
-                : project.type === "competition"
-                  ? "bg-red-600"
-                  : "bg-gray-500";
-
-            return (
-              <div
-                key={project.id}
-                className="bg-red border border-gray-200 rounded-2xl p-6 flex flex-col shadow-sm hover:shadow-md transition"
-              >
-                {/* Header */}
-                <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold capitalize text-white ${badgeColor">
-                    {project.type}
-                  </span>
-                  <span>
-                    {new Date(project.deadline).toLocaleDateString("ko-KR")}
-                  </span>
-                </div>
-
-                {/* Title */}
-                <h2 className="text-lg font-semibold text-gray-900 mb-1 leading-snug">
-                  {project.title}
-                </h2>
-                <p className="text-sm text-gray-600 mb-3 leading-normal">
-                  {project.summary}
-                </p>
-
-                {/* Recruitment Summary */}
-                <div className="text-sm font-medium text-gray-500 mb-1">
-                  Recruitment Summary
-                </div>
-                <p className="text-sm text-gray-700 mb-4 leading-snug line-clamp-2">
-                  {project.recruitmentSummary}
-                </p>
-
-                {/* Roles */}
-                <div className="text-sm font-medium text-gray-500 mb-1">
-                  Roles Needed
-                </div>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.rolesNeeded.slice(0, 2).map((role, i) => (
-                    <span
-                      key={i}
-                      className="bg-gray-100 text-gray-800 text-xs font-medium px-3 py-1 rounded-full"
-                    >
-                      {role}
-                    </span>
-                  ))}
-                  {project.rolesNeeded.length > 2 && (
-                    <span className="bg-gray-100 text-gray-800 text-xs font-medium px-3 py-1 rounded-full">
-                      +{project.rolesNeeded.length - 2}
-                    </span>
-                  )}
-                </div>
-
-                {/* Tech Stack */}
-                <div className="text-sm font-medium text-gray-500 mb-1">
-                  Tech Stack
-                </div>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.techStack.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="bg-gray-200 text-gray-800 text-xs font-medium px-3 py-1 rounded-full"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <div className="flex justify-between items-center text-xs text-gray-500 mt-auto pt-4">
-                  <span>🕒 {daysLeft} days left</span>
-                  <span>👥 4 spots</span>
-                  <button className="ml-auto border border-gray-300 px-4 py-1.5 rounded-md text-sm font-medium hover:bg-gray-100 transition">
-                    Apply
-                  </button>
-                </div>
+          return (
+            <div
+              key={project.id}
+              onClick={() => navigate(`/project/detail/${project.id}`)}
+              className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition"
+            >
+              <div className="flex justify-between items-center mb-3 text-sm text-gray-500">
+                <span
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium ${badgeClass}`}
+                >
+                  {project.type}
+                </span>
+                <span>{new Date(project.deadline).toLocaleDateString()}</span>
               </div>
-            );
-          })}
-        </div>
+
+              <h2 className="text-lg font-semibold text-gray-800 mb-1">
+                {project.title}
+              </h2>
+
+              <p className="text-sm text-gray-600 mb-4">{project.summary}</p>
+
+              <div className="text-xs font-medium text-gray-500 mb-1">
+                모집요강
+              </div>
+              <p className="text-sm text-gray-700 mb-4">
+                {project.recruitmentSummary}
+              </p>
+
+              <div className="text-xs font-medium text-gray-500 mb-1">
+                필요한 역할
+              </div>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.rolesNeeded.slice(0, 2).map((role) => (
+                  <span
+                    key={role}
+                    className="bg-gray-100 text-sm px-2 py-1 rounded-full text-gray-800"
+                  >
+                    {role}
+                  </span>
+                ))}
+                {project.rolesNeeded.length > 2 && (
+                  <span className="bg-gray-200 text-sm px-2 py-1 rounded-full text-gray-700">
+                    +{project.rolesNeeded.length - 2}
+                  </span>
+                )}
+              </div>
+
+              <div className="text-xs font-medium text-gray-500 mb-1">
+                기술 역량
+              </div>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.techStack.map((tech) => (
+                  <span
+                    key={tech}
+                    className="bg-gray-100 text-sm text-gray-800 px-2 py-1 rounded-md"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600 flex flex-col gap-1">
+                  <div>🕒 {project.deadline}</div>
+                  <div>
+                    👥 ({project.participatingCount}/{project.recruitingCount})
+                    인원
+                  </div>
+                </div>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenApplyModal(project);
+                  }}
+                  disabled={
+                    project.participatingCount >= project.recruitingCount
+                  }
+                  className={`text-sm px-4 py-1.5 rounded-md transition ml-auto ${
+                    project.participatingCount >= project.recruitingCount
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-gray-900 text-white hover:bg-black"
+                  }`}
+                >
+                  참가하기
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
+
+      {/* 지원 확인 모달 */}
+      {selectedProject && (
+        <ConfirmApplyModal
+          isOpen={isApplyModalOpen}
+          onClose={() => setApplyModalOpen(false)}
+          onApply={handleApply}
+        />
+      )}
     </>
   );
 };

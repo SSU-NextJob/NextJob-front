@@ -72,8 +72,8 @@ export const MultiSelector = ({
         className="w-full border border-gray-300 px-4 py-2 rounded-md text-left bg-white shadow-sm hover:border-gray-400 transition"
       >
         {selectedValues.length === 0
-          ? "Select options"
-          : `Selected (${selectedValues.length})`}
+          ? "선택"
+          : `선택됨 (${selectedValues.length})`}
       </button>
 
       {isOpen && (
@@ -85,7 +85,7 @@ export const MultiSelector = ({
               checked={selectedValues.length === totalSelected.current}
               onChange={handleSelectAll}
             />
-            Select All
+            전체
           </label>
           <hr className="my-2" />
           {options.map((opt) => (

@@ -9,7 +9,7 @@ interface SearchBarProps {
 export const SearchBar = ({
   value,
   onChange,
-  placeholder = "Search...",
+  placeholder = "검색",
 }: SearchBarProps) => {
   return (
     <div>
@@ -29,7 +29,7 @@ export const SearchBar = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 text-gray-800 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="w-full rounded-lg border border-gray-300 py-2 pl-4 pr-4 text-gray-800 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
     </div>
   );
