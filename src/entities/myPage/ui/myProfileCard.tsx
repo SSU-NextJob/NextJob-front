@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/atoms/Button";
+import { Button } from "@/shared/ui/modules/Button";
 import React, { useState } from "react";
 
 interface Project {

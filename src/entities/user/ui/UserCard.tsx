@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { SuggestModal } from "@/widgets/Modal/ui/SuggestModal";
-import { Button } from "@/shared/ui/atoms/Button";
+import { Button } from "@/shared/ui/modules/Button";
 
 interface Member {
   id: number;

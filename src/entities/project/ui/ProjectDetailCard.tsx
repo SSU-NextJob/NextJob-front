@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/atoms/Button";
+import { Button } from "@/shared/ui/modules/Button";
 import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";

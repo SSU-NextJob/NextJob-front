@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/atoms/Button";
+import { Button } from "@/shared/ui/modules/Button";
 import React from "react";
 
 interface ConfirmApplyModalProps {
