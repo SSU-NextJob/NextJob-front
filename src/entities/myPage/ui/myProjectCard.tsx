@@ -1,3 +1,4 @@
+import { Badge } from "@/shared/ui/modules/Badge";
 import { Button } from "@/shared/ui/modules/Button";
 
 interface ProjectItem {
@@ -33,23 +34,13 @@ export const MyProjectsCard = ({
         <h2 className="text-lg font-bold mb-4">참여중인 프로젝트</h2>
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {participatingProjects.map((project) => {
-            const badgeClass =
-              project.type === "해커톤"
-                ? "bg-blue-600 text-white"
-                : project.type === "공모전"
-                  ? "bg-red-500 text-white"
-                  : "bg-gray-200 text-gray-700";
             return (
               <div
                 key={project.id}
                 className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${badgeClass}`}
-                  >
-                    {project.type}
-                  </span>
+                  <Badge type={project.type} />
                   <span>{project.date}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1">
@@ -90,23 +81,13 @@ export const MyProjectsCard = ({
         <h2 className="text-lg font-bold mb-4">내가 만든 프로젝트</h2>
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {createdProjects.map((project) => {
-            const badgeClass =
-              project.type === "해커톤"
-                ? "bg-blue-600 text-white"
-                : project.type === "공모전"
-                  ? "bg-red-500 text-white"
-                  : "bg-gray-200 text-gray-700";
             return (
               <div
                 key={project.id}
                 className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${badgeClass}`}
-                  >
-                    {project.type}
-                  </span>
+                  <Badge type={project.type} />
                   <span>{project.date}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1">
@@ -150,11 +131,7 @@ export const MyProjectsCard = ({
                 className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${badgeClass}`}
-                  >
-                    {project.type}
-                  </span>
+                  <Badge type={project.type} />
                   <span>{project.date}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1">

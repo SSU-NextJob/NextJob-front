@@ -1,3 +1,4 @@
+import { Badge } from "@/shared/ui/modules/Badge";
 import { Button } from "@/shared/ui/modules/Button";
 import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
 import { useState } from "react";
@@ -35,13 +36,6 @@ export const ProjectCard = ({ projects }: { projects: Project[] }) => {
     <>
       <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {projects.map((project) => {
-          const badgeClass =
-            project.type === "해커톤"
-              ? "bg-blue-600 text-white"
-              : project.type === "공모전"
-                ? "bg-red-500 text-white"
-                : "bg-gray-200 text-gray-700";
-
           return (
             <div
               key={project.id}
@@ -49,11 +43,7 @@ export const ProjectCard = ({ projects }: { projects: Project[] }) => {
               className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition"
             >
               <div className="flex justify-between items-center mb-3 text-sm text-gray-500">
-                <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-medium ${badgeClass}`}
-                >
-                  {project.type}
-                </span>
+                <Badge type={project.type} />
                 <span>{new Date(project.deadline).toLocaleDateString()}</span>
               </div>
 
