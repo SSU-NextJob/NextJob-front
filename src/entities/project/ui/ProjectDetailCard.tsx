@@ -33,6 +33,12 @@ export const ProjectDetailCard = ({ project }: { project: Project }) => {
     console.log("지원 완료:", selectedProject?.title);
     setApplyModalOpen(false);
   };
+  const badgeClass =
+    project.type === "해커톤"
+      ? "bg-blue-600 text-white"
+      : project.type === "공모전"
+        ? "bg-red-500 text-white"
+        : "bg-gray-200 text-gray-700";
   return (
     <>
       <div className="w-full min-h-screen bg-white text-gray-800 p-10">
@@ -50,7 +56,7 @@ export const ProjectDetailCard = ({ project }: { project: Project }) => {
           {/* 제목 + 타입 */}
           <div className="flex justify-between items-start mb-4">
             <h1 className="text-3xl font-bold">{project.title}</h1>
-            <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full">
+            <span className={` text-xs px-3 py-1 rounded-full ${badgeClass}`}>
               {project.type}
             </span>
           </div>

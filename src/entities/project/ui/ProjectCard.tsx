@@ -28,7 +28,6 @@ export const ProjectCard = ({ projects }: { projects: Project[] }) => {
   };
 
   const handleApply = () => {
-    console.log("지원 완료:", selectedProject?.title);
     setApplyModalOpen(false);
   };
 

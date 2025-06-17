@@ -95,7 +95,7 @@ export const Header = () => {
           to="/mypage"
           className={isActive("/mypage") ? "text-blue-600" : "text-black"}
         >
-          마이 페이지
+          마이페이지
         </Link>
       </nav>
 
