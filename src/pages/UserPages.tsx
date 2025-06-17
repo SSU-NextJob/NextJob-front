@@ -1,5 +1,5 @@
-import { MultiSelector } from "@/shared/ui/atoms/Dropdown";
-import { SearchBar } from "@/shared/ui/atoms/SearchBar";
+import { MultiSelector } from "@/shared/ui/modules/Dropdown";
+import { SearchBar } from "@/shared/ui/modules/SearchBar";
 import { UserList } from "@/widgets/UserList/ui/User";
 
 export default function UserPage() {
