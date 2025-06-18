@@ -1,4 +1,6 @@
 import { Button } from "@/shared/ui/modules/Button";
+import { CreateProjectModal } from "@/widgets/Modal/ui/CreateProjectModal";
+import { RecruitTeamModal } from "@/widgets/Modal/ui/RecruitmenModal";
 import { useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { HeaderAlarm } from "./HeaderAlarm";
@@ -11,8 +13,15 @@ interface Notification {
   unread: boolean;
 }
 
+const dumpProjectList = [
+  { id: "1", name: "AI 레시피 생성기" },
+  { id: "2", name: "스마트홈 대시보드" },
+];
+
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProjectModalOpen, setProjectModalOpen] = useState(false);
+  const [isRecruitModalOpen, setRecruitModalOpen] = useState(false);
   const location = useLocation();
 
   const [alarmData, setAlarmData] = useState<Notification[]>([
@@ -100,7 +109,7 @@ export const Header = () => {
       </nav>
 
       {/* Right Section */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
         {/* Notification */}
         <div
           className="relative cursor-pointer"
@@ -121,9 +130,36 @@ export const Header = () => {
           />
         )}
 
-        {/* Sign Out */}
-        <Button content={"로그아웃"} onClick={{}} color={"white"} />
+        {/* Buttons */}
+        <Button content={"로그아웃"} onClick={() => {}} color={"white"} />
+        <Button
+          content={"프로젝트 생성"}
+          onClick={() => setProjectModalOpen(true)}
+          color={"blue"}
+        />
+        <Button
+          content={"팀원 모집"}
+          onClick={() => setRecruitModalOpen(true)}
+          color={"white"}
+        />
       </div>
+
+      <CreateProjectModal
+        isOpen={isProjectModalOpen}
+        onClose={() => setProjectModalOpen(false)}
+        onCreate={(data) => {
+          console.log("생성된 프로젝트 데이터:", data);
+        }}
+      />
+
+      <RecruitTeamModal
+        isOpen={isRecruitModalOpen}
+        onClose={() => setRecruitModalOpen(false)}
+        onSubmit={(data) => {
+          console.log("팀원 모집 데이터:", data);
+        }}
+        projectOptions={dumpProjectList}
+      />
     </div>
   );
 };
