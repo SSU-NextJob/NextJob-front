@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/modules/Button";
+import { Button } from "@/shared/ui/atoms/Button";
 import { CreateProjectModal } from "@/widgets/Modal/ui/CreateProjectModal";
 import { RecruitTeamModal } from "@/widgets/Modal/ui/RecruitmenModal";
 import { useState, useMemo } from "react";
@@ -131,17 +131,15 @@ export const Header = () => {
         )}
 
         {/* Buttons */}
-        <Button content={"로그아웃"} onClick={() => {}} color={"white"} />
-        <Button
-          content={"프로젝트 생성"}
-          onClick={() => setProjectModalOpen(true)}
-          color={"blue"}
-        />
-        <Button
-          content={"팀원 모집"}
-          onClick={() => setRecruitModalOpen(true)}
-          color={"white"}
-        />
+        <Button onClick={() => {}} color={"white"}>
+          로그아웃
+        </Button>
+        <Button onClick={() => setProjectModalOpen(true)} color={"blue"}>
+          프로젝트 생성
+        </Button>
+        <Button onClick={() => setRecruitModalOpen(true)} color={"white"}>
+          팀원 모집
+        </Button>
       </div>
 
       <CreateProjectModal

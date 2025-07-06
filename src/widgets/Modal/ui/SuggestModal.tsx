@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/modules/Button";
+import { Button } from "@/shared/ui/atoms/Button";
 import { useState } from "react";
 
 interface Post {
@@ -97,13 +97,16 @@ export const SuggestModal = ({
         </div>
 
         <div className="flex justify-between">
-          <Button content={"취소"} onClick={onClose} color={"gray"} />
+          <Button onClick={onClose} color={"gray"}>
+            취소
+          </Button>
           <Button
-            content={"제안하기"}
             disabled={selectedId === null}
             onClick={() => selectedId && onSubmit(selectedId)}
             color={"blue"}
-          />
+          >
+            제안하기
+          </Button>
         </div>
       </div>
     </div>

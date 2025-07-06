@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@/shared/ui/modules/Button";
+import { Button } from "@/shared/ui/atoms/Button";
 
 interface RecruitModalProps {
   isOpen: boolean;
@@ -140,13 +140,16 @@ export const RecruitTeamModal = ({
 
           {/* Submit buttons */}
           <div className="flex justify-end gap-2 mt-6">
-            <Button content="취소" onClick={onClose} color="gray" />
+            <Button onClick={onClose} color="gray">
+              취소
+            </Button>
             <Button
-              content="모집 등록"
               onClick={handleSubmit}
               color="blue"
               disabled={!projectId || !summary || selectedRoles.length === 0}
-            />
+            >
+              모집 등록
+            </Button>
           </div>
         </div>
       </div>

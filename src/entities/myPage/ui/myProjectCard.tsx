@@ -1,5 +1,5 @@
-import { Badge } from "@/shared/ui/modules/Badge";
-import { Button } from "@/shared/ui/modules/Button";
+import { Badge } from "@/shared/ui/atoms/Badge";
+import { Button } from "@/shared/ui/atoms/Button";
 
 interface ProjectItem {
   id: number;
@@ -65,10 +65,11 @@ export const MyProjectsCard = ({
                 </div>
                 <div className="flex gap-2 mt-3 justify-end">
                   <Button
-                    content={"프로젝트 보러가기"}
-                    onClick={{}}
+                    onClick={() => {}}
                     color={"gray"}
-                  />
+                  >
+                    프로젝트 보러가기
+                  </Button>
                 </div>
               </div>
             );
@@ -101,12 +102,12 @@ export const MyProjectsCard = ({
                   {c.role}
                 </span> */}
                   <span className="text-xs text-gray-500">
-                    👥 {project.membersCount}명 팀원
+                    {/* 👥 {project.membersCount}명 팀원 */}
                   </span>
                 </div>
                 <div className="flex gap-2 mt-3 justify-end">
-                  <Button content={"관리"} onClick={{}} color={"gray"} />
-                  <Button content={"모집"} onClick={{}} color={"blue"} />
+                  <Button onClick={() => {}} color={"gray"}>관리</Button>
+                  <Button onClick={() => {}} color={"blue"}>모집</Button>
                 </div>
               </div>
             );

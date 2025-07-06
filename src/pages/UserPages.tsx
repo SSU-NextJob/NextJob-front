@@ -22,7 +22,7 @@ export default function UserPage() {
           isTotalDefault={false}
           onSelectOptions={handleSelect}
         />
-        <SearchBar />
+        <SearchBar value={""} onChange={() => {}} />
       </div>
 
       <div>

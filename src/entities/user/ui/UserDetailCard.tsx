@@ -1,6 +1,6 @@
-import { Button } from "@/shared/ui/modules/Button";
+import { Button } from "@/shared/ui/atoms/Button";
 import { SuggestModal } from "@/widgets/Modal/ui/SuggestModal";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface Project {

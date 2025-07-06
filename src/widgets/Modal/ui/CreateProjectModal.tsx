@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/modules/Button";
+import { Button } from "@/shared/ui/atoms/Button";
 import React, { useState } from "react";
 
 interface CreateProjectModalProps {
@@ -37,7 +37,7 @@ export const CreateProjectModal = ({
         {/* Title + Close */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-bold">프로젝트 생성</h2>
-          <Button content={"X"} onClick={onClose} color={"none"} />
+          <Button onClick={onClose}>X</Button>
         </div>
 
         {/* Form */}
@@ -133,8 +133,12 @@ export const CreateProjectModal = ({
 
           {/* 버튼 */}
           <div className="flex justify-end gap-2 mt-4">
-            <Button content="취소" onClick={onClose} color="white" />
-            <Button content="생성하기" onClick={handleSubmit} color="blue" />
+            <Button onClick={onClose} color="white">
+              취소
+            </Button>
+            <Button onClick={handleSubmit} color="blue">
+              지원하기
+            </Button>
           </div>
         </div>
       </div>

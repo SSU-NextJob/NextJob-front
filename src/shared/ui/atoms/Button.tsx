@@ -1,12 +1,12 @@
 interface ButtonProps {
-  content: string;
+  children: string;
   disabled?: boolean;
-  onClick?: () => void;
-  color?: "gray" | "blue" | "red" | "green" | "black";
+  onClick?: (e: any) => void;
+  color?: "gray" | "blue" | "red" | "green" | "black" | "white";
 }
 
 export const Button = ({
-  content,
+  children,
   disabled = false,
   onClick,
   color = "gray",
@@ -41,7 +41,7 @@ export const Button = ({
         disabled ? disabledClass[color] : colorClass[color]
       }`}
     >
-      {content}
+      {children}
     </button>
   );
 };
