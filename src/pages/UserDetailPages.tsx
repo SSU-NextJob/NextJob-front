@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { ProjectDetail } from "@/widgets/ProjectDetailList/ui/ProjectDetail";
+// import { ProjectDetail } from "@/widgets/ProjectDetailList/ui/ProjectDetail";
 import { UserDetail } from "@/widgets/UserDetailList/ui/UserDetail";
 
 export default function UserDetailPage() {

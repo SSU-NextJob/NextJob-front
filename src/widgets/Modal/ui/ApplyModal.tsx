@@ -1,5 +1,4 @@
-import { Button } from "@/shared/ui/modules/Button";
-import React from "react";
+import { Button } from "@/shared/ui/atoms/Button";
 
 interface ConfirmApplyModalProps {
   isOpen: boolean;
@@ -20,7 +19,7 @@ export const ConfirmApplyModal = ({
         {/* Title */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">프로젝트 지원</h2>
-          <Button content={"X"} onClick={onClose} color={"none"} />
+          <Button onClick={onClose}>X</Button>
         </div>
 
         {/* Description */}
@@ -30,8 +29,12 @@ export const ConfirmApplyModal = ({
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 mt-6">
-          <Button content={"취소"} onClick={onClose} color={"gray"} />
-          <Button content={"지원하기"} onClick={onApply} color={"blue"} />
+          <Button onClick={onClose} color={"gray"}>
+            취소
+          </Button>
+          <Button onClick={onApply} color={"blue"}>
+            지원하기
+          </Button>
         </div>
       </div>
     </div>

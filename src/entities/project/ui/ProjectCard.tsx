@@ -1,5 +1,5 @@
-import { Badge } from "@/shared/ui/modules/Badge";
-import { Button } from "@/shared/ui/modules/Button";
+import { Badge } from "@/shared/ui/atoms/Badge";
+import { Button } from "@/shared/ui/atoms/Button";
 import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -103,13 +103,14 @@ export const ProjectCard = ({ projects }: { projects: Project[] }) => {
                 </div>
 
                 <Button
-                  content={"참가하기"}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleOpenApplyModal(project);
                   }}
                   color={"blue"}
-                />
+                >
+                  참가하기
+                </Button>
               </div>
             </div>
           );

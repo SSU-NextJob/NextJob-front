@@ -1,36 +1,16 @@
-import { Button } from "@/shared/ui/modules/Button";
-import React, { useState } from "react";
+// react imports
+import { useState } from "react";
 
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  role: string;
-  date: string;
-  tags: string[];
-}
+// shared imports
+import { Button } from "@/shared/ui/atoms/Button";
 
-interface MyProfileProps {
-  name: string;
-  role: string;
-  oneLineIntro: string;
-  aboutMe: string;
-  joinedProjects: Project[];
-  onSave: (updated: {
-    name: string;
-    role: string;
-    oneLineIntro: string;
-    aboutMe: string;
-  }) => void;
-}
-
-export const MyProfileCard = ({
+const MyProfileCard = ({
   name,
   role,
   oneLineIntro,
   aboutMe,
   joinedProjects,
-  onSave,
+  onSave = () => {},
 }: MyProfileProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
@@ -45,7 +25,6 @@ export const MyProfileCard = ({
   };
 
   const handleSave = () => {
-    // onSave(form);
     console.log("form", form);
     setIsEditing(false);
   };
@@ -55,6 +34,9 @@ export const MyProfileCard = ({
     setIsEditing(false);
   };
 
+  const profileKeys = ["name", "role", "oneLineIntro"] as const; // aboutMe?
+  type ProfileKey = (typeof profileKeys)[number];
+
   return (
     <div className="flex flex-col bg-white rounded-xl p-6 w-full">
       {/* 헤더 */}
@@ -62,15 +44,17 @@ export const MyProfileCard = ({
         <h1 className="text-2xl font-bold">내 프로필</h1>
         {isEditing ? (
           <div className="flex gap-2">
-            <Button content={"취소"} onClick={handleCancel} color={"gray"} />
-            <Button content={"저장"} onClick={handleSave} color={"blue"} />
+            <Button onClick={handleCancel} color={"gray"}>
+              취소
+            </Button>
+            <Button onClick={handleSave} color={"blue"}>
+              저장
+            </Button>
           </div>
         ) : (
-          <Button
-            content={"수정"}
-            onClick={() => setIsEditing(true)}
-            color={"gray"}
-          />
+          <Button onClick={() => setIsEditing(true)} color={"gray"}>
+            수정
+          </Button>
         )}
       </div>
 
@@ -94,7 +78,7 @@ export const MyProfileCard = ({
           </label>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          {["name", "role", "oneLineIntro"].map((key) => (
+          {profileKeys.map((key: ProfileKey) => (
             <div key={key}>
               <span className="text-sm text-gray-500">
                 {
@@ -102,22 +86,18 @@ export const MyProfileCard = ({
                     name: "이름",
                     role: "역할",
                     oneLineIntro: "한 줄 소개",
-                  }[key as keyof typeof form]
+                  }[key]
                 }
               </span>
               {isEditing ? (
                 <input
                   type="text"
-                  value={form[key as keyof typeof form]}
-                  onChange={(e) =>
-                    handleChange(key as keyof typeof form, e.target.value)
-                  }
+                  value={form[key]}
+                  onChange={(e) => handleChange(key, e.target.value)}
                   className="w-full border px-3 py-2 rounded-md text-sm mt-1"
                 />
               ) : (
-                <p className="text-gray-800 font-medium">
-                  {form[key as keyof typeof form]}
-                </p>
+                <p className="text-gray-800 font-medium">{form[key]}</p>
               )}
             </div>
           ))}
@@ -181,3 +161,29 @@ export const MyProfileCard = ({
     </div>
   );
 };
+
+// types
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  role: string;
+  date: string;
+  tags: string[];
+}
+
+interface MyProfileProps {
+  name: string;
+  role: string;
+  oneLineIntro: string;
+  aboutMe: string;
+  joinedProjects: Project[];
+  onSave: (updated: {
+    name: string;
+    role: string;
+    oneLineIntro: string;
+    aboutMe: string;
+  }) => void;
+}
+
+export default MyProfileCard;

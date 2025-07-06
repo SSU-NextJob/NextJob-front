@@ -1,5 +1,5 @@
-import { Badge } from "@/shared/ui/modules/Badge";
-import { Button } from "@/shared/ui/modules/Button";
+import { Badge } from "@/shared/ui/atoms/Badge";
+import { Button } from "@/shared/ui/atoms/Button";
 import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,11 +39,9 @@ export const ProjectDetailCard = ({ project }: { project: Project }) => {
       <div className="w-full min-h-screen bg-white text-gray-800 p-10">
         {/* 뒤로가기 */}
         <div className="mb-6 flex justify-start">
-          <Button
-            content={"← 뒤로가기"}
-            onClick={() => navigate(-1)}
-            color={"white"}
-          />
+          <Button onClick={() => navigate(-1)} color={"white"}>
+            ← 뒤로가기
+          </Button>
         </div>
 
         {/* 전체 레이아웃 */}
@@ -139,13 +137,14 @@ export const ProjectDetailCard = ({ project }: { project: Project }) => {
           {/* 참가 버튼 */}
           <div className="flex justify-end">
             <Button
-              content={"참가하기"}
               onClick={(e) => {
                 e.stopPropagation();
                 handleOpenApplyModal(project);
               }}
               color={"blue"}
-            />
+            >
+              참가하기
+            </Button>
           </div>
         </div>
       </div>

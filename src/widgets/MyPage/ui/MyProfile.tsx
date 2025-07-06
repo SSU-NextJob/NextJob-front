@@ -1,4 +1,4 @@
-import { MyProfileCard } from "@/entities/myPage/ui/myProfileCard";
+import MyProfileCard from "@/entities/myPage/ui/myProfileCard";
 
 const profileData = {
   name: "사라 첸",
@@ -35,5 +35,5 @@ const profileData = {
   ],
 };
 export const MyProfile = () => {
-  return <MyProfileCard {...profileData} />;
+  return <MyProfileCard {...profileData} onSave={() => {}} />;
 };
