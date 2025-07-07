@@ -9,7 +9,7 @@ interface RecruitModalProps {
     summary: string;
     roles: string[];
   }) => void;
-  projectOptions: { id: string; name: string }[];
+  projectOptions?: { id: string; name: string }[];
 }
 
 const commonRoles = [
@@ -29,7 +29,7 @@ export const RecruitTeamModal = ({
   isOpen,
   onClose,
   onSubmit,
-  projectOptions,
+  projectOptions = [],
 }: RecruitModalProps) => {
   const [projectId, setProjectId] = useState("");
   const [summary, setSummary] = useState("");

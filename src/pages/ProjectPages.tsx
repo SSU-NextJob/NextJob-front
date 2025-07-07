@@ -4,7 +4,7 @@ import { ProjectList } from "@/widgets/ProjectList/ui/Project";
 
 export default function ProjectPage() {
   const handleSelect = (selected: string[]) => {
-    console.log("선택된 값:", selected);
+    // console.log("선택된 값:", selected);
   };
 
   const dummyOptions = ["React", "Node.js", "Python", "Vue", "TypeScript"];

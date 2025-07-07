@@ -4,7 +4,7 @@ import { UserList } from "@/widgets/UserList/ui/User";
 
 export default function UserPage() {
   const handleSelect = (selected: string[]) => {
-    console.log("선택된 값:", selected);
+    // console.log("선택된 값:", selected);
   };
 
   const dummyOptions = ["React", "Node.js", "Python", "Vue", "TypeScript"];

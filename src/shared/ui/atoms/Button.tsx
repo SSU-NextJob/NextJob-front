@@ -2,14 +2,14 @@ interface ButtonProps {
   children: string;
   disabled?: boolean;
   onClick?: (e: any) => void;
-  color?: "gray" | "blue" | "red" | "green" | "black" | "white";
+  color?: "gray" | "blue" | "red" | "green" | "black" | "white" | "none";
 }
 
 export const Button = ({
   children,
   disabled = false,
   onClick,
-  color = "gray",
+  color = "none",
 }: ButtonProps) => {
   const base = "text-sm px-4 py-1.5 rounded-md font-semibold transition";
 

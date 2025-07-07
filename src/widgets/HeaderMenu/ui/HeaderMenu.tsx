@@ -1,9 +1,10 @@
+import { useState, useMemo } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/shared/ui/atoms/Button";
 import { CreateProjectModal } from "@/widgets/Modal/ui/CreateProjectModal";
 import { RecruitTeamModal } from "@/widgets/Modal/ui/RecruitmenModal";
-import { useState, useMemo } from "react";
-import { Link, useLocation } from "react-router-dom";
 import { HeaderAlarm } from "./HeaderAlarm";
+import { useModalStore } from "@/shared/store/modalStore";
 
 interface Notification {
   id: number;
@@ -23,6 +24,7 @@ export const Header = () => {
   const [isProjectModalOpen, setProjectModalOpen] = useState(false);
   const [isRecruitModalOpen, setRecruitModalOpen] = useState(false);
   const location = useLocation();
+  const { onOpenModal } = useModalStore();
 
   const [alarmData, setAlarmData] = useState<Notification[]>([
     {
@@ -134,10 +136,20 @@ export const Header = () => {
         <Button onClick={() => {}} color={"white"}>
           로그아웃
         </Button>
-        <Button onClick={() => setProjectModalOpen(true)} color={"blue"}>
+        <Button onClick={() => onOpenModal("createProject")} color={"blue"}>
           프로젝트 생성
         </Button>
-        <Button onClick={() => setRecruitModalOpen(true)} color={"white"}>
+        <Button
+          onClick={() =>
+            onOpenModal("recruit", {
+              projectOptions: [
+                { id: "1", name: "예시 프로젝트 1" },
+                { id: "2", name: "예시 프로젝트 2" },
+              ],
+            })
+          }
+          color={"white"}
+        >
           팀원 모집
         </Button>
       </div>

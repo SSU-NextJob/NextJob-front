@@ -19,6 +19,7 @@ import "./App.css";
 import "./index.css";
 import { AppRoutes } from "./routes";
 import { Header } from "@/widgets/HeaderMenu/ui/HeaderMenu";
+import { ModalRoot } from "@/widgets/Modal/ui/ModalRoot";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <BrowserRouter>
         <Header />
+        <ModalRoot />
         <div className="w-full min-h-screen flex flex-col items-stretch">
           <AppRoutes />
         </div>

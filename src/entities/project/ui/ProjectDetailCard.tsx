@@ -1,8 +1,8 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useModalStore } from "@/shared/store/modalStore";
 import { Badge } from "@/shared/ui/atoms/Badge";
 import { Button } from "@/shared/ui/atoms/Button";
-import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface Project {
   id: number;
@@ -23,17 +23,20 @@ interface Project {
 
 export const ProjectDetailCard = ({ project }: { project: Project }) => {
   const navigate = useNavigate();
-  const [isApplyModalOpen, setApplyModalOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const { onOpenModal } = useModalStore();
+  const [, setSelectedProject] = useState<Project | null>(null);
+  // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
   const handleOpenApplyModal = (project: Project) => {
     // if (project.participatingCount >= project.recruitingCount) return;
     setSelectedProject(project);
-    setApplyModalOpen(true);
+    onOpenModal("apply", {
+      onApply: () => {
+        /* ... */
+      },
+    });
   };
-  const handleApply = () => {
-    console.log("지원 완료:", selectedProject?.title);
-    setApplyModalOpen(false);
-  };
+
   return (
     <>
       <div className="w-full min-h-screen bg-white text-gray-800 p-10">
@@ -148,13 +151,6 @@ export const ProjectDetailCard = ({ project }: { project: Project }) => {
           </div>
         </div>
       </div>
-      {selectedProject && (
-        <ConfirmApplyModal
-          isOpen={isApplyModalOpen}
-          onClose={() => setApplyModalOpen(false)}
-          onApply={handleApply}
-        />
-      )}
     </>
   );
 };
