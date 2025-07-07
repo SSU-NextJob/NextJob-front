@@ -1,7 +1,6 @@
-import { Button } from "@/shared/ui/atoms/Button";
-import { SuggestModal } from "@/widgets/Modal/ui/SuggestModal";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useModalStore } from "@/shared/store/modalStore";
+import { Button } from "@/shared/ui/atoms/Button";
 
 interface Project {
   title: string;
@@ -23,6 +22,7 @@ interface UserDetailProps {
 
 export const UserDetailCard = (props: UserDetailProps) => {
   const navigate = useNavigate();
+  const { onOpenModal } = useModalStore();
   const {
     name,
     role,
@@ -34,22 +34,17 @@ export const UserDetailCard = (props: UserDetailProps) => {
     pastProjects,
   } = props;
 
-  const [modalOpen, setModalOpen] = useState(false);
-
   const handleSuggest = (postId: number) => {
     console.log("제안된 모집글 ID:", postId);
-    setModalOpen(false);
   };
 
   return (
     <div className="w-full min-h-screen bg-white text-gray-800 px-6 py-10">
       {/* 뒤로가기 */}
       <div className="mb-6 flex justify-start">
-        <Button
-          content={"← 뒤로가기"}
-          onClick={() => navigate(-1)}
-          color={"white"}
-        />
+        <Button onClick={() => navigate(-1)} color={"white"}>
+          ← 뒤로가기
+        </Button>
       </div>
 
       {/* 전체 레이아웃 */}
@@ -130,21 +125,13 @@ export const UserDetailCard = (props: UserDetailProps) => {
         {/* 버튼 */}
         <div className="flex justify-end">
           <Button
-            content={"제안하기"}
-            onClick={() => setModalOpen(true)}
+            onClick={() => onOpenModal("suggest", { onSubmit: handleSuggest })}
             color={"blue"}
-          />
+          >
+            제안하기
+          </Button>
         </div>
       </div>
-
-      {/* 제안 모달 */}
-      {modalOpen && (
-        <SuggestModal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onSubmit={handleSuggest}
-        />
-      )}
     </div>
   );
 };

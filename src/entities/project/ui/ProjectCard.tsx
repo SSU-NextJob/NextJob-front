@@ -1,8 +1,7 @@
+import { useNavigate } from "react-router-dom";
+import { useModalStore } from "@/shared/store/modalStore";
 import { Badge } from "@/shared/ui/atoms/Badge";
 import { Button } from "@/shared/ui/atoms/Button";
-import { ConfirmApplyModal } from "@/widgets/Modal/ui/ApplyModal";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface Project {
   id: number;
@@ -19,17 +18,15 @@ interface Project {
 
 export const ProjectCard = ({ projects }: { projects: Project[] }) => {
   const navigate = useNavigate();
-  const [isApplyModalOpen, setApplyModalOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const { onOpenModal } = useModalStore();
 
   const handleOpenApplyModal = (project: Project) => {
     if (project.participatingCount >= project.recruitingCount) return;
-    setSelectedProject(project);
-    setApplyModalOpen(true);
-  };
-
-  const handleApply = () => {
-    setApplyModalOpen(false);
+    onOpenModal("apply", {
+      onApply: () => {
+        /* ... */
+      },
+    });
   };
 
   return (
@@ -116,15 +113,6 @@ export const ProjectCard = ({ projects }: { projects: Project[] }) => {
           );
         })}
       </div>
-
-      {/* 지원 확인 모달 */}
-      {selectedProject && (
-        <ConfirmApplyModal
-          isOpen={isApplyModalOpen}
-          onClose={() => setApplyModalOpen(false)}
-          onApply={handleApply}
-        />
-      )}
     </>
   );
 };
