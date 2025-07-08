@@ -13,15 +13,42 @@ export const CreateProjectModal = ({
   onCreate,
 }: CreateProjectModalProps) => {
   const [projectName, setProjectName] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [projectType, setProjectType] = useState("해커톤");
-  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
+  const [creatorId] = useState(1); // 임시 고정
+  const [startAt, setStartAt] = useState("");
+  const [endAt, setEndAt] = useState("");
+  const [projectType, setProjectType] = useState("progress");
+  const [type, setType] = useState("contest");
   const [image, setImage] = useState<File | null>(null);
+
+  // 필수값 체크
+  const isValid =
+    projectName && creatorId && startAt && endAt && projectType && type;
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
-    onCreate({ projectName, deadline, projectType, description, image });
+    if (!isValid) return;
+    console.log("onCreate", {
+      name: projectName,
+      content,
+      creatorId,
+      startAt,
+      endAt,
+      projectType,
+      image: image ? image.name : "",
+      type,
+    });
+    onCreate({
+      name: projectName,
+      content,
+      creatorId,
+      startAt,
+      endAt,
+      projectType,
+      image: image ? image.name : "",
+      type,
+    });
     onClose();
   };
 
@@ -44,39 +71,15 @@ export const CreateProjectModal = ({
         <div className="flex flex-col gap-4">
           {/* 이름 */}
           <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">프로젝트 이름</label>
+            <label className="text-sm font-semibold">프로젝트 이름 *</label>
             <input
               type="text"
               placeholder="프로젝트명을 입력하세요"
               className="w-full border px-3 py-2 rounded-md text-sm"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
+              required
             />
-          </div>
-
-          {/* 마감일 */}
-          <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">마감일</label>
-            <input
-              type="date"
-              className="w-full border px-3 py-2 rounded-md text-sm"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-            />
-          </div>
-
-          {/* 프로젝트 유형 */}
-          <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">프로젝트 유형</label>
-            <select
-              className="w-full border px-3 py-2 rounded-md text-sm"
-              value={projectType}
-              onChange={(e) => setProjectType(e.target.value)}
-            >
-              <option value="해커톤">해커톤</option>
-              <option value="공모전">공모전</option>
-              <option value="개인 프로젝트">개인 프로젝트</option>
-            </select>
           </div>
 
           {/* 설명 */}
@@ -85,10 +88,63 @@ export const CreateProjectModal = ({
             <textarea
               placeholder="프로젝트 설명을 입력하세요"
               className="w-full border px-3 py-2 rounded-md text-sm resize-none"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
               rows={4}
             />
+          </div>
+
+          {/* 시작일 */}
+          <div className="flex flex-col items-start gap-1">
+            <label className="text-sm font-semibold">시작일 *</label>
+            <input
+              type="date"
+              className="w-full border px-3 py-2 rounded-md text-sm"
+              value={startAt}
+              onChange={(e) => setStartAt(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* 마감일 */}
+          <div className="flex flex-col items-start gap-1">
+            <label className="text-sm font-semibold">마감일 *</label>
+            <input
+              type="date"
+              className="w-full border px-3 py-2 rounded-md text-sm"
+              value={endAt}
+              onChange={(e) => setEndAt(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* 프로젝트 진행 방식 */}
+          <div className="flex flex-col items-start gap-1">
+            <label className="text-sm font-semibold">진행 방식 *</label>
+            <select
+              className="w-full border px-3 py-2 rounded-md text-sm"
+              value={projectType}
+              onChange={(e) => setProjectType(e.target.value)}
+              required
+            >
+              <option value="progress">진행형</option>
+              <option value="complete">완료형</option>
+            </select>
+          </div>
+
+          {/* 유형 */}
+          <div className="flex flex-col items-start gap-1">
+            <label className="text-sm font-semibold">유형 *</label>
+            <select
+              className="w-full border px-3 py-2 rounded-md text-sm"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+            >
+              <option value="contest">공모전</option>
+              <option value="hackathon">해커톤</option>
+              <option value="personal">개인 프로젝트</option>
+            </select>
           </div>
 
           {/* 이미지 */}
@@ -136,8 +192,8 @@ export const CreateProjectModal = ({
             <Button onClick={onClose} color="white">
               취소
             </Button>
-            <Button onClick={handleSubmit} color="blue">
-              지원하기
+            <Button onClick={handleSubmit} color="blue" disabled={!isValid}>
+              생성하기
             </Button>
           </div>
         </div>

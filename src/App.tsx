@@ -26,7 +26,7 @@ const queryClient = new QueryClient();
 async function enableMocking() {
   if (import.meta.env.MODE === "development") {
     try {
-      const { worker } = await import("./features/user/mocks/browser");
+      const { worker } = await import("./mocks/browser");
       await worker.start();
       console.log("MSW Mocking enabled");
     } catch (error) {

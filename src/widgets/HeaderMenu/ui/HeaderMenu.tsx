@@ -5,6 +5,8 @@ import { CreateProjectModal } from "@/widgets/Modal/ui/CreateProjectModal";
 import { RecruitTeamModal } from "@/widgets/Modal/ui/RecruitmenModal";
 import { HeaderAlarm } from "./HeaderAlarm";
 import { useModalStore } from "@/shared/store/modalStore";
+import { postCreateProject } from "@/entities/project/apis/queryFn";
+import { useMutation } from "@tanstack/react-query";
 
 interface Notification {
   id: number;
@@ -76,6 +78,16 @@ export const Header = () => {
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
+  const createProjectMutation = useMutation({
+    mutationFn: postCreateProject,
+    onSuccess: () => {
+      alert("프로젝트가 성공적으로 생성되었습니다.");
+    },
+    onError: (e: any) => {
+      alert(e.message || "프로젝트 생성에 실패했습니다.");
+    },
+  });
+
   return (
     <div className="w-full border-b bg-white px-8 py-4 flex justify-between items-center shadow-sm">
       {/* Left Section: Logo + Name */}
@@ -136,7 +148,16 @@ export const Header = () => {
         <Button onClick={() => {}} color={"white"}>
           로그아웃
         </Button>
-        <Button onClick={() => onOpenModal("createProject")} color={"blue"}>
+        <Button
+          onClick={() =>
+            onOpenModal("createProject", {
+              onCreate: (data: any) => {
+                createProjectMutation.mutate(data);
+              },
+            })
+          }
+          color={"blue"}
+        >
           프로젝트 생성
         </Button>
         <Button
@@ -153,14 +174,6 @@ export const Header = () => {
           팀원 모집
         </Button>
       </div>
-
-      <CreateProjectModal
-        isOpen={isProjectModalOpen}
-        onClose={() => setProjectModalOpen(false)}
-        onCreate={(data) => {
-          console.log("생성된 프로젝트 데이터:", data);
-        }}
-      />
 
       <RecruitTeamModal
         isOpen={isRecruitModalOpen}
