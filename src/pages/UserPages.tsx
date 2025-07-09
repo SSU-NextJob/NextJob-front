@@ -1,6 +1,6 @@
-import { MultiSelector } from "@/shared/ui/modules/Dropdown";
-import { SearchBar } from "@/shared/ui/modules/SearchBar";
-import { UserList } from "@/widgets/UserList/ui/User";
+﻿import { MultiSelector } from "@/components/modules/Dropdown";
+import { SearchBar } from "@/components/modules/SearchBar";
+import { UserList } from "@/components/UserList";
 
 export default function UserPage() {
   const handleSelect = (selected: string[]) => {
