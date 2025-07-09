@@ -23,6 +23,7 @@ export const ProjectCard = ({ projects }: { projects: Project[] }) => {
   const handleOpenApplyModal = (project: Project) => {
     if (project.participatingCount >= project.recruitingCount) return;
     onOpenModal("apply", {
+      projectId: project.id,
       onApply: () => {
         /* ... */
       },

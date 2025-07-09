@@ -24,13 +24,10 @@ interface Project {
 export const ProjectDetailCard = ({ project }: { project: Project }) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
-  const [, setSelectedProject] = useState<Project | null>(null);
-  // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const handleOpenApplyModal = (project: Project) => {
-    // if (project.participatingCount >= project.recruitingCount) return;
-    setSelectedProject(project);
     onOpenModal("apply", {
+      projectId: project.id,
       onApply: () => {
         /* ... */
       },

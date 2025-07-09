@@ -12,4 +12,19 @@ export const projectHandlers = [
       },
     });
   }),
+  http.post("/projects/:id/apply", async ({ params, request }) => {
+    const { id } = params;
+    const body = await request.json();
+    const data = typeof body === "object" && body !== null ? body : {};
+    const user_id = (data as any).user_id;
+    if (!user_id) {
+      return Response.json(
+        { message: "user_id가 필요합니다." },
+        { status: 400 }
+      );
+    }
+    return Response.json({
+      message: `프로젝트(${id})에 user(${user_id})가 지원 완료되었습니다.`,
+    });
+  }),
 ];
