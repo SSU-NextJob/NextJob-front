@@ -1,6 +1,6 @@
-import { MultiSelector } from "@/shared/ui/modules/Dropdown";
-import { SearchBar } from "@/shared/ui/modules/SearchBar";
-import { ProjectList } from "@/widgets/ProjectList/ui/Project";
+﻿import { MultiSelector } from "@/components/modules/Dropdown";
+import { SearchBar } from "@/components/modules/SearchBar";
+import { ProjectList } from "@/components/ProjectList";
 
 export default function ProjectPage() {
   const handleSelect = (selected: string[]) => {

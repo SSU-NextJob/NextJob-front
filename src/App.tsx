@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 의존성 순서로 import 정렬의 장점:
  * - 번들러가 의존성 관계를 더 잘 파악할 수 있음
  * - 트리 쉐이킹 최적화에 도움
@@ -18,8 +18,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./App.css";
 import "./index.css";
 import { AppRoutes } from "./routes";
-import { Header } from "@/widgets/HeaderMenu/ui/HeaderMenu";
-import { ModalRoot } from "@/widgets/Modal/ui/ModalRoot";
+import { Header } from "@/components/HeaderMenu";
+import { ModalRoot } from "@/components/modules/@modal/ModalRoot";
 
 const queryClient = new QueryClient();
 

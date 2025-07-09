@@ -1,25 +1,13 @@
-// import { SidebarTabs } from "./SidebarTabs";
-// import { MyProfile } from "./MyProfile";
-// import { MyProjects } from "./MyProjects";
-
-import { useGetUser } from "@/entities/user/apis";
-import { MyProfile } from "@/widgets/MyPage/ui/MyProfile";
-import { MyProject } from "@/widgets/MyPage/ui/MyProjects";
-import { SideTab } from "@/widgets/MyPage/ui/SideTab";
-import { useEffect, useState } from "react";
+﻿import { MyProfile } from "@/components/MyProfile";
+import { MyProject } from "@/components/MyProject";
+import { SideTab } from "@/components/Sidebar";
+import { useState } from "react";
 
 export const MyPage = () => {
   const [currentTab, setCurrentTab] = useState<"profile" | "projects">(
     "profile"
   );
 
-  const { data } = useGetUser("1");
-
-  useEffect(() => {
-    console.log("data", data);
-  }, [data]);
-
-  console.log("currentTab", currentTab);
   return (
     <div className="w-full mx-auto text-left py-8 px-4 md:px-8">
       <div className="mb-6">
