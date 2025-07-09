@@ -1,5 +1,4 @@
 import { fetcher } from "@/shared/apis";
-// import type { CreateProjectRequest } from ".";
 
 export interface CreateProjectRequest {
   name: string;
@@ -16,5 +15,13 @@ export const postCreateProject = (data: CreateProjectRequest) => {
   return fetcher<{ message: string; project: any }>("/projects/insert", {
     method: "POST",
     body: JSON.stringify(data),
+  });
+};
+
+export const postProjectApply = (projectId: number, userId: number) => {
+  return fetcher<{ message: string }>(`/projects/${projectId}/apply`, {
+    method: "POST",
+    body: JSON.stringify({ user_id: userId }),
+    headers: { "Content-Type": "application/json" },
   });
 };
