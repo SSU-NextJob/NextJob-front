@@ -2,7 +2,7 @@
 // import { MyProfile } from "./MyProfile";
 // import { MyProjects } from "./MyProjects";
 
-import { useGetUser } from "@/features/user/apis";
+import { useGetUser } from "@/entities/user/apis";
 import { MyProfile } from "@/widgets/MyPage/ui/MyProfile";
 import { MyProject } from "@/widgets/MyPage/ui/MyProjects";
 import { SideTab } from "@/widgets/MyPage/ui/SideTab";
