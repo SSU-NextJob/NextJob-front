@@ -1,6 +1,5 @@
-import { useParams } from "react-router-dom";
-// import { ProjectDetail } from "@/widgets/ProjectDetailList/ui/ProjectDetail";
-import { UserDetail } from "@/widgets/UserDetailList/ui/UserDetail";
+﻿import { useParams } from "react-router-dom";
+import { UserDetail } from "@/components/UserDetail";
 
 export default function UserDetailPage() {
   const { id } = useParams(); // URL에서 id 추출
