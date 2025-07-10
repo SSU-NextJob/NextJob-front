@@ -1,4 +1,6 @@
-﻿import { Button } from "@/components/atoms/Button";
+﻿import { postProjectSuggest } from "@/apis/project";
+import { Button } from "@/components/atoms/Button";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
 interface Post {
@@ -11,6 +13,7 @@ interface Post {
 }
 
 interface SuggestModalProps {
+  memberId: number;
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (postId: number) => void;
@@ -18,12 +21,23 @@ interface SuggestModalProps {
 }
 
 export const SuggestModal = ({
+  memberId,
   isOpen,
   onClose,
   onSubmit,
   posts,
 }: SuggestModalProps) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const suggestProjectMutation = useMutation({
+    mutationFn: postProjectSuggest,
+    onSuccess: () => {
+      alert("프로젝트를 성공적으로 제안했습니다.");
+    },
+    onError: (e: any) => {
+      alert(e.message || "프로젝트 제안에 실패했습니다.");
+    },
+  });
 
   const defaultPosts: Post[] = [
     {
@@ -102,7 +116,13 @@ export const SuggestModal = ({
           </Button>
           <Button
             disabled={selectedId === null}
-            onClick={() => selectedId && onSubmit(selectedId)}
+            onClick={() =>
+              selectedId &&
+              suggestProjectMutation.mutate({
+                projectId: selectedId,
+                userId: memberId,
+              })
+            }
             color={"blue"}
           >
             제안하기

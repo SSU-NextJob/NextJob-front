@@ -4,7 +4,7 @@ import { Button } from "@/components/atoms/Button";
 import { RecruitTeamModal } from "@/components/modules/@modal/RecruitmenModal";
 import { HeaderAlarm } from "./HeaderAlarm";
 import { useModalStore } from "@/store/modalStore";
-import { postCreateProject } from "@/apis/project/apis";
+import { postCreateProject } from "@/apis/project";
 import { useMutation } from "@tanstack/react-query";
 
 interface Notification {
@@ -22,7 +22,6 @@ const dumpProjectList = [
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isProjectModalOpen, setProjectModalOpen] = useState(false);
   const [isRecruitModalOpen, setRecruitModalOpen] = useState(false);
   const location = useLocation();
   const { onOpenModal } = useModalStore();
