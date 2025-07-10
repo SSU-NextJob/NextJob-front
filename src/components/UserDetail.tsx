@@ -1,6 +1,7 @@
 import { UserDetailCard } from "@/components/UserDetailCard";
 
 const userDetail = {
+  userId: 1,
   name: "알렉스 로드리게즈",
   role: "UI/UX 디자이너",
   location: "미국, 뉴욕",

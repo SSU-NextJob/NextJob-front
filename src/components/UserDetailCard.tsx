@@ -10,6 +10,7 @@ interface Project {
 }
 
 interface UserDetailProps {
+  userId: number;
   name: string;
   role: string;
   location: string;
@@ -24,6 +25,7 @@ export const UserDetailCard = (props: UserDetailProps) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
   const {
+    userId,
     name,
     role,
     location,
@@ -33,10 +35,6 @@ export const UserDetailCard = (props: UserDetailProps) => {
     skills,
     pastProjects,
   } = props;
-
-  const handleSuggest = (postId: number) => {
-    console.log("제안된 모집글 ID:", postId);
-  };
 
   return (
     <div className="w-full min-h-screen bg-white text-gray-800 px-6 py-10">
@@ -125,7 +123,7 @@ export const UserDetailCard = (props: UserDetailProps) => {
         {/* 버튼 */}
         <div className="flex justify-end">
           <Button
-            onClick={() => onOpenModal("suggest", { onSubmit: handleSuggest })}
+            onClick={() => onOpenModal("suggest", { memberId: userId })}
             color={"blue"}
           >
             제안하기
