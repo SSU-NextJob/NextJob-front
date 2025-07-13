@@ -38,32 +38,55 @@ export const UserCard = ({ users }: { users: UserData[] }) => {
             onClick={() => navigate(`/user/detail/${user.userId}`)}
           >
             <div className="h-12 w-12 bg-gray-200 rounded-full mb-3" />
-            <h2 className="text-lg font-semibold text-gray-900">{user.name}</h2>
-            {/* <p className="text-sm text-gray-500 mb-1">{user.role}</p> */}
-            <p className="text-sm text-gray-700 mb-2 line-clamp-2">
-              {user.description}
+            <h2 className="text-lg font-semibold text-gray-900" key={user.name}>
+              {user.name}
+            </h2>
+            <p
+              className="text-sm text-gray-700 mb-2 line-clamp-2"
+              key={user.email}
+            >
+              {user.email}
             </p>
+            {/* <p className="text-sm text-gray-500 mb-1">{user.role}</p> */}
+            {user?.description && (
+              <p
+                className="text-sm text-gray-700 mb-2 line-clamp-2"
+                key={user.description}
+              >
+                {user.description}
+              </p>
+            )}
             {/* <p className="text-sm text-gray-500 mb-3">📍 {user.location}</p> */}
             <div className="flex flex-wrap gap-2">
-              <span
-                key={user.techStack}
-                className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full"
+              <p
+                className="text-sm text-gray-700 mb-2 line-clamp-2"
+                key={user.description}
               >
-                {user.techStack}
-              </span>
-              {/* {user.skills.slice(0, 3).map((skill) => (
+                분야 : {user.userType}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {user?.techStack && (
                 <span
-                  key={skill}
+                  key={user.techStack}
                   className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full"
                 >
-                  {skill}
+                  {user.techStack}
                 </span>
-              ))}
-              {user.skills.length > 3 && (
-                <span className="bg-gray-100 text-gray-800 px-2 py-1 text-xs rounded-full">
-                  +{user.skills.length - 3}
-                </span>
-              )} */}
+              )}
+
+              {/* {user.techStack
+                ?.split(",")
+                .map((s) => s.trim()) // 공백 제거
+                .slice(0, 3)
+                .map((stack: string) => (
+                  <span
+                    key={stack}
+                    className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full"
+                  >
+                    {stack}
+                  </span>
+                ))} */}
             </div>
           </div>
 
