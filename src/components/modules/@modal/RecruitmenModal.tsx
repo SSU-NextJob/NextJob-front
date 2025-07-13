@@ -1,5 +1,6 @@
-﻿import { useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Button } from "@/components/atoms/Button";
+import { getProjectListAPI, type ProjectResponse } from "@/apis/project";
 
 interface RecruitModalProps {
   isOpen: boolean;
@@ -9,7 +10,7 @@ interface RecruitModalProps {
     summary: string;
     roles: string[];
   }) => void;
-  projectOptions?: { id: string; name: string }[];
+  // projectOptions?: { id: string; name: string }[];
 }
 
 const commonRoles = [
@@ -29,11 +30,22 @@ export const RecruitTeamModal = ({
   isOpen,
   onClose,
   onSubmit,
-  projectOptions = [],
+  // projectOptions = [],
 }: RecruitModalProps) => {
   const [projectId, setProjectId] = useState("");
   const [summary, setSummary] = useState("");
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [projectList, setProjectList] = useState<ProjectResponse[]>([]);
+
+  useEffect(() => {
+    getProjectListAPI(1)
+      .then((res) => {
+        if (res.success) setProjectList(res.data);
+      })
+      .catch()
+      .finally();
+    // () => setLoading(false)
+  }, []);
 
   if (!isOpen) return null;
 
@@ -76,9 +88,9 @@ export const RecruitTeamModal = ({
               onChange={(e) => setProjectId(e.target.value)}
             >
               <option value="">모집할 프로젝트를 선택하세요</option>
-              {projectOptions.map((opt) => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.name}
+              {projectList.map((project) => (
+                <option key={project.projectId} value={project.projectId}>
+                  {project.name}
                 </option>
               ))}
             </select>
