@@ -42,4 +42,48 @@ export const projectHandlers = [
       message: `user(${id})에게 프로젝트(${project_id})를 제안했습니다.`,
     });
   }),
+  http.get("/users", async ({ request }) => {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return Response.json(
+        { message: "userId가 필요합니다." },
+        { status: 400 }
+      );
+    }
+
+    // Mock 프로젝트 데이터
+    const mockProjects = [
+      {
+        projectId: 1,
+        name: "웹 개발 프로젝트",
+        content: "React와 Node.js를 사용한 풀스택 웹 애플리케이션 개발",
+        type: "웹 개발",
+        start_at: new Date("2024-01-15"),
+        end_at: new Date("2024-03-15"),
+      },
+      {
+        projectId: 2,
+        name: "모바일 앱 개발",
+        content: "React Native를 사용한 크로스 플랫폼 모바일 앱 개발",
+        type: "모바일 개발",
+        start_at: new Date("2024-02-01"),
+        end_at: new Date("2024-04-01"),
+      },
+      {
+        projectId: 3,
+        name: "AI 챗봇 개발",
+        content: "Python과 TensorFlow를 사용한 자연어 처리 챗봇 개발",
+        type: "AI/ML",
+        start_at: new Date("2024-03-01"),
+        end_at: new Date("2024-05-01"),
+      },
+    ];
+
+    return Response.json({
+      success: true,
+      data: mockProjects,
+    });
+  }),
 ];

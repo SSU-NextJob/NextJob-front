@@ -16,6 +16,20 @@ export interface ProjectApplyRequest {
   userId: number;
 }
 
+export interface GetProjectListResponse {
+  success: boolean;
+  data: ProjectResponse[];
+}
+
+export interface ProjectResponse {
+  projectId: number; // 프로젝트 아이디
+  name: string; // 프로젝트 이름
+  content: string; // 프로젝트 내용
+  type: string; // 프로젝트 종류
+  start_at: Date; // 프로젝트 시작일
+  end_at: Date; // 프로젝트 종료일
+}
+
 // 프로젝트 생성
 export const postCreateProject = (data: CreateProjectRequest) => {
   return fetcher<{ message: string; project: any }>("/projects/insert", {
@@ -45,5 +59,12 @@ export const postProjectSuggest = ({
     method: "POST",
     body: JSON.stringify({ project_id: projectId }),
     headers: { "Content-Type": "application/json" },
+  });
+};
+
+// 내가 생성한 프로젝트 리스트 조회
+export const getProjectListAPI = (userId: number) => {
+  return fetcher<GetProjectListResponse>(`/users?userId=${userId}`, {
+    method: "GET",
   });
 };

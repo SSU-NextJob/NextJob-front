@@ -158,29 +158,19 @@ export const Header = () => {
         >
           프로젝트 생성
         </Button>
-        <Button
-          onClick={() =>
-            onOpenModal("recruit", {
-              projectOptions: [
-                { id: "1", name: "예시 프로젝트 1" },
-                { id: "2", name: "예시 프로젝트 2" },
-              ],
-            })
-          }
-          color={"white"}
-        >
+        <Button onClick={() => onOpenModal("recruit")} color={"white"}>
           팀원 모집
         </Button>
       </div>
 
-      <RecruitTeamModal
+      {/* <RecruitTeamModal
         isOpen={isRecruitModalOpen}
         onClose={() => setRecruitModalOpen(false)}
         onSubmit={(data) => {
           console.log("팀원 모집 데이터:", data);
         }}
-        projectOptions={dumpProjectList}
-      />
+        // projectOptions={dumpProjectList}
+      /> */}
     </div>
   );
 };
