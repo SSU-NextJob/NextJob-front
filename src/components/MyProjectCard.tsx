@@ -114,9 +114,9 @@ export const MyProjectsCard = ({
         </div>
       </section>
 
-      {/* 모집 게시물 */}
+      {/* 모집 공고 */}
       <section>
-        <h2 className="text-lg font-bold mb-4">모집 게시물</h2>
+        <h2 className="text-lg font-bold mb-4">모집 공고</h2>
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {recruitmentPosts.map((project) => {
             const badgeClass =

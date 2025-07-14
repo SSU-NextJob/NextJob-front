@@ -50,9 +50,8 @@ export const postCreateProject = (data: CreateProjectRequest) => {
     body: JSON.stringify(data),
   });
 };
-
 // 프로젝트 상세 조회
-export const getProejctDetail = (projectId: number) => {
+export const getProjectDetail = (projectId: number) => {
   return fetcher<GetProjectDetail>(`/projects/${projectId}`, {
     method: "GET",
   });

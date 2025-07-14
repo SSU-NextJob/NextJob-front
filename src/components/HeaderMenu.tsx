@@ -1,7 +1,6 @@
 ﻿import { useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/atoms/Button";
-import { RecruitTeamModal } from "@/components/modules/@modal/RecruitmenModal";
 import { HeaderAlarm } from "./HeaderAlarm";
 import { useModalStore } from "@/store/modalStore";
 import { postCreateProject } from "@/apis/project";
@@ -15,15 +14,9 @@ interface Notification {
   unread: boolean;
 }
 
-const dumpProjectList = [
-  { id: "1", name: "AI 레시피 생성기" },
-  { id: "2", name: "스마트홈 대시보드" },
-];
-
 export const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isRecruitModalOpen, setRecruitModalOpen] = useState(false);
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
   const { onOpenModal } = useModalStore();
 
   const [alarmData, setAlarmData] = useState<Notification[]>([
