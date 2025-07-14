@@ -1,15 +1,17 @@
 ﻿import { useEffect, useState } from "react";
 import { Button } from "@/components/atoms/Button";
-import { getProjectListAPI, type ProjectResponse } from "@/apis/project";
+import { getCreatedProjectsAPI, type ProjectResponse } from "@/apis/project";
+import { useMutation } from "@tanstack/react-query";
+import { postRecruiment } from "@/apis/recruitment";
 
 interface RecruitModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: {
-    projectId: string;
-    summary: string;
-    roles: string[];
-  }) => void;
+  // onSubmit: (data: {
+  //   projectId: string;
+  //   summary: string;
+  //   roles: string[];
+  // }) => void;
   // projectOptions?: { id: string; name: string }[];
 }
 
@@ -29,16 +31,17 @@ const commonRoles = [
 export const RecruitTeamModal = ({
   isOpen,
   onClose,
-  onSubmit,
+  // onSubmit,
   // projectOptions = [],
 }: RecruitModalProps) => {
-  const [projectId, setProjectId] = useState("");
+  const [projectId, setProjectId] = useState<number>(0);
+  const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [selectedRole, setSelectedRole] = useState<string>("");
   const [projectList, setProjectList] = useState<ProjectResponse[]>([]);
 
   useEffect(() => {
-    getProjectListAPI(1)
+    getCreatedProjectsAPI(1)
       .then((res) => {
         if (res.success) setProjectList(res.data);
       })
@@ -47,19 +50,34 @@ export const RecruitTeamModal = ({
     // () => setLoading(false)
   }, []);
 
-  if (!isOpen) return null;
+  const postRecruimentMutation = useMutation({
+    mutationFn: postRecruiment,
+    onSuccess: () => {
+      alert("모집 공고를 생성했습니다.");
+      onClose();
+    },
+    onError: (e: any) => {
+      alert(e.message || "모집 공고 생성을 실패했습니다.");
+    },
+  });
 
-  const handleRoleToggle = (role: string) => {
-    setSelectedRoles((prev) =>
-      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
-    );
+  const handleRoleSelect = (role: string) => {
+    setSelectedRole(selectedRole === role ? "" : role);
   };
 
   const handleSubmit = () => {
-    if (!projectId || !summary || selectedRoles.length === 0) return;
-    onSubmit({ projectId, summary, roles: selectedRoles });
-    onClose();
+    if (!projectId || !title || !summary || !selectedRole) return;
+    postRecruimentMutation.mutate({
+      userId: 1,
+      userName: "testUser",
+      projectId: 1,
+      title: title,
+      content: summary,
+      roleType: selectedRole,
+    });
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
@@ -85,7 +103,7 @@ export const RecruitTeamModal = ({
             <select
               className="border w-full px-3 py-2 rounded-md text-sm"
               value={projectId}
-              onChange={(e) => setProjectId(e.target.value)}
+              onChange={(e) => setProjectId(Number(e.target.value))}
             >
               <option value="">모집할 프로젝트를 선택하세요</option>
               {projectList.map((project) => (
@@ -94,6 +112,16 @@ export const RecruitTeamModal = ({
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* title */}
+          <div>
+            <label className="text-sm font-medium block mb-1">공고 제목</label>
+            <input
+              className="border w-full px-3 py-2 rounded-md text-sm"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
 
           {/* Summary */}
@@ -107,44 +135,39 @@ export const RecruitTeamModal = ({
             />
           </div>
 
-          {/* Selected roles preview */}
-          {selectedRoles.length > 0 && (
+          {/* Selected role preview */}
+          {selectedRole && (
             <div className="flex flex-wrap gap-2 mb-2">
-              {selectedRoles.map((role) => (
-                <span
-                  key={role}
-                  className="bg-blue-600 text-white text-sm rounded-full px-3 py-1 flex items-center"
+              <span className="bg-blue-600 text-white text-sm rounded-full px-3 py-1 flex items-center">
+                {selectedRole}
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("")}
+                  className="ml-2 flex items-center justify-center text-white hover:text-gray-200 text-sm p-0 leading-none"
                 >
-                  {role}
-                  <button
-                    type="button"
-                    onClick={() => handleRoleToggle(role)}
-                    className="ml-2 flex items-center justify-center text-white hover:text-gray-200 text-sm p-0 leading-none"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
+                  ×
+                </button>
+              </span>
             </div>
           )}
 
           {/* Common roles */}
           <div>
             <label className="text-sm font-medium block mb-1">필요 역할</label>
-            <div className="text-xs text-gray-500 mb-1">주요 역할:</div>
+            {/* <div className="text-xs text-gray-500 mb-1">주요 역할:</div> */}
             <div className="flex flex-wrap gap-2">
               {commonRoles.map((role) => (
                 <button
                   key={role}
                   type="button"
-                  onClick={() => handleRoleToggle(role)}
+                  onClick={() => handleRoleSelect(role)}
                   className={`border rounded-full px-3 py-1 text-sm transition ${
-                    selectedRoles.includes(role)
+                    selectedRole === role
                       ? "bg-blue-600 text-white"
                       : "bg-white text-black"
                   }`}
                 >
-                  {selectedRoles.includes(role) ? "−" : "+"} {role}
+                  {selectedRole === role ? "✓" : "+"} {role}
                 </button>
               ))}
             </div>
@@ -158,7 +181,7 @@ export const RecruitTeamModal = ({
             <Button
               onClick={handleSubmit}
               color="blue"
-              disabled={!projectId || !summary || selectedRoles.length === 0}
+              disabled={!projectId || !title || !summary || !selectedRole}
             >
               모집 등록
             </Button>

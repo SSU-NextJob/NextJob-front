@@ -3,6 +3,7 @@ import { useState } from "react";
 
 // shared imports
 import { Button } from "@/components/atoms/Button";
+import type { ProjectResponse } from "@/apis/project";
 
 const MyProfileCard = ({
   name,
@@ -36,6 +37,10 @@ const MyProfileCard = ({
 
   const profileKeys = ["name", "role", "oneLineIntro"] as const; // aboutMe?
   type ProfileKey = (typeof profileKeys)[number];
+
+  const normalizedDate = (date: Date) => {
+    return new Intl.DateTimeFormat("en-CA").format(new Date(date));
+  };
 
   return (
     <div className="flex flex-col bg-white rounded-xl p-6 w-full">
@@ -127,32 +132,25 @@ const MyProfileCard = ({
           참여한 프로젝트
         </h2>
         <div className="flex flex-col gap-3">
-          {joinedProjects.map((p) => (
+          {joinedProjects.map((project) => (
             <div
-              key={p.id}
+              key={project.projectId}
               className="border rounded-lg px-4 py-3 bg-white flex justify-between items-start"
             >
               <div>
                 <h3 className="text-sm font-bold text-gray-900 mb-0.5">
-                  {p.title}
+                  {project.name}
                 </h3>
-                <p className="text-sm text-gray-600 mb-2">{p.description}</p>
+                <p className="text-sm text-gray-600 mb-2">{project.content}</p>
                 <div className="flex gap-2 flex-wrap">
                   <span className="bg-gray-100 text-xs px-2 py-0.5 rounded-full">
-                    {p.role}
+                    {project.type}
                   </span>
-                  {p.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-gray-100 text-xs px-2 py-0.5 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
                 </div>
               </div>
               <div className="text-sm text-gray-500 whitespace-nowrap mt-1">
-                📅 {p.date}
+                📅 {normalizedDate(project.start_at)} ~
+                {normalizedDate(project.end_at)}
               </div>
             </div>
           ))}
@@ -177,7 +175,7 @@ interface MyProfileProps {
   role: string;
   oneLineIntro: string;
   aboutMe: string;
-  joinedProjects: Project[];
+  joinedProjects: ProjectResponse[];
   onSave: (updated: {
     name: string;
     role: string;

@@ -42,11 +42,10 @@ export const projectHandlers = [
       message: `user(${id})에게 프로젝트(${project_id})를 제안했습니다.`,
     });
   }),
-  http.get("/users", async ({ request }) => {
-    const url = new URL(request.url);
-    const userId = url.searchParams.get("userId");
+  http.get("/users/:id/projects", async ({ params }) => {
+    const { id } = params;
 
-    if (!userId) {
+    if (!id) {
       return Response.json(
         { message: "userId가 필요합니다." },
         { status: 400 }
@@ -84,6 +83,55 @@ export const projectHandlers = [
     return Response.json({
       success: true,
       data: mockProjects,
+    });
+  }),
+  http.get("/projects", async ({ request }) => {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return Response.json(
+        { message: "userId가 필요합니다." },
+        { status: 400 }
+      );
+    }
+
+    // Mock 데이터: 내가 생성한 프로젝트와 참여한 프로젝트 구분
+    const createdProject = [
+      {
+        projectId: 1,
+        name: "내가 만든 웹 프로젝트",
+        content: "React와 Node.js로 만든 웹 서비스",
+        type: "웹 개발",
+        start_at: new Date("2024-01-01"),
+        end_at: new Date("2024-03-01"),
+      },
+    ];
+    const participationProject = [
+      {
+        projectId: 2,
+        name: "참여한 모바일 앱 프로젝트",
+        content: "React Native로 만든 앱",
+        type: "모바일 개발",
+        start_at: new Date("2024-02-01"),
+        end_at: new Date("2024-04-01"),
+      },
+      {
+        projectId: 3,
+        name: "참여한 AI 프로젝트",
+        content: "TensorFlow로 만든 챗봇",
+        type: "AI/ML",
+        start_at: new Date("2024-03-01"),
+        end_at: new Date("2024-05-01"),
+      },
+    ];
+
+    return Response.json({
+      success: true,
+      data: {
+        createdProject,
+        participationProject,
+      },
     });
   }),
 ];

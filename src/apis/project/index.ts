@@ -16,11 +16,18 @@ export interface ProjectApplyRequest {
   userId: number;
 }
 
-export interface GetProjectListResponse {
+export interface GetCreatedProjectsResponse {
   success: boolean;
-  data: ProjectResponse[];
+  data: ProjectResponse[]; // 내가 생성한
 }
 
+export interface GetJoinedProjectsResponse {
+  success: boolean;
+  data: {
+    createdProject: ProjectResponse[]; // 내가 생성한
+    participationProject: ProjectResponse[]; // 내가 참여한
+  };
+}
 export interface ProjectResponse {
   projectId: number; // 프로젝트 아이디
   name: string; // 프로젝트 이름
@@ -63,8 +70,15 @@ export const postProjectSuggest = ({
 };
 
 // 내가 생성한 프로젝트 리스트 조회
-export const getProjectListAPI = (userId: number) => {
-  return fetcher<GetProjectListResponse>(`/users?userId=${userId}`, {
+export const getCreatedProjectsAPI = (userId: number) => {
+  return fetcher<GetCreatedProjectsResponse>(`/users/${userId}/projects`, {
+    method: "GET",
+  });
+};
+
+// 내가 참여한 프로젝트 리스트 조회
+export const getJoinedProjectsAPI = (userId: number) => {
+  return fetcher<GetJoinedProjectsResponse>(`/projects?userId=${userId}`, {
     method: "GET",
   });
 };

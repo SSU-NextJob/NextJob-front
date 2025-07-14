@@ -1,4 +1,6 @@
+import { getJoinedProjectsAPI, type ProjectResponse } from "@/apis/project";
 import MyProfileCard from "@/components/MyProfileCard";
+import { useEffect, useState } from "react";
 
 const profileData = {
   name: "사라 첸",
@@ -35,5 +37,23 @@ const profileData = {
   ],
 };
 export const MyProfile = () => {
-  return <MyProfileCard {...profileData} onSave={() => {}} />;
+  const [joinedProjectList, setJoinedProjectList] = useState<ProjectResponse[]>(
+    []
+  );
+
+  useEffect(() => {
+    getJoinedProjectsAPI(1)
+      .then((res) => {
+        if (res.success) setJoinedProjectList(res.data.participationProject);
+      })
+      .catch()
+      .finally();
+  }, []);
+  return (
+    <MyProfileCard
+      {...profileData}
+      joinedProjects={joinedProjectList}
+      onSave={() => {}}
+    />
+  );
 };
