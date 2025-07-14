@@ -65,7 +65,7 @@ export const MyProjectsCard = ({
                 </div> */}
                 <div className="flex gap-2 mt-auto justify-end">
                   <Button onClick={() => {}} color={"gray"}>
-                    프로젝트 보러가기
+                    상세보기
                   </Button>
                 </div>
               </div>
