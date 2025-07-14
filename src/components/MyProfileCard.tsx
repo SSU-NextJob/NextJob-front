@@ -4,6 +4,7 @@ import { useState } from "react";
 // shared imports
 import { Button } from "@/components/atoms/Button";
 import type { ProjectResponse } from "@/apis/project";
+import normalizedDate from "@/utils/normalizedDate";
 
 const MyProfileCard = ({
   name,
@@ -37,10 +38,6 @@ const MyProfileCard = ({
 
   const profileKeys = ["name", "role", "oneLineIntro"] as const; // aboutMe?
   type ProfileKey = (typeof profileKeys)[number];
-
-  const normalizedDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-CA").format(new Date(date));
-  };
 
   return (
     <div className="flex flex-col bg-white rounded-xl p-6 w-full">
