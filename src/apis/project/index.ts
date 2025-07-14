@@ -28,6 +28,11 @@ export interface GetJoinedProjectsResponse {
     participationProject: ProjectResponse[]; // 내가 참여한
   };
 }
+
+export interface GetProjectDetail {
+  success: boolean;
+  data: ProjectResponse;
+}
 export interface ProjectResponse {
   projectId: number; // 프로젝트 아이디
   name: string; // 프로젝트 이름
@@ -35,6 +40,7 @@ export interface ProjectResponse {
   type: string; // 프로젝트 종류
   start_at: Date; // 프로젝트 시작일
   end_at: Date; // 프로젝트 종료일
+  image?: string; // 프로젝트 이미지
 }
 
 // 프로젝트 생성
@@ -42,6 +48,13 @@ export const postCreateProject = (data: CreateProjectRequest) => {
   return fetcher<{ message: string; project: any }>("/projects/insert", {
     method: "POST",
     body: JSON.stringify(data),
+  });
+};
+
+// 프로젝트 상세 조회
+export const getProejctDetail = (projectId: number) => {
+  return fetcher<GetProjectDetail>(`/projects/${projectId}`, {
+    method: "GET",
   });
 };
 

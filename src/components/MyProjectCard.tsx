@@ -1,5 +1,7 @@
-﻿import { Badge } from "@/components/atoms/Badge";
+﻿import type { ProjectResponse } from "@/apis/project";
+import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
+import normalizedDate from "@/utils/normalizedDate";
 
 interface ProjectItem {
   id: number;
@@ -16,8 +18,8 @@ interface ProjectItem {
 }
 
 interface MyProjectsCardProps {
-  participatingProjects: ProjectItem[];
-  createdProjects: ProjectItem[];
+  participatingProjects: ProjectResponse[];
+  createdProjects: ProjectResponse[];
   recruitmentPosts: ProjectItem[];
 }
 
@@ -36,34 +38,32 @@ export const MyProjectsCard = ({
           {participatingProjects.map((project) => {
             return (
               <div
-                key={project.id}
-                className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
+                key={project.projectId}
+                className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition flex flex-col h-full"
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
                   <Badge type={project.type} />
-                  <span>{project.date}</span>
+                  <span>~ {normalizedDate(project.end_at)}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1">
-                  {project.title}
+                  {project.name}
                 </h3>
-                <p className="text-sm text-gray-600 mb-2">
-                  {project.description}
-                </p>
+                <p className="text-sm text-gray-600 mb-2">{project.content}</p>
                 <div className="flex flex-wrap gap-2 text-xs mb-3">
-                  <span className="bg-gray-200 px-2 py-0.5 rounded-full">
+                  {/* <span className="bg-gray-200 px-2 py-0.5 rounded-full">
                     {project.role}
-                  </span>
+                  </span> 
                   <span
                     key={project.type}
                     className="bg-gray-200 px-2 py-0.5 rounded-full"
                   >
                     {project.type}
-                  </span>
+                  </span> */}
                 </div>
-                <div className="text-sm text-gray-500 text-right">
+                {/* <div className="text-sm text-gray-500 text-right">
                   ⏱ {project.dDay}일 남음
-                </div>
-                <div className="flex gap-2 mt-3 justify-end">
+                </div> */}
+                <div className="flex gap-2 mt-auto justify-end">
                   <Button onClick={() => {}} color={"gray"}>
                     프로젝트 보러가기
                   </Button>
@@ -81,19 +81,17 @@ export const MyProjectsCard = ({
           {createdProjects.map((project) => {
             return (
               <div
-                key={project.id}
-                className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
+                key={project.projectId}
+                className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition flex flex-col h-full"
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
                   <Badge type={project.type} />
-                  <span>{project.date}</span>
+                  <span>~ {normalizedDate(project.end_at)}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1">
-                  {project.title}
+                  {project.name}
                 </h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  {project.description}
-                </p>
+                <p className="text-sm text-gray-600 mb-3">{project.content}</p>
                 <div className="flex justify-between items-center mt-auto">
                   {/* <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">
                   {c.role}
