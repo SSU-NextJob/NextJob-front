@@ -1,5 +1,6 @@
 import { getJoinedProjectsAPI, type ProjectResponse } from "@/apis/project";
 import MyProfileCard from "@/components/MyProfileCard";
+import { useUserStore } from "@/store/userStore";
 import { useEffect, useState } from "react";
 
 const profileData = {
@@ -37,18 +38,21 @@ const profileData = {
   ],
 };
 export const MyProfile = () => {
+  const { userId } = useUserStore();
   const [joinedProjectList, setJoinedProjectList] = useState<ProjectResponse[]>(
     []
   );
 
   useEffect(() => {
-    getJoinedProjectsAPI(1)
+    if (!userId) return;
+
+    getJoinedProjectsAPI(userId)
       .then((res) => {
         if (res.success) setJoinedProjectList(res.data.participationProject);
       })
       .catch()
       .finally();
-  }, []);
+  }, [userId]);
   return (
     <MyProfileCard
       {...profileData}
