@@ -64,7 +64,7 @@ export const postProjectApply = ({
 }: ProjectApplyRequest) => {
   return fetcher<{ message: string }>(`/projects/${projectId}/apply`, {
     method: "POST",
-    body: JSON.stringify({ user_id: userId }),
+    body: JSON.stringify({ userId: userId }),
     headers: { "Content-Type": "application/json" },
   });
 };
