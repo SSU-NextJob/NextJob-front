@@ -38,8 +38,8 @@ export interface ProjectResponse {
   name: string; // 프로젝트 이름
   content: string; // 프로젝트 내용
   type: string; // 프로젝트 종류
-  start_at: Date; // 프로젝트 시작일
-  end_at: Date; // 프로젝트 종료일
+  startAt: Date; // 프로젝트 시작일
+  endAt: Date; // 프로젝트 종료일
   image?: string; // 프로젝트 이미지
 }
 

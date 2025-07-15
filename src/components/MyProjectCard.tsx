@@ -45,7 +45,7 @@ export const MyProjectsCard = ({
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
                   <Badge type={project.type} />
-                  <span>~ {normalizedDate(project.end_at)}</span>
+                  <span> ~ {normalizedDate(project.endAt)}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1">
                   {project.name}
@@ -89,7 +89,7 @@ export const MyProjectsCard = ({
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
                   <Badge type={project.type} />
-                  <span>~ {normalizedDate(project.end_at)}</span>
+                  <span>~ {normalizedDate(project.endAt)}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1">
                   {project.name}
