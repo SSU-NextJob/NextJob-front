@@ -1,7 +1,8 @@
-﻿import { postProjectSuggest } from "@/apis/project";
+﻿import { postProjectSuggest, getCreatedProjectsAPI, type ProjectResponse } from "@/apis/project";
 import { Button } from "@/components/atoms/Button";
+import normalizedDate from "@/utils/normalizedDate";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Post {
   id: number;
@@ -28,6 +29,7 @@ export const SuggestModal = ({
   posts,
 }: SuggestModalProps) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [projectList, setProjectList] = useState<ProjectResponse[]>([]);
 
   const suggestProjectMutation = useMutation({
     mutationFn: postProjectSuggest,
@@ -38,6 +40,15 @@ export const SuggestModal = ({
       alert(e.message || "프로젝트 제안에 실패했습니다.");
     },
   });
+
+  useEffect(() => {
+    getCreatedProjectsAPI(1)
+      .then((res) => {
+        if (res.success) setProjectList(res.data);
+      })
+      .catch()
+      .finally();
+  }, []);
 
   const defaultPosts: Post[] = [
     {
@@ -67,7 +78,7 @@ export const SuggestModal = ({
     },
   ];
 
-  const data = posts ?? defaultPosts;
+  const data = setProjectList;
 
   if (!isOpen) return null;
 
@@ -80,23 +91,23 @@ export const SuggestModal = ({
         </p>
 
         <div className="space-y-3 mb-6">
-          {data.map((post) => (
+          {projectList.map((project) => (
             <div
-              key={post.id}
+              key={project.projectId}
               className={`border rounded-lg p-4 cursor-pointer ${
-                selectedId === post.id ? "border-blue-500 bg-blue-50" : ""
+                selectedId === project.projectId ? "border-blue-500 bg-blue-50" : ""
               }`}
-              onClick={() => setSelectedId(post.id)}
+              onClick={() => setSelectedId(project.projectId)}
             >
               <h3 className="font-semibold text-gray-900 text-sm mb-1">
-                {post.title}
+                {project.name}
               </h3>
-              <p className="text-sm text-gray-700">{post.description}</p>
+              <p className="text-sm text-gray-700">{project.content}</p>
               <div className="flex items-center text-xs text-gray-500 mt-2 gap-4">
-                <span>📅 {post.date}</span>
-                <span>👥 {post.spots}명</span>
+                <span>📅{normalizedDate(project.startAt)} ~ {normalizedDate(project.endAt)}</span>
+                {/* <span>👥 {post.spots}명</span> */}
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
+              {/* <div className="flex flex-wrap gap-2 mt-2">
                 {post.roles.map((role) => (
                   <span
                     key={role}
@@ -105,7 +116,7 @@ export const SuggestModal = ({
                     {role}
                   </span>
                 ))}
-              </div>
+              </div> */}
             </div>
           ))}
         </div>
