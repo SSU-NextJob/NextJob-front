@@ -20,10 +20,32 @@ export interface UserData {
   isVisible: boolean;
 }
 
+// 사용자가 참여했던 프로젝트 데이터 타입
+export interface ParticipationProject {
+  project_id: number;
+  name: string;
+  type: string;
+  content: string;
+  startAt: Date;
+  endAt: Date;
+}
+
 // 응답 타입
 export interface GetUserListResponse {
   success: boolean;
   data: UserData[];
+}
+export interface GetUserDetailResponse {
+  success: boolean;
+  data: UserData;
+}
+export interface UserProjectListResponse {
+  success: boolean;
+  data: {
+    //createdProject: CreatedProject[];
+    participationProject: ParticipationProject[];
+  };
+
 }
 
 // 사용자 리스트 조회 API 함수
@@ -35,6 +57,20 @@ export const getUserListAPI = (params: GetUserListParams) => {
     pageSize: params.pageSize,
   }).toString();
   return fetcher<GetUserListResponse>(`/users?${query}`, {
+    method: "GET",
+  });
+};
+
+// 사용자 상세 조회 API 함수
+export const getUserDetailAPI = (userId: number) => {
+  return fetcher<GetUserDetailResponse>(`/users/${userId}`, {
+    method: "GET",
+  });
+};
+
+// 사용자 참여 프로젝트 API
+export const getUserProjectAPI = (userId: number) => {
+  return fetcher<UserProjectListResponse>(`/projects?userId=${userId}`, {
     method: "GET",
   });
 };
