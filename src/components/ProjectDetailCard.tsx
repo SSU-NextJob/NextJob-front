@@ -4,10 +4,12 @@ import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
 import type { PostResponse } from "@/apis/post";
 import normalizedDate from "@/utils/normalizedDate";
+import { useUserStore } from "@/store/userStore";
 
 export const ProjectDetailCard = ({ post }: { post?: PostResponse }) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
+  const { userId } = useUserStore();
 
   const handleOpenApplyModal = (post: PostResponse) => {
     onOpenModal("apply", {
@@ -110,15 +112,17 @@ export const ProjectDetailCard = ({ post }: { post?: PostResponse }) => {
 
           {/* 참가 버튼 */}
           <div className="flex justify-end">
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleOpenApplyModal(post);
-              }}
-              color={"blue"}
-            >
-              참가하기
-            </Button>
+            {userId !== post.user_id && (
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenApplyModal(post);
+                }}
+                color={"blue"}
+              >
+                참가하기
+              </Button>
+            )}
           </div>
         </div>
       </div>

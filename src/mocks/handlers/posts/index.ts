@@ -10,7 +10,7 @@ export const postsHandlers = [
       content: "AI 챗봇 개발자를 모집합니다. 자연어 처리에 관심 있는 분 환영!",
       role_type: "프론트엔드",
       create_at: new Date("2024-02-20"),
-      user_id: 101,
+      user_id: 1,
       user_name: "홍길동",
       project: {
         project_id: 1,
