@@ -2,9 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface UserState {
-  userId: string | null;
-  userName: string | null;
-  setUser: (user: { userId: string; userName: string }) => void;
+  userId: number | null;
+  userName: number | null;
+  setUser: (user: { userId: number; userName: number }) => void;
   clearUser: () => void;
 }
 
