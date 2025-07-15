@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 export const ProjectDetail = () => {
   const [projectDetail, setProjectDetail] = useState<PostResponse>();
   useEffect(() => {
-    getPostDetail(1)
+    getPostDetail(2)
       .then((res) => {
         if (res.success) setProjectDetail(res.data);
       })

@@ -104,10 +104,14 @@ export const MyProjectsCard = ({
                   </span>
                 </div>
                 <div className="flex gap-2 mt-3 justify-end">
+                  {/* 
+                  현재 API 없음
                   <Button onClick={() => {}} color={"blue"}>
                     수정
-                  </Button>
-                  {/* <Button onClick={() => {}} color={"blue"}>
+                  </Button> */}
+                  {/*
+                  UX적 문제. 현재 계획 X
+                  <Button onClick={() => {}} color={"blue"}>
                     모집
                   </Button> */}
                 </div>

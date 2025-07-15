@@ -54,7 +54,7 @@ export const MyProject = () => {
       .then((res) => {
         if (res.success) {
           setJoinedProjectList(res.data.participationProject);
-          setCreatedProjectList(res.data.participationProject);
+          setCreatedProjectList(res.data.createdProject);
         }
       })
       .catch()

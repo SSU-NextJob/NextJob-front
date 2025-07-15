@@ -146,8 +146,8 @@ const MyProfileCard = ({
                 </div>
               </div>
               <div className="text-sm text-gray-500 whitespace-nowrap mt-1">
-                📅 {normalizedDate(project.start_at)} ~
-                {normalizedDate(project.end_at)}
+                📅 {normalizedDate(project.startAt)} ~
+                {normalizedDate(project.endAt)}
               </div>
             </div>
           ))}

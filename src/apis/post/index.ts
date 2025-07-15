@@ -6,20 +6,20 @@ export interface GetPostDetailResponse {
 }
 
 export interface PostResponse {
-  post_id: number; // 게시글 아이디
+  postId: number; // 게시글 아이디
   title: string; // 게시글 제목
   content: string; // 게시글 본문
-  role_type: string; // 모집 직군
-  create_at: Date; // 게시글 작성일자
-  user_id: number; // 작성자 아이디
-  user_name: string; // 작성자 이름
+  roleType: string; // 모집 직군
+  createAt: Date; // 게시글 작성일자
+  userId: number; // 작성자 아이디
+  userName: string; // 작성자 이름
   project: {
     project_id: number; // 프로젝트 아이디
     name: string; // 프로젝트 이름
     content: string; // 프로젝트 내용
     type: string; // 프로젝트 종류
-    start_at: Date; // 프로젝트 시작일
-    end_at: Date; // 프로젝트 종료일
+    startAt: Date; // 프로젝트 시작일
+    endAt: Date; // 프로젝트 종료일
     image: string; // 프로젝트 이미지
   };
 }

@@ -13,7 +13,7 @@ export const ProjectDetailCard = ({ post }: { post?: PostResponse }) => {
 
   const handleOpenApplyModal = (post: PostResponse) => {
     onOpenModal("apply", {
-      projectId: post.post_id,
+      projectId: post.postId,
       onApply: () => {
         /* ... */
       },
@@ -41,8 +41,8 @@ export const ProjectDetailCard = ({ post }: { post?: PostResponse }) => {
 
           {/* 메타 정보 */}
           <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-6">
-            <span>📅 시작일: {normalizedDate(post.project.start_at)}</span>
-            <span>📅 마감일: {normalizedDate(post.project.end_at)}</span>
+            <span>📅 시작일: {normalizedDate(post.project.startAt)}</span>
+            <span>📅 마감일: {normalizedDate(post.project.endAt)}</span>
             {/* <span>📍 위치: {project.location}</span> */}
             {/* <span>👥 모집인원: 1명</span> */}
           </div>
@@ -62,7 +62,7 @@ export const ProjectDetailCard = ({ post }: { post?: PostResponse }) => {
             <h2 className="text-base font-semibold mb-1">필요한 역할</h2>
             <div className="flex flex-wrap gap-2">
               {/* <p className="text-sm text-gray-700">{post.project.type}</p> */}
-              <p className="text-sm text-gray-700">{post.role_type}</p>
+              <p className="text-sm text-gray-700">{post.roleType}</p>
             </div>
           </div>
 
@@ -112,7 +112,7 @@ export const ProjectDetailCard = ({ post }: { post?: PostResponse }) => {
 
           {/* 참가 버튼 */}
           <div className="flex justify-end">
-            {userId !== post.user_id && (
+            {userId !== post.userId && (
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
