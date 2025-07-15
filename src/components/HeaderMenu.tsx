@@ -5,6 +5,7 @@ import { HeaderAlarm } from "./HeaderAlarm";
 import { useModalStore } from "@/store/modalStore";
 import { postCreateProject } from "@/apis/project";
 import { useMutation } from "@tanstack/react-query";
+import { useUserStore } from "@/store/userStore";
 
 interface Notification {
   id: number;
@@ -79,6 +80,9 @@ export const Header = () => {
     },
   });
 
+  // userStore 연동
+  const { userId, userName, setUser, clearUser } = useUserStore();
+
   return (
     <div className="w-full border-b bg-white px-8 py-4 flex justify-between items-center shadow-sm">
       {/* Left Section: Logo + Name */}
@@ -135,10 +139,27 @@ export const Header = () => {
           />
         )}
 
-        {/* Buttons */}
-        <Button onClick={() => {}} color={"white"}>
-          로그아웃
-        </Button>
+        {/* 로그인/로그아웃 버튼 조건부 렌더링 */}
+        {userId && userName ? (
+          <Button onClick={clearUser} color={"white"}>
+            로그아웃
+          </Button>
+        ) : (
+          <>
+            <Button
+              onClick={() => setUser({ userId: "1", userName: "테스트 1" })}
+              color={"white"}
+            >
+              로그인 1
+            </Button>
+            <Button
+              onClick={() => setUser({ userId: "2", userName: "테스트 2" })}
+              color={"white"}
+            >
+              로그인 2
+            </Button>
+          </>
+        )}
         <Button
           onClick={() =>
             onOpenModal("createProject", {
