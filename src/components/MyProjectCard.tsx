@@ -2,6 +2,7 @@
 import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
 import normalizedDate from "@/utils/normalizedDate";
+import { useNavigate } from "react-router-dom";
 
 interface ProjectItem {
   id: number;
@@ -28,6 +29,7 @@ export const MyProjectsCard = ({
   createdProjects,
   recruitmentPosts,
 }: MyProjectsCardProps) => {
+  const navigate = useNavigate();
   console.log("11", participatingProjects, createdProjects, recruitmentPosts);
   return (
     <div className="flex flex-col gap-10">
@@ -64,8 +66,9 @@ export const MyProjectsCard = ({
                   ⏱ {project.dDay}일 남음
                 </div> */}
                 <div className="flex gap-2 mt-auto justify-end">
-                  <Button onClick={() => {}} color={"gray"}>
-                    상세보기
+                  <Button onClick={() => {}} color={"gray"} disabled>
+                    {/* 상세보기 */}
+                    워크스페이스
                   </Button>
                 </div>
               </div>
@@ -101,12 +104,12 @@ export const MyProjectsCard = ({
                   </span>
                 </div>
                 <div className="flex gap-2 mt-3 justify-end">
-                  <Button onClick={() => {}} color={"gray"}>
-                    관리
-                  </Button>
                   <Button onClick={() => {}} color={"blue"}>
-                    모집
+                    수정
                   </Button>
+                  {/* <Button onClick={() => {}} color={"blue"}>
+                    모집
+                  </Button> */}
                 </div>
               </div>
             );
@@ -129,6 +132,7 @@ export const MyProjectsCard = ({
               <div
                 key={project.id}
                 className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
+                onClick={() => navigate(`/project/detail/${project.id}`)}
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
                   <Badge type={project.type} />
