@@ -6,7 +6,7 @@ import type { PostResponse } from "@/apis/post";
 import normalizedDate from "@/utils/normalizedDate";
 import { useUserStore } from "@/store/userStore";
 
-export const ProjectDetailCard = ({ post }: { post?: PostResponse }) => {
+export const PostDetailCard = ({ post }: { post?: PostResponse }) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
   const { userId } = useUserStore();
