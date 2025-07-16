@@ -1,4 +1,4 @@
-import { ProjectCard } from "@/components/ProjectCard";
+import { PostCard } from "@/components/PostCard";
 
 const dummyProjects = [
   {
@@ -95,6 +95,6 @@ const dummyProjects = [
     participatingCount: 4,
   },
 ];
-export const ProjectList = () => {
-  return <ProjectCard projects={dummyProjects} />;
+export const PostList = () => {
+  return <PostCard posts={dummyProjects} />;
 };

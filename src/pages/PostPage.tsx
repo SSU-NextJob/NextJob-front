@@ -1,8 +1,8 @@
 ﻿import { MultiSelector } from "@/components/modules/Dropdown";
 import { SearchBar } from "@/components/modules/SearchBar";
-import { ProjectList } from "@/components/ProjectList";
+import { PostList } from "@/components/PostList";
 
-export default function ProjectPage() {
+export default function PostPage() {
   const handleSelect = (selected: string[]) => {
     // console.log("선택된 값:", selected);
   };
@@ -26,7 +26,7 @@ export default function ProjectPage() {
       </div>
 
       <div>
-        <ProjectList />
+        <PostList />
       </div>
     </div>
   );

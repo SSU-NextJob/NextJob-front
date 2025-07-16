@@ -16,7 +16,7 @@ interface Project {
   recruitingCount: number;
 }
 
-export const ProjectCard = ({ projects }: { projects: Project[] }) => {
+export const PostCard = ({ posts }: { posts: Project[] }) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
 
@@ -33,7 +33,7 @@ export const ProjectCard = ({ projects }: { projects: Project[] }) => {
   return (
     <>
       <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-        {projects.map((project) => {
+        {posts.map((project) => {
           return (
             <div
               key={project.id}
