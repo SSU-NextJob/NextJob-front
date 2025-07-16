@@ -98,8 +98,8 @@ export const Header = () => {
       {/* Center Section: Menu */}
       <nav className="flex gap-8 text-sm font-semibold">
         <Link
-          to="/project"
-          className={isActive("/project") ? "text-blue-600" : "text-black"}
+          to="/post"
+          className={isActive("/post") ? "text-blue-600" : "text-black"}
         >
           프로젝트 탐색
         </Link>
