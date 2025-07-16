@@ -3,7 +3,7 @@ import { http } from "msw";
 export const postsHandlers = [
   http.get("/posts/:projectId", async ({ params }) => {
     const { projectId } = params;
-    // PostResponse 타입에 맞는 mock 데이터
+    // PostDetailResponse 타입에 맞는 mock 데이터
     const mockProject = {
       post_id: Number(projectId),
       title: "AI 챗봇 개발 모집 공고",

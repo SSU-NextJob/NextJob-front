@@ -1,6 +1,7 @@
 ﻿import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { postProjectApply } from "@/apis/project";
+import { useUserStore } from "@/store/userStore";
 
 interface ConfirmApplyModalProps {
   isOpen: boolean;
@@ -15,10 +16,12 @@ export const ConfirmApplyModal = ({
   onApply,
   projectId,
 }: ConfirmApplyModalProps) => {
+  const { userId } = useUserStore();
   const mutation = useMutation({
     mutationFn: () => {
       if (!projectId) throw new Error("프로젝트 ID가 없습니다.");
-      return postProjectApply({ projectId, userId: 1 });
+      if (!userId) throw new Error("userID가 없습니다.");
+      return postProjectApply({ projectId, userId });
     },
     onSuccess: () => {
       alert("지원이 완료되었습니다.");

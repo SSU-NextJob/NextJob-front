@@ -2,16 +2,16 @@
 import { useModalStore } from "@/store/modalStore";
 import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
-import type { PostResponse } from "@/apis/post";
+import type { PostDetailResponse } from "@/apis/post";
 import normalizedDate from "@/utils/normalizedDate";
 import { useUserStore } from "@/store/userStore";
 
-export const PostDetailCard = ({ post }: { post?: PostResponse }) => {
+export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
   const { userId } = useUserStore();
 
-  const handleOpenApplyModal = (post: PostResponse) => {
+  const handleOpenApplyModal = (post: PostDetailResponse) => {
     onOpenModal("apply", {
       projectId: post.postId,
       onApply: () => {
@@ -48,7 +48,13 @@ export const PostDetailCard = ({ post }: { post?: PostResponse }) => {
           </div>
 
           <div className="mb-6">
-            <img src={post.project.image} />
+            <img
+              src={
+                !!post.project.image
+                  ? post.project.image
+                  : "https://placehold.co/400x300?text=Project+Image"
+              }
+            />
           </div>
 
           {/* 설명 */}
@@ -112,7 +118,7 @@ export const PostDetailCard = ({ post }: { post?: PostResponse }) => {
 
           {/* 참가 버튼 */}
           <div className="flex justify-end">
-            {userId !== post.userId && (
+            {userId && userId !== post.userId && (
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
