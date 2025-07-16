@@ -13,8 +13,8 @@ export interface UserData {
   userId: number;
   name: string;
   email: string;
-  description: string | null;
-  techStack: string | null;
+  description: string;
+  techStack: string;
   profileImage: string;
   userType: string;
   isVisible: boolean;
@@ -45,7 +45,6 @@ export interface UserProjectListResponse {
     //createdProject: CreatedProject[];
     participationProject: ParticipationProject[];
   };
-
 }
 
 // 사용자 리스트 조회 API 함수

@@ -7,19 +7,18 @@ import type { ProjectResponse } from "@/apis/project";
 import normalizedDate from "@/utils/normalizedDate";
 
 const MyProfileCard = ({
-  name,
-  role,
-  oneLineIntro,
-  aboutMe,
+  userProfile,
   joinedProjects,
   onSave = () => {},
 }: MyProfileProps) => {
+  if (!userProfile) return;
+
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
-    name,
-    role,
-    oneLineIntro,
-    aboutMe,
+    name: userProfile.userName,
+    role: userProfile.userType,
+    techStack: userProfile.techStack,
+    description: userProfile.description,
   });
 
   const handleChange = (key: keyof typeof form, value: string) => {
@@ -32,11 +31,16 @@ const MyProfileCard = ({
   };
 
   const handleCancel = () => {
-    setForm({ name, role, oneLineIntro, aboutMe });
+    setForm({
+      name: userProfile.userName,
+      role: userProfile.userType,
+      techStack: userProfile.techStack,
+      description: userProfile.description,
+    });
     setIsEditing(false);
   };
 
-  const profileKeys = ["name", "role", "oneLineIntro"] as const; // aboutMe?
+  const profileKeys = ["name", "role", "techStack"] as const; // aboutMe?
   type ProfileKey = (typeof profileKeys)[number];
 
   return (
@@ -63,7 +67,21 @@ const MyProfileCard = ({
       {/* 기본 정보 */}
       <div className="flex items-start gap-4 mb-6">
         <div className="flex flex-col items-center gap-2">
-          <div className="w-32 h-32 bg-gray-100 rounded-full" />
+          <div className="w-32 h-32 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
+            {userProfile.profileImage ? (
+              <img
+                src={userProfile.profileImage}
+                alt="프로필 이미지"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="기본 프로필"
+                className="w-full h-full object-cover"
+              />
+            )}
+          </div>
           <label className="text-xs text-blue-600 cursor-pointer hover:underline">
             이미지 업로드
             <input
@@ -87,7 +105,7 @@ const MyProfileCard = ({
                   {
                     name: "이름",
                     role: "역할",
-                    oneLineIntro: "한 줄 소개",
+                    techStack: "기술 스택",
                   }[key]
                 }
               </span>
@@ -111,14 +129,14 @@ const MyProfileCard = ({
         <h2 className="text-sm text-gray-500 font-semibold mb-1">자기소개</h2>
         {isEditing ? (
           <textarea
-            value={form.aboutMe}
-            onChange={(e) => handleChange("aboutMe", e.target.value)}
+            value={form.description}
+            onChange={(e) => handleChange("description", e.target.value)}
             className="w-full border px-3 py-2 rounded-md text-sm"
             rows={4}
           />
         ) : (
           <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-            {form.aboutMe}
+            {form.description}
           </p>
         )}
       </div>
@@ -158,25 +176,21 @@ const MyProfileCard = ({
 };
 
 // types
-interface Project {
-  id: number;
-  title: string;
+export interface UserProfile {
+  profileImage: string;
+  userName: string;
+  userType: string;
   description: string;
-  role: string;
-  date: string;
-  tags: string[];
+  techStack: string;
 }
 
 interface MyProfileProps {
-  name: string;
-  role: string;
-  oneLineIntro: string;
-  aboutMe: string;
+  userProfile?: UserProfile;
   joinedProjects: ProjectResponse[];
   onSave: (updated: {
     name: string;
     role: string;
-    oneLineIntro: string;
+    techStack: string;
     aboutMe: string;
   }) => void;
 }
