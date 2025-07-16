@@ -87,11 +87,9 @@ export const Header = () => {
     <div className="w-full border-b bg-white px-8 py-4 flex justify-between items-center shadow-sm">
       {/* Left Section: Logo + Name */}
       <div className="flex items-center gap-3">
-        <div className="bg-blue-600 text-white font-bold px-3 py-1.5 rounded-lg text-sm">
-          PM
-        </div>
         <Link to="/" className="text-xl font-bold text-gray-900">
-          ProjectMatch
+          {/* NextJob */}
+          <img src="/src/img/logo.jpg" alt="NextJob 로고" className="w-32" />
         </Link>
       </div>
 
