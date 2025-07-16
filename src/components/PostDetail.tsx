@@ -1,9 +1,9 @@
-import { getPostDetail, type PostResponse } from "@/apis/post";
+import { getPostDetail, type PostDetailResponse } from "@/apis/post";
 import { PostDetailCard } from "@/components/PostDetailCard";
 import { useEffect, useState } from "react";
 
 export const PostDetail = () => {
-  const [postDetail, setPostDetail] = useState<PostResponse>();
+  const [postDetail, setPostDetail] = useState<PostDetailResponse>();
   useEffect(() => {
     getPostDetail(2)
       .then((res) => {
