@@ -35,7 +35,7 @@ export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
         <div className="w-full text-left">
           {/* 제목 + 타입 */}
           <div className="flex justify-between items-start mb-4">
-            <h1 className="text-3xl font-bold">{post.project.name}</h1>
+            <h1 className="text-3xl font-bold">{post.title}</h1>
             <Badge type={post.project.type} />
           </div>
 
@@ -75,6 +75,12 @@ export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
           <div className="mb-6">
             <h2 className="text-base font-semibold mb-1">주요 업무</h2>
             <p className="text-sm text-gray-700">{post.project.content}</p>
+          </div>
+
+          {/* 프로젝트 카드 형식으로 변경 필요함 (07.17) */}
+          <div className="mb-6">
+            <h2 className="text-base font-semibold mb-1">연결된 프로젝트</h2>
+            <p className="text-sm text-gray-700">{post.project.name}</p>
           </div>
 
           {/* 기술 역량 */}
