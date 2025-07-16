@@ -73,7 +73,7 @@ export const getPostList = (params: GetPostListParams) => {
 };
 
 // 게시글 상세 조회 (= 모집 공고 상세 조회)
-export const getPostDetail = (postId: number) => {
+export const getPostDetail = (postId: string) => {
   return fetcher<GetPostDetailResponse>(`/posts/${postId}`, {
     method: "GET",
   });
