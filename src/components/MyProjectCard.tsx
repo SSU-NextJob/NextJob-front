@@ -1,36 +1,23 @@
-﻿import type { ProjectResponse } from "@/apis/project";
+﻿import type { PostResponse } from "@/apis/post";
+import type { ProjectResponse } from "@/apis/project";
 import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
 import normalizedDate from "@/utils/normalizedDate";
 import { useNavigate } from "react-router-dom";
 
-interface ProjectItem {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  role: string;
-  type: string;
-  applicants?: number;
-  dDay?: number;
-  teamSize?: number;
-  linkedProject?: string;
-  rolesNeeded?: string[];
-}
-
 interface MyProjectsCardProps {
   participatingProjects: ProjectResponse[];
   createdProjects: ProjectResponse[];
-  recruitmentPosts: ProjectItem[];
+  recruitPostList: PostResponse[];
 }
 
 export const MyProjectsCard = ({
   participatingProjects,
   createdProjects,
-  recruitmentPosts,
+  recruitPostList,
 }: MyProjectsCardProps) => {
   const navigate = useNavigate();
-  console.log("11", participatingProjects, createdProjects, recruitmentPosts);
+
   return (
     <div className="flex flex-col gap-10">
       {/* 참여중인 프로젝트 */}
@@ -125,54 +112,42 @@ export const MyProjectsCard = ({
       <section>
         <h2 className="text-lg font-bold mb-4">모집 공고</h2>
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-          {recruitmentPosts.map((project) => {
-            const badgeClass =
-              project.type === "해커톤"
-                ? "bg-blue-600 text-white"
-                : project.type === "공모전"
-                  ? "bg-red-500 text-white"
-                  : "bg-gray-200 text-gray-700";
+          {recruitPostList.map((post) => {
             return (
               <div
-                key={project.id}
+                key={post.postId}
                 className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
-                onClick={() => navigate(`/project/detail/${project.id}`)}
+                onClick={() => navigate(`/post/detail/${post.postId}`)}
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1">
-                  <Badge type={project.type} />
-                  <span>{project.date}</span>
+                  <Badge type={post.project.projectType} />
+                  <span>{normalizedDate(post.createAt)}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1">
-                  {project.title}
+                  {post.title}
                 </h3>
-                <p className="text-sm text-gray-600 mb-2">
-                  {project.description}
-                </p>
                 <div className="text-xs text-gray-500 mb-1">
                   연결된 프로젝트
                 </div>
                 <div className="text-xs font-medium mb-2">
-                  {project.linkedProject}
+                  {!!post.project.projectName ? post.project.projectName : "-"}
                 </div>
                 <div className="text-xs text-gray-500 mb-1">모집 역할</div>
                 <div className="flex flex-wrap gap-2 mb-2">
-                  {project.rolesNeeded?.slice(0, 2).map((role) => (
-                    <span
-                      key={role}
-                      className="bg-gray-200 px-2 py-0.5 text-xs rounded-full"
-                    >
-                      {role}
-                    </span>
-                  ))}
-                  {project.rolesNeeded && project.rolesNeeded.length > 2 && (
-                    <span className="bg-gray-200 px-2 py-0.5 text-xs rounded-full">
-                      +{project.rolesNeeded.length - 2}
-                    </span>
-                  )}
+                  <span
+                    key={post.roleType}
+                    className="bg-gray-200 px-2 py-0.5 text-xs rounded-full"
+                  >
+                    {post.roleType}
+                  </span>
                 </div>
                 <div className="text-xs text-gray-500">
-                  👥 {project.applicants}명 지원 • ⏱ {project.dDay}일 남음
+                  🕒 {normalizedDate(post.project.startAt)} ~{" "}
+                  {normalizedDate(post.project.endAt)}
                 </div>
+                {/* <div className="text-xs text-gray-500">
+                  👥 {project.applicants}명 지원 • ⏱ {project.dDay}일 남음
+                </div> */}
               </div>
             );
           })}
