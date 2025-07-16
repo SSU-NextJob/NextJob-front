@@ -76,7 +76,7 @@ export const postProjectSuggest = ({
 }: ProjectApplyRequest) => {
   return fetcher<{ success: boolean }>(`/users/${userId}/suggest`, {
     method: "POST",
-    body: JSON.stringify({ project_id: projectId }),
+    body: JSON.stringify({ projectId: projectId }),
     headers: { "Content-Type": "application/json" },
   });
 };

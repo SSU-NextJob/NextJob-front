@@ -2,17 +2,19 @@
 
 interface SearchBarProps {
   value: string;
+  className?: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
 }
 
 export const SearchBar = ({
   value,
+  className,
   onChange,
   placeholder = "검색",
 }: SearchBarProps) => {
   return (
-    <div>
+    <div className={className}>
       <div>
         {/* <svg
           xmlns="http://www.w3.org/2000/svg"

@@ -1,13 +1,23 @@
-﻿import { MultiSelector } from "@/components/modules/Dropdown";
+﻿import { getGroupCode, type CodeResponse } from "@/apis/group";
+import { MultiSelector } from "@/components/modules/Dropdown";
 import { SearchBar } from "@/components/modules/SearchBar";
 import { PostList } from "@/components/PostList";
+import { Button } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 export default function PostPage() {
-  const handleSelect = (selected: string[]) => {
-    // console.log("선택된 값:", selected);
-  };
+  const [selectedProjectType, setSelectedProjectType] = useState<string>("");
+  const [projectOptions, setProjectOptions] = useState<CodeResponse[]>([]);
 
-  const dummyOptions = ["React", "Node.js", "Python", "Vue", "TypeScript"];
+  useEffect(() => {
+    getGroupCode("PROJECT_TYPE").then((res) => {
+      if (res.success) setProjectOptions(res.data);
+    });
+  }, []);
+
+  const handleSelect = (selected: string) => {
+    setSelectedProjectType(selected);
+  };
 
   return (
     <div className="w-full mx-auto text-left py-8 px-4 md:px-8">
@@ -18,11 +28,21 @@ export default function PostPage() {
 
       <div className="flex items-start flex-wrap gap-4 mb-8">
         <MultiSelector
-          rawOptions={dummyOptions}
+          rawOptions={projectOptions.map((option) => ({
+            label: option.detailName,
+            value: option.detailCode,
+          }))}
+          isOptionObject={true}
           isTotalDefault={false}
-          onSelectOptions={handleSelect}
+          value={selectedProjectType}
+          onSelectOption={handleSelect}
         />
-        <SearchBar value={""} onChange={() => {}} />
+        <div className="flex gap-[12px]">
+          <SearchBar className="w-[250px]" value={""} onChange={() => {}} />
+          <Button backgroundColor="#015bd6" color="white">
+            검색
+          </Button>
+        </div>
       </div>
 
       <div>

@@ -1,5 +1,10 @@
-﻿import { postProjectSuggest, getCreatedProjectsAPI, type ProjectResponse } from "@/apis/project";
+﻿import {
+  postProjectSuggest,
+  getCreatedProjectsAPI,
+  type ProjectResponse,
+} from "@/apis/project";
 import { Button } from "@/components/atoms/Button";
+import { useUserStore } from "@/store/userStore";
 import normalizedDate from "@/utils/normalizedDate";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -28,6 +33,8 @@ export const SuggestModal = ({
   onSubmit,
   posts,
 }: SuggestModalProps) => {
+  const { userId } = useUserStore();
+  if (!userId) return;
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [projectList, setProjectList] = useState<ProjectResponse[]>([]);
 
@@ -42,43 +49,13 @@ export const SuggestModal = ({
   });
 
   useEffect(() => {
-    getCreatedProjectsAPI(1)
+    getCreatedProjectsAPI(userId)
       .then((res) => {
         if (res.success) setProjectList(res.data);
       })
       .catch()
       .finally();
   }, []);
-
-  const defaultPosts: Post[] = [
-    {
-      id: 1,
-      title: "AI 레시피 생성기",
-      description: "AI 기반 요리 지원 시스템을 개발할 개발자를 모집합니다.",
-      date: "2024. 3. 15.",
-      spots: 4,
-      roles: ["프론트엔드 개발자", "백엔드 개발자"],
-    },
-    {
-      id: 2,
-      title: "업무 관리 앱",
-      description: "협업 기반 태스크 관리 앱을 함께 만들 개발자를 찾습니다.",
-      date: "2024. 4. 1.",
-      spots: 3,
-      roles: ["풀스택 개발자", "UI/UX 디자이너"],
-    },
-    {
-      id: 3,
-      title: "날씨 대시보드",
-      description:
-        "깔끔한 시각화가 돋보이는 실시간 날씨 시스템 개발 프로젝트입니다.",
-      date: "2024. 2. 28.",
-      spots: 2,
-      roles: ["프론트엔드 개발자"],
-    },
-  ];
-
-  const data = setProjectList;
 
   if (!isOpen) return null;
 
@@ -95,7 +72,9 @@ export const SuggestModal = ({
             <div
               key={project.projectId}
               className={`border rounded-lg p-4 cursor-pointer ${
-                selectedId === project.projectId ? "border-blue-500 bg-blue-50" : ""
+                selectedId === project.projectId
+                  ? "border-blue-500 bg-blue-50"
+                  : ""
               }`}
               onClick={() => setSelectedId(project.projectId)}
             >
@@ -104,7 +83,10 @@ export const SuggestModal = ({
               </h3>
               <p className="text-sm text-gray-700">{project.content}</p>
               <div className="flex items-center text-xs text-gray-500 mt-2 gap-4">
-                <span>📅{normalizedDate(project.startAt)} ~ {normalizedDate(project.endAt)}</span>
+                <span>
+                  📅{normalizedDate(project.startAt)} ~{" "}
+                  {normalizedDate(project.endAt)}
+                </span>
                 {/* <span>👥 {post.spots}명</span> */}
               </div>
               {/* <div className="flex flex-wrap gap-2 mt-2">

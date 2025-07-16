@@ -2,6 +2,7 @@
 import { useModalStore } from "@/store/modalStore";
 import { Button } from "@/components/atoms/Button";
 import type { UserData } from "@/apis/user";
+import { useUserStore } from "@/store/userStore";
 
 // interface Member {
 //   userId: number;
@@ -15,10 +16,11 @@ import type { UserData } from "@/apis/user";
 export const UserCard = ({ users }: { users: UserData[] }) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
+  const { userId } = useUserStore();
 
   const handleOpenSuggest = (userId: number) => {
     onOpenModal("suggest", {
-      userId,
+      memberId: userId,
       // onSubmit: (postId: number) => {
       //   console.log("멤버 ID:", userId, "제안된 모집글 ID:", postId);
       // },
@@ -69,12 +71,14 @@ export const UserCard = ({ users }: { users: UserData[] }) => {
 
           {/* 제안 버튼 */}
           <div className="flex justify-end">
-            <Button
-              onClick={() => handleOpenSuggest(user.userId)}
-              color={"blue"}
-            >
-              제안하기
-            </Button>
+            {userId !== user.userId && (
+              <Button
+                onClick={() => handleOpenSuggest(user.userId)}
+                color={"blue"}
+              >
+                제안하기
+              </Button>
+            )}
           </div>
         </div>
       ))}

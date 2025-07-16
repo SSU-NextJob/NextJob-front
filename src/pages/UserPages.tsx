@@ -1,13 +1,23 @@
 ﻿import { MultiSelector } from "@/components/modules/Dropdown";
 import { SearchBar } from "@/components/modules/SearchBar";
 import { UserList } from "@/components/UserList";
+import { Button } from "@chakra-ui/react";
+import { getGroupCode, type CodeResponse } from "@/apis/group";
+import { useEffect, useState } from "react";
 
 export default function UserPage() {
-  const handleSelect = (selected: string[]) => {
-    // console.log("선택된 값:", selected);
-  };
+  const [selectedUserType, setSelectedUserType] = useState<string>("");
+  const [userTypeOptions, setUserTypeOptions] = useState<CodeResponse[]>([]);
 
-  const dummyOptions = ["React", "Node.js", "Python", "Vue", "TypeScript"];
+  useEffect(() => {
+    getGroupCode("USER_TYPE").then((res) => {
+      if (res.success) setUserTypeOptions(res.data);
+    });
+  }, []);
+
+  const handleSelect = (selected: string) => {
+    setSelectedUserType(selected);
+  };
 
   return (
     <div className="w-full mx-auto text-left py-8 px-4 md:px-8">
@@ -18,11 +28,21 @@ export default function UserPage() {
 
       <div className="flex items-start flex-wrap gap-4 mb-8">
         <MultiSelector
-          rawOptions={dummyOptions}
+          rawOptions={userTypeOptions.map((option) => ({
+            label: option.detailName,
+            value: option.detailCode,
+          }))}
+          isOptionObject={true}
           isTotalDefault={false}
-          onSelectOptions={handleSelect}
+          value={selectedUserType}
+          onSelectOption={handleSelect}
         />
-        <SearchBar value={""} onChange={() => {}} />
+        <div className="flex gap-[12px]">
+          <SearchBar className="w-[250px]" value={""} onChange={() => {}} />
+          <Button backgroundColor="#015bd6" color="white">
+            검색
+          </Button>
+        </div>
       </div>
 
       <div>
