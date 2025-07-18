@@ -3,6 +3,8 @@ import { Button } from "@/components/atoms/Button";
 import { getCreatedProjectsAPI, type ProjectResponse } from "@/apis/project";
 import { useMutation } from "@tanstack/react-query";
 import { postRecruiment } from "@/apis/recruitment";
+import { useUserStore } from "@/store/userStore";
+import { getGroupCode, type CodeResponse } from "@/apis/group";
 
 interface RecruitModalProps {
   isOpen: boolean;
@@ -15,33 +17,28 @@ interface RecruitModalProps {
   // projectOptions?: { id: string; name: string }[];
 }
 
-const commonRoles = [
-  "프론트엔드 개발자",
-  "백엔드 개발자",
-  "풀스택 개발자",
-  "UI/UX 디자이너",
-  "프로덕트 매니저",
-  "데이터 사이언티스트",
-  "데브옵스 엔지니어",
-  "모바일 개발자",
-  "QA 엔지니어",
-  "마케팅 전문가",
-];
-
 export const RecruitTeamModal = ({
   isOpen,
   onClose,
   // onSubmit,
   // projectOptions = [],
 }: RecruitModalProps) => {
+  const { userId } = useUserStore();
   const [projectId, setProjectId] = useState<number>(0);
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [selectedRole, setSelectedRole] = useState<string>("");
   const [projectList, setProjectList] = useState<ProjectResponse[]>([]);
+  const [projectOptions, setProjectOptions] = useState<CodeResponse[]>([]);
+
+  if (!userId) return;
 
   useEffect(() => {
-    getCreatedProjectsAPI(1)
+    getGroupCode("USER_TYPE").then((res) => {
+      if (res.success) setProjectOptions(res.data);
+    });
+
+    getCreatedProjectsAPI(userId)
       .then((res) => {
         if (res.success) setProjectList(res.data);
       })
@@ -61,19 +58,15 @@ export const RecruitTeamModal = ({
     },
   });
 
-  const handleRoleSelect = (role: string) => {
-    setSelectedRole(selectedRole === role ? "" : role);
-  };
-
   const handleSubmit = () => {
     if (!projectId || !title || !summary || !selectedRole) return;
     postRecruimentMutation.mutate({
-      userId: 1,
+      userId,
       userName: "testUser",
-      projectId: 1,
-      title: title,
+      projectId,
+      title,
       content: summary,
-      roleType: selectedRole,
+      roleType: selectedRole, // detailCode가 저장됨
     });
   };
 
@@ -139,7 +132,10 @@ export const RecruitTeamModal = ({
           {selectedRole && (
             <div className="flex flex-wrap gap-2 mb-2">
               <span className="bg-blue-600 text-white text-sm rounded-full px-3 py-1 flex items-center">
-                {selectedRole}
+                {
+                  projectOptions.find((opt) => opt.detailCode === selectedRole)
+                    ?.detailName
+                }
                 <button
                   type="button"
                   onClick={() => setSelectedRole("")}
@@ -156,18 +152,19 @@ export const RecruitTeamModal = ({
             <label className="text-sm font-medium block mb-1">필요 역할</label>
             {/* <div className="text-xs text-gray-500 mb-1">주요 역할:</div> */}
             <div className="flex flex-wrap gap-2">
-              {commonRoles.map((role) => (
+              {projectOptions.map((role) => (
                 <button
-                  key={role}
+                  key={role.detailCode}
                   type="button"
-                  onClick={() => handleRoleSelect(role)}
+                  onClick={() => setSelectedRole(role.detailCode)}
                   className={`border rounded-full px-3 py-1 text-sm transition ${
-                    selectedRole === role
+                    selectedRole === role.detailCode
                       ? "bg-blue-600 text-white"
                       : "bg-white text-black"
                   }`}
                 >
-                  {selectedRole === role ? "✓" : "+"} {role}
+                  {selectedRole === role.detailCode ? "✓ " : ""}
+                  {role.detailName}
                 </button>
               ))}
             </div>
