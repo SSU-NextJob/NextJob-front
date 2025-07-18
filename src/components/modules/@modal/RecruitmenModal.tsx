@@ -119,7 +119,7 @@ export const RecruitTeamModal = ({
 
           {/* Summary */}
           <div>
-            <label className="text-sm font-medium block mb-1">모집 요약</label>
+            <label className="text-sm font-medium block mb-1">주요 업무</label>
             <textarea
               className="border w-full px-3 py-2 rounded-md text-sm"
               value={summary}
