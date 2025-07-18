@@ -120,7 +120,7 @@ export const MyProjectsCard = ({
             return (
               <div
                 key={post.postId}
-                className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition text-left"
+                className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition text-left cursor-pointer"
                 onClick={() => navigate(`/post/detail/${post.postId}`)}
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1 text-left">

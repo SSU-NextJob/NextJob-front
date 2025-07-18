@@ -22,6 +22,7 @@ export const MyProfile = () => {
           userType: res.data.userType,
           description: res.data.description,
           techStack: res.data.techStack,
+          isVisible: res.data.isVisible,
         });
     });
 
