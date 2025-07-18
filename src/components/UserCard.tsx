@@ -102,7 +102,7 @@ export const UserCard = ({
 
           {/* 제안 버튼 */}
           <div className="flex justify-end">
-            {userId !== user.userId && (
+            {userId && userId !== user.userId && (
               <Button
                 onClick={() => handleOpenSuggest(user.userId)}
                 color={"blue"}
