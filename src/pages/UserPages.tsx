@@ -9,11 +9,13 @@ export default function UserPage() {
   const [selectedUserType, setSelectedUserType] = useState<string>("");
   const [userTypeOptions, setUserTypeOptions] = useState<CodeResponse[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [searchParams, setSearchParams] = useState<{ userType: string; keyword: string }>({
+  const [searchParams, setSearchParams] = useState<{
+    userType: string;
+    keyword: string;
+  }>({
     userType: "",
     keyword: "",
   });
-
 
   useEffect(() => {
     getGroupCode("USER_TYPE").then((res) => {
@@ -52,15 +54,28 @@ export default function UserPage() {
           onSelectOption={handleSelect}
         />
         <div className="flex gap-[12px]">
-          <SearchBar className="w-[250px]" value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
-          <Button backgroundColor="#015bd6" color="white" onClick={handleSearch}>
+          <SearchBar
+            className="w-[250px]"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            onEnter={handleSearch}
+            placeholder="팀원명 검색"
+          />
+          <Button
+            backgroundColor="#015bd6"
+            color="white"
+            onClick={handleSearch}
+          >
             검색
           </Button>
         </div>
       </div>
 
       <div>
-        <UserList userType={searchParams.userType} keyword={searchParams.keyword}/>
+        <UserList
+          userType={searchParams.userType}
+          keyword={searchParams.keyword}
+        />
       </div>
     </div>
   );

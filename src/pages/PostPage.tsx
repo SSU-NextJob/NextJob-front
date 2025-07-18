@@ -9,7 +9,10 @@ export default function PostPage() {
   const [selectedProjectType, setSelectedProjectType] = useState<string>("");
   const [projectOptions, setProjectOptions] = useState<CodeResponse[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [searchParams, setSearchParams] = useState<{ projectType: string; keyword: string }>({
+  const [searchParams, setSearchParams] = useState<{
+    projectType: string;
+    keyword: string;
+  }>({
     projectType: "",
     keyword: "",
   });
@@ -50,15 +53,28 @@ export default function PostPage() {
           onSelectOption={handleSelect}
         />
         <div className="flex gap-[12px]">
-          <SearchBar className="w-[250px]" value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
-          <Button backgroundColor="#015bd6" color="white" onClick={handleSearch}>
+          <SearchBar
+            className="w-[250px]"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            onEnter={handleSearch}
+            placeholder="프로젝트명 검색"
+          />
+          <Button
+            backgroundColor="#015bd6"
+            color="white"
+            onClick={handleSearch}
+          >
             검색
           </Button>
         </div>
       </div>
 
       <div>
-        <PostList projectType={searchParams.projectType} keyword={searchParams.keyword} />
+        <PostList
+          projectType={searchParams.projectType}
+          keyword={searchParams.keyword}
+        />
       </div>
     </div>
   );
