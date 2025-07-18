@@ -80,15 +80,20 @@ import type { UserData } from "@/apis/user";
 import { getUserListAPI } from "@/apis/user";
 import { UserCard } from "@/components/UserCard";
 
-export const UserList = () => {
+type UserListProps = {
+  userType: string;
+  keyword: string;
+};
+
+export const UserList = ({ userType, keyword }: UserListProps) => {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getUserListAPI({
-      userType: "",
-      search: "",
+      userType: userType,
+      search: keyword,
       page: "1",
       pageSize: "20",
     })
@@ -98,7 +103,7 @@ export const UserList = () => {
       })
       .catch(() => setError("에러가 발생했습니다."))
       .finally(() => setLoading(false));
-  }, []);
+  }, [userType, keyword]);
 
   if (loading) return <div>로딩 중...</div>;
   if (error) return <div>{error}</div>;
