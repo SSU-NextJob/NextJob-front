@@ -1,15 +1,16 @@
 ﻿import { useNavigate } from "react-router-dom";
 import { useModalStore } from "@/store/modalStore";
-import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
 import type { PostDetailResponse } from "@/apis/post";
 import normalizedDate from "@/utils/normalizedDate";
 import { useUserStore } from "@/store/userStore";
+import { useState } from "react";
 
 export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
   const { userId } = useUserStore();
+  const [activeTab, setActiveTab] = useState("project-info");
 
   const handleOpenApplyModal = (post: PostDetailResponse) => {
     onOpenModal("apply", {
@@ -20,124 +21,199 @@ export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
     });
   };
 
-  if (!post) return;
+  if (!post) return null;
+
   return (
-    <>
-      <div className="w-full bg-white text-gray-800 p-10">
-        {/* 뒤로가기 */}
-        <div className="mb-6 flex justify-start">
-          <Button onClick={() => navigate(-1)} color={"white"}>
-            ← 뒤로가기
-          </Button>
-        </div>
-
-        {/* 전체 레이아웃 */}
-        <div className="w-full text-left">
-          {/* 제목 + 타입 */}
-          <div className="flex justify-between items-start mb-4">
-            <h1 className="text-3xl font-bold">{post.title}</h1>
-            <Badge type={post.project.type} />
-          </div>
-
-          {/* 메타 정보 */}
-          <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-6">
-            <span>📅 시작일: {normalizedDate(post.project.startAt)}</span>
-            <span>📅 마감일: {normalizedDate(post.project.endAt)}</span>
-            {/* <span>📍 위치: {project.location}</span> */}
-            {/* <span>👥 모집인원: 1명</span> */}
-          </div>
-
-          <div className="mb-6">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        {/* Header */}
+        <div className="mb-8 text-left">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center text-gray-500 hover:text-gray-900 text-sm mb-4"
+          >
+            <span className="mr-2">←</span> 뒤로가기
+          </button>
+          <div
+            className="w-full mb-8 flex justify-center items-center bg-gray-100 rounded-2xl overflow-hidden"
+            style={{ minHeight: "200px", maxHeight: "384px" }}
+          >
             <img
               src={
-                !!post.project.image
-                  ? post.project.image
-                  : "https://placehold.co/400x300?text=Project+Image"
+                post.project.image ||
+                "https://placehold.co/800x400?text=Project+Image"
               }
+              alt="프로젝트 이미지"
+              className="max-h-96 w-auto h-auto object-contain"
+              style={{ maxWidth: "100%", maxHeight: "24rem" }}
             />
           </div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">
+            {post.title}
+          </h1>
+          <p className="text-gray-400 mb-2">{post.project.name}</p>
+        </div>
 
-          {/* 설명 */}
-          <div className="mb-6">
-            <h2 className="text-base font-semibold mb-1">포지션 상세</h2>
-            <p className="text-sm text-gray-700">{post.content}</p>
-          </div>
-
-          {/* 필요한 역할 */}
-          <div className="mb-6">
-            <h2 className="text-base font-semibold mb-1">필요한 역할</h2>
-            <div className="flex flex-wrap gap-2">
-              {/* <p className="text-sm text-gray-700">{post.project.type}</p> */}
-              <p className="text-sm text-gray-700">{post.roleType}</p>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h2 className="text-base font-semibold mb-1">주요 업무</h2>
-            <p className="text-sm text-gray-700">{post.project.content}</p>
-          </div>
-
-          {/* 프로젝트 카드 형식으로 변경 필요함 (07.17) */}
-          <div className="mb-6">
-            <h2 className="text-base font-semibold mb-1">연결된 프로젝트</h2>
-            <p className="text-sm text-gray-700">{post.project.name}</p>
-          </div>
-
-          {/* 기술 역량 */}
-          {/* <div className="mb-6">
-            <h2 className="text-base font-semibold mb-1">기술 역량</h2>
-            <div className="flex flex-wrap gap-2">
-              <p className="text-sm text-gray-700">{project.techStack}</p>
-            </div>
-          </div> */}
-
-          {/* 요구사항 */}
-          {/* <div className="mb-6">
-            <h2 className="text-base font-semibold mb-1">요구사항</h2>
-            <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-              {project.requirements.map((req) => (
-                <li key={req}>{req}</li>
-              ))}
-            </ul>
-          </div> */}
-
-          {/* 혜택 */}
-          {/* <div className="mb-6">
-            <h2 className="text-base font-semibold mb-1">혜택</h2>
-            <div className="flex flex-wrap gap-2">
-              {project.benefits.map((b) => (
-                <span
-                  key={b}
-                  className="bg-green-100 text-green-800 text-xs px-4 py-1 rounded-full"
-                >
-                  {b}
-                </span>
-              ))}
-            </div>
-          </div> */}
-
-          {/* 방장 */}
-          {/* <div className="text-sm text-gray-600 mb-6">
-            <div className="font-semibold text-gray-800">방장</div>
-            {project.creator}
-          </div> */}
-
-          {/* 참가 버튼 */}
-          <div className="flex justify-end">
-            {userId && userId !== post.userId && (
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpenApplyModal(post);
-                }}
-                color={"blue"}
+        {/* Tabs */}
+        <div className="mb-6">
+          <div className="border-b">
+            <nav className="flex space-x-8">
+              <button
+                onClick={() => setActiveTab("project-info")}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === "project-info"
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-gray-400 hover:text-gray-900"
+                }`}
               >
-                참가하기
-              </Button>
-            )}
+                프로젝트 정보
+              </button>
+              {/* 지원자 탭은 실제 데이터 연동 시 구현 */}
+              {/* <button
+                onClick={() => setActiveTab("applicants")}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === "applicants"
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-gray-400 hover:text-gray-900"
+                }`}
+              >
+                지원자 (0)
+              </button> */}
+            </nav>
           </div>
         </div>
+
+        {/* Tab Content */}
+        {activeTab === "project-info" && (
+          <div className="rounded-2xl border bg-white shadow-sm p-8 text-left">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <h3 className="font-semibold mb-2 text-gray-800">
+                  모집 포지션
+                </h3>
+                <span className="inline-block px-3 py-1 rounded-full text-sm font-medium border bg-blue-50 text-blue-700 border-blue-200">
+                  {post.roleType}
+                </span>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2 text-gray-800">
+                  프로젝트 타입
+                </h3>
+                <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium border bg-gray-50 text-gray-700 border-gray-200">
+                  {post.project.type}
+                </span>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2 text-gray-800">한 줄 요약</h3>
+              <p className="text-gray-400">{post.title}</p>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2 text-gray-800">상세 설명</h3>
+              <p className="text-gray-500 leading-relaxed">{post.content}</p>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2 text-gray-800">주요 업무</h3>
+              <p className="text-gray-500 leading-relaxed">
+                {post.project.content}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <h3 className="font-semibold mb-2 text-gray-800">시작일</h3>
+                <div className="flex items-center text-gray-400">
+                  <svg
+                    className="h-4 w-4 mr-2 inline-block text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  {normalizedDate(post.project.startAt)}
+                </div>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2 text-gray-800">마감일</h3>
+                <div className="flex items-center text-gray-400">
+                  <svg
+                    className="h-4 w-4 mr-2 inline-block text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  {normalizedDate(post.project.endAt)}
+                </div>
+              </div>
+            </div>
+
+            {/* 연결된 프로젝트 */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2 text-gray-800">
+                연결된 프로젝트
+              </h3>
+              <div className="rounded-2xl border bg-white shadow-sm p-6 flex flex-col gap-4 max-w-xl text-left">
+                <div className="flex items-center gap-4 mb-2">
+                  <div className="w-16 h-16 rounded-lg overflow-hidden border bg-gray-100 flex-shrink-0">
+                    <img
+                      src={
+                        post.project.image ||
+                        "https://placehold.co/64x64?text=Project"
+                      }
+                      alt="프로젝트 이미지"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="text-lg font-bold truncate">
+                        {post.project.name}
+                      </span>
+                      <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium border bg-gray-50 text-gray-700 border-gray-200">
+                        {post.project.type}
+                      </span>
+                    </div>
+                    <div className="flex gap-3 text-xs text-gray-400 mb-1 flex-wrap">
+                      <span>
+                        시작일: {normalizedDate(post.project.startAt)}
+                      </span>
+                      <span>마감일: {normalizedDate(post.project.endAt)}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-500 leading-relaxed">
+                  {post.project.content}
+                </div>
+              </div>
+            </div>
+
+            {/* 참가 버튼 */}
+            <div className="flex justify-end mt-8">
+              {userId && userId !== post.userId && (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenApplyModal(post);
+                  }}
+                  color={"blue"}
+                >
+                  참가하기
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };

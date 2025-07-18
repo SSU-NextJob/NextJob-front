@@ -141,9 +141,9 @@ export const CreateProjectModal = ({
               onChange={(e) => setType(e.target.value)}
               required
             >
-              <option value="contest">공모전</option>
-              <option value="hackathon">해커톤</option>
-              <option value="personal">개인 프로젝트</option>
+              <option value="CONTEST">공모전</option>
+              <option value="HACKATHON">해커톤</option>
+              <option value="SIDE">사이드 프로젝트</option>
             </select>
           </div>
 
