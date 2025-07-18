@@ -91,3 +91,14 @@ export const PatchUserDetailAPI = (userId: number, name: string, techStack: stri
     }),
   });
 };
+
+// 사용자 노출 여부 수정 API
+export const PatchUserVisibleAPI = (userId: number, isVisible: boolean) => {
+  return fetcher<PatchUserDetailResponse>(`/users/visibility`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      userId: userId,
+      isVisible: isVisible
+    }),
+  });
+};

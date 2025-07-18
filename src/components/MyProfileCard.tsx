@@ -10,6 +10,7 @@ import { useUserStore } from "@/store/userStore";
 import { MultiSelector } from "@/components/modules/Dropdown";
 import { getGroupCode, type CodeResponse } from "@/apis/group";
 import { useEffect } from "react";
+import { PatchUserVisibleAPI } from "@/apis/user";
 
 const MyProfileCard = ({
   userProfile,
@@ -28,6 +29,7 @@ const MyProfileCard = ({
 
   const { userId } = useUserStore();
   const [userTypeOptions, setUserTypeOptions] = useState<CodeResponse[]>([]);
+  const [isVisible, setIsVisible] = useState(userProfile.isVisible);
 
   useEffect(() => {
     if (isEditing) {
@@ -69,6 +71,16 @@ const MyProfileCard = ({
       description: userProfile.description,
     });
     setIsEditing(false);
+  };
+
+  const handleToggleVisible = async () => {
+    if (!userId) return;
+    try {
+      await PatchUserVisibleAPI(userId, !isVisible);
+      setIsVisible((prev: boolean) => !prev);
+    } catch (e) {
+      alert("노출 여부 변경에 실패했습니다.");
+    }
   };
 
   const profileKeys = ["name", "role", "techStack"] as const; // aboutMe?
@@ -178,6 +190,19 @@ const MyProfileCard = ({
       </div>
 
       {/* 프로젝트 목록 */}
+      <div className="flex items-center justify-end mb-4">
+        <span className="mr-2 text-sm text-gray-600">내 정보 공개</span>
+        <button
+          onClick={handleToggleVisible}
+          tabIndex={-1}
+          onMouseDown={e => e.preventDefault()}
+          className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${isVisible ? 'bg-blue-500' : 'bg-gray-300'}`}
+        >
+          <span
+            className={`h-4 w-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${isVisible ? 'translate-x-4' : ''}`}
+          />
+        </button>
+      </div>
       <div>
         <h2 className="text-sm text-gray-500 font-semibold mb-3">
           참여한 프로젝트
@@ -218,6 +243,7 @@ export interface UserProfile {
   userType: string;
   description: string;
   techStack: string;
+  isVisible: boolean;
 }
 
 interface MyProfileProps {
