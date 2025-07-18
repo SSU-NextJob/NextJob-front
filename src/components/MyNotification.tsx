@@ -31,18 +31,6 @@ export const MyNotification = () => {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  // UserCard에 맞는 mock user 데이터 변환 (실제 연동 시 user 정보 포함 필요)
-  const toUserCardData = (req: RequestItem) => ({
-    userId: req.requestId, // 실제 userId로 교체 필요
-    name: req.project.name, // 실제 유저명으로 교체 필요
-    description: req.project.content, // 실제 유저 소개로 교체 필요
-    techStack: req.project.projectType, // 실제 유저 techStack으로 교체 필요
-    profileImage: req.project.image, // 실제 유저 이미지로 교체 필요
-    email: "-", // UserData 타입 필수값 placeholder
-    userType: "-", // UserData 타입 필수값 placeholder
-    isVisible: true, // UserData 타입 필수값 placeholder
-  });
-
   // 모집 공고 카드 렌더 함수
   const renderProjectCard = (req: RequestItem) => (
     <div

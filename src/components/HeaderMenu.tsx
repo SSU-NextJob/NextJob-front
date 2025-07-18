@@ -1,72 +1,19 @@
-﻿import { useState, useMemo } from "react";
+﻿import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/atoms/Button";
-import { HeaderAlarm } from "./HeaderAlarm";
+import { HeaderNofication } from "./HeaderNofication";
 import { useModalStore } from "@/store/modalStore";
 import { postCreateProject } from "@/apis/project";
 import { useMutation } from "@tanstack/react-query";
 import { useUserStore } from "@/store/userStore";
-
-interface Notification {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  unread: boolean;
-}
+import { getNotificationList } from "@/apis/notification";
+import { useEffect } from "react";
+import type { NotificationItem } from "@/apis/notification";
 
 export const Header = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const { onOpenModal } = useModalStore();
-
-  const [alarmData, setAlarmData] = useState<Notification[]>([
-    {
-      id: 1,
-      title: "새로운 팀원 합류1",
-      description: "Sarah님이 AI 기반 레시피 생성기 프로젝트에 합류했습니다",
-      time: "2시간 전",
-      unread: true,
-    },
-    {
-      id: 2,
-      title: "프로젝트 마감 임박1",
-      description: "블록체인 투표 시스템 프로젝트 마감이 3일 남았습니다",
-      time: "4시간 전",
-      unread: true,
-    },
-    {
-      id: 3,
-      title: "새로운 팀원 합류2",
-      description: "Sarah님이 AI 기반 레시피 생성기 프로젝트에 합류했습니다",
-      time: "2시간 전",
-      unread: false,
-    },
-    {
-      id: 4,
-      title: "프로젝트 마감 임박2",
-      description: "블록체인 투표 시스템 프로젝트 마감이 3일 남았습니다",
-      time: "4시간 전",
-      unread: false,
-    },
-  ]);
-
-  const unreadCount = useMemo(
-    () => alarmData.filter((n) => n.unread).length,
-    [alarmData]
-  );
-
-  const handleMarkAsRead = (id: number) => {
-    setAlarmData((prev) =>
-      prev.map((item) =>
-        item.id === id && item.unread ? { ...item, unread: false } : item
-      )
-    );
-  };
-
-  const handleMarkAllAsRead = () => {
-    setAlarmData((prev) => prev.map((item) => ({ ...item, unread: false })));
-  };
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
@@ -81,7 +28,26 @@ export const Header = () => {
   });
 
   // userStore 연동
-  const { userId, userName, setUser, clearUser } = useUserStore();
+  const { userId, setUser, clearUser } = useUserStore();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notificationList, setNotificationList] = useState<NotificationItem[]>(
+    []
+  );
+
+  useEffect(() => {
+    if (!userId) return;
+    getNotificationList(userId).then((res) => {
+      if (res.success) {
+        setNotificationList(res.data);
+        setUnreadCount(res.data.filter((n) => !n.isRead).length);
+      }
+    });
+  }, [userId]);
+
+  // 페이지 이동 시 알림창 닫기
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname, location.search]);
 
   return (
     <div className="w-full border-b bg-white px-8 py-4 flex justify-between items-center shadow-sm">
@@ -93,7 +59,7 @@ export const Header = () => {
         </Link>
       </div>
 
-      {/* Center Section: Menu */}
+      {/* Center Section: 메뉴 */}
       <nav className="flex gap-8 text-sm font-semibold">
         <Link
           to="/post"
@@ -107,45 +73,92 @@ export const Header = () => {
         >
           팀원 탐색
         </Link>
-        <Link
-          to="/mypage"
-          className={isActive("/mypage") ? "text-blue-600" : "text-black"}
-        >
-          마이페이지
-        </Link>
+        {userId && (
+          <Link
+            to="/mypage"
+            className={isActive("/mypage") ? "text-blue-600" : "text-black"}
+          >
+            마이페이지
+          </Link>
+        )}
       </nav>
 
-      {/* Right Section */}
+      {/* Right Section: 버튼 영역 */}
       <div className="flex items-center gap-4">
-        {/* Notification */}
-        <div
-          className="relative cursor-pointer"
-          onClick={() => setIsOpen((prev) => !prev)}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-          </svg>
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1 rounded-full">
-              {unreadCount}
-            </span>
-          )}
-        </div>
-        {isOpen && (
-          <HeaderAlarm
-            alarmLists={alarmData}
-            onMarkAsRead={handleMarkAsRead}
-            onMarkAllAsRead={handleMarkAllAsRead}
-          />
-        )}
-
-        {/* 로그인/로그아웃 버튼 조건부 렌더링 */}
-        {userId && userName ? (
-          <Button onClick={clearUser} color={"white"}>
-            로그아웃
-          </Button>
+        {/* 로그인 상태: 알림, 로그아웃, 프로젝트 생성, 팀원 모집 */}
+        {userId ? (
+          <>
+            {/* Notification */}
+            <div
+              className="relative cursor-pointer"
+              onClick={() => setIsOpen((prev) => !prev)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                />
+              </svg>
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1 rounded-full">
+                  {unreadCount}
+                </span>
+              )}
+            </div>
+            {isOpen && (
+              <HeaderNofication
+                notificationList={notificationList}
+                setNotificationList={setNotificationList}
+                onMarkAsRead={async () => {
+                  if (!userId) return;
+                  const res = await getNotificationList(userId);
+                  if (res.success) {
+                    setNotificationList(res.data);
+                    setUnreadCount(res.data.filter((n) => !n.isRead).length);
+                  }
+                }}
+                onMarkAllAsRead={async () => {
+                  if (!userId) return;
+                  const res = await getNotificationList(userId);
+                  if (res.success) {
+                    setNotificationList(res.data);
+                    setUnreadCount(res.data.filter((n) => !n.isRead).length);
+                  }
+                }}
+              />
+            )}
+            {/* 로그아웃 버튼 */}
+            <Button onClick={clearUser} color={"white"}>
+              로그아웃
+            </Button>
+            {/* 프로젝트 생성, 팀원 모집 */}
+            <Button
+              onClick={() =>
+                onOpenModal("createProject", {
+                  onCreate: (data: any) => {
+                    createProjectMutation.mutate(data);
+                  },
+                })
+              }
+              color={"blue"}
+            >
+              프로젝트 생성
+            </Button>
+            <Button onClick={() => onOpenModal("recruit")} color={"white"}>
+              팀원 모집
+            </Button>
+          </>
         ) : (
           <>
+            {/* 로그아웃 상태: 로그인 버튼만 */}
             <Button
               onClick={() => setUser({ userId: 1, userName: "테스트 1" })}
               color={"white"}
@@ -160,31 +173,7 @@ export const Header = () => {
             </Button>
           </>
         )}
-        <Button
-          onClick={() =>
-            onOpenModal("createProject", {
-              onCreate: (data: any) => {
-                createProjectMutation.mutate(data);
-              },
-            })
-          }
-          color={"blue"}
-        >
-          프로젝트 생성
-        </Button>
-        <Button onClick={() => onOpenModal("recruit")} color={"white"}>
-          팀원 모집
-        </Button>
       </div>
-
-      {/* <RecruitTeamModal
-        isOpen={isRecruitModalOpen}
-        onClose={() => setRecruitModalOpen(false)}
-        onSubmit={(data) => {
-          console.log("팀원 모집 데이터:", data);
-        }}
-        // projectOptions={dumpProjectList}
-      /> */}
     </div>
   );
 };
