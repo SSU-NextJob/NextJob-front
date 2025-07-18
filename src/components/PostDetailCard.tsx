@@ -136,11 +136,6 @@ export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
             </div>
 
             <div className="mb-6">
-              <h3 className="font-semibold mb-2 text-gray-800">한 줄 요약</h3>
-              <p className="text-gray-400">{post.title}</p>
-            </div>
-
-            <div className="mb-6">
               <h3 className="font-semibold mb-2 text-gray-800">상세 설명</h3>
               <p className="text-gray-500 leading-relaxed">{post.content}</p>
             </div>
