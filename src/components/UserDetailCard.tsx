@@ -27,7 +27,19 @@ export const UserDetailCard = ({
       <div className="text-left">
         {/* 이름 + 역할 + 위치 */}
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-16 h-16 bg-gray-200 rounded-full" />
+          {user.profileImage ? (
+            <img
+              src={user.profileImage}
+              alt={"프로필 이미지"}
+              className="w-16 h-16 bg-gray-200 rounded-full"
+            />
+          ) : (
+            <span className="h-12 w-12 flex items-center justify-center bg-gray-200 rounded-full mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-8 w-8 text-gray-400">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+            </span>
+          )}
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{user.name}</h1>
             <p className="text-sm text-gray-600">{user.email}</p>
