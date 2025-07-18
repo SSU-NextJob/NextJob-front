@@ -5,6 +5,11 @@ import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import type { ProjectResponse } from "@/apis/project";
 import normalizedDate from "@/utils/normalizedDate";
+import { PatchUserDetailAPI } from "@/apis/user";
+import { useUserStore } from "@/store/userStore";
+import { MultiSelector } from "@/components/modules/Dropdown";
+import { getGroupCode, type CodeResponse } from "@/apis/group";
+import { useEffect } from "react";
 
 const MyProfileCard = ({
   userProfile,
@@ -21,13 +26,39 @@ const MyProfileCard = ({
     description: userProfile.description,
   });
 
+  const { userId } = useUserStore();
+  const [userTypeOptions, setUserTypeOptions] = useState<CodeResponse[]>([]);
+
+  useEffect(() => {
+    if (isEditing) {
+      getGroupCode("USER_TYPE").then((res) => {
+        if (res.success) {
+          setUserTypeOptions(res.data);
+          const selectedCode = res.data.find(opt => opt.detailName === userProfile.userType)?.detailCode;
+          setForm(prev => ({ ...prev, role: selectedCode || "" }));
+        }
+      });
+    }
+  }, [isEditing]);
+
   const handleChange = (key: keyof typeof form, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = () => {
-    console.log("form", form);
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!userId) return;
+    try {
+      await PatchUserDetailAPI(
+        userId,
+        form.name,
+        form.techStack,
+        form.description,
+        form.role
+      );
+      window.location.reload();
+    } catch (e) {
+      alert("수정에 실패했습니다.");
+    }
   };
 
   const handleCancel = () => {
@@ -99,21 +130,28 @@ const MyProfileCard = ({
           {profileKeys.map((key: ProfileKey) => (
             <div key={key}>
               <span className="text-sm text-gray-500">
-                {
-                  {
-                    name: "이름",
-                    role: "역할",
-                    techStack: "기술 스택",
-                  }[key]
-                }
+                {{
+                  name: "이름",
+                  role: "역할",
+                  techStack: "기술 스택",
+                }[key]}
               </span>
               {isEditing ? (
-                <input
-                  type="text"
-                  value={form[key]}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                  className="w-full border px-3 py-2 rounded-md text-sm mt-1"
-                />
+                key === "role" ? (
+                  <MultiSelector
+                    rawOptions={userTypeOptions.map((opt) => ({ label: opt.detailName, value: opt.detailCode }))}
+                    isOptionObject={true}
+                    value={form.role}
+                    onSelectOption={(val) => handleChange("role", val)}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={form[key]}
+                    onChange={(e) => handleChange(key, e.target.value)}
+                    className="w-full border px-3 py-2 rounded-md text-sm mt-1"
+                  />
+                )
               ) : (
                 <p className="text-gray-800 font-medium">{form[key]}</p>
               )}
