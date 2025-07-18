@@ -5,6 +5,12 @@ import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import type { ProjectResponse } from "@/apis/project";
 import normalizedDate from "@/utils/normalizedDate";
+import { PatchUserDetailAPI } from "@/apis/user";
+import { useUserStore } from "@/store/userStore";
+import { MultiSelector } from "@/components/modules/Dropdown";
+import { getGroupCode, type CodeResponse } from "@/apis/group";
+import { useEffect } from "react";
+import { PatchUserVisibleAPI } from "@/apis/user";
 
 const MyProfileCard = ({
   userProfile,
@@ -21,13 +27,40 @@ const MyProfileCard = ({
     description: userProfile.description,
   });
 
+  const { userId } = useUserStore();
+  const [userTypeOptions, setUserTypeOptions] = useState<CodeResponse[]>([]);
+  const [isVisible, setIsVisible] = useState(userProfile.isVisible);
+
+  useEffect(() => {
+    if (isEditing) {
+      getGroupCode("USER_TYPE").then((res) => {
+        if (res.success) {
+          setUserTypeOptions(res.data);
+          const selectedCode = res.data.find(opt => opt.detailName === userProfile.userType)?.detailCode;
+          setForm(prev => ({ ...prev, role: selectedCode || "" }));
+        }
+      });
+    }
+  }, [isEditing]);
+
   const handleChange = (key: keyof typeof form, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = () => {
-    console.log("form", form);
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!userId) return;
+    try {
+      await PatchUserDetailAPI(
+        userId,
+        form.name,
+        form.techStack,
+        form.description,
+        form.role
+      );
+      window.location.reload();
+    } catch (e) {
+      alert("수정에 실패했습니다.");
+    }
   };
 
   const handleCancel = () => {
@@ -38,6 +71,16 @@ const MyProfileCard = ({
       description: userProfile.description,
     });
     setIsEditing(false);
+  };
+
+  const handleToggleVisible = async () => {
+    if (!userId) return;
+    try {
+      await PatchUserVisibleAPI(userId, !isVisible);
+      setIsVisible((prev: boolean) => !prev);
+    } catch (e) {
+      alert("노출 여부 변경에 실패했습니다.");
+    }
   };
 
   const profileKeys = ["name", "role", "techStack"] as const; // aboutMe?
@@ -110,21 +153,28 @@ const MyProfileCard = ({
           {profileKeys.map((key: ProfileKey) => (
             <div key={key}>
               <span className="text-sm text-gray-500">
-                {
-                  {
-                    name: "이름",
-                    role: "역할",
-                    techStack: "기술 스택",
-                  }[key]
-                }
+                {{
+                  name: "이름",
+                  role: "역할",
+                  techStack: "기술 스택",
+                }[key]}
               </span>
               {isEditing ? (
-                <input
-                  type="text"
-                  value={form[key]}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                  className="w-full border px-3 py-2 rounded-md text-sm mt-1"
-                />
+                key === "role" ? (
+                  <MultiSelector
+                    rawOptions={userTypeOptions.map((opt) => ({ label: opt.detailName, value: opt.detailCode }))}
+                    isOptionObject={true}
+                    value={form.role}
+                    onSelectOption={(val) => handleChange("role", val)}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={form[key]}
+                    onChange={(e) => handleChange(key, e.target.value)}
+                    className="w-full border px-3 py-2 rounded-md text-sm mt-1"
+                  />
+                )
               ) : (
                 <p className="text-gray-800 font-medium">{form[key]}</p>
               )}
@@ -151,6 +201,19 @@ const MyProfileCard = ({
       </div>
 
       {/* 프로젝트 목록 */}
+      <div className="flex items-center justify-end mb-4">
+        <span className="mr-2 text-sm text-gray-600">내 정보 공개</span>
+        <button
+          onClick={handleToggleVisible}
+          tabIndex={-1}
+          onMouseDown={e => e.preventDefault()}
+          className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${isVisible ? 'bg-blue-500' : 'bg-gray-300'}`}
+        >
+          <span
+            className={`h-4 w-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${isVisible ? 'translate-x-4' : ''}`}
+          />
+        </button>
+      </div>
       <div>
         <h2 className="text-sm text-gray-500 font-semibold mb-3">
           참여한 프로젝트
@@ -191,6 +254,7 @@ export interface UserProfile {
   userType: string;
   description: string;
   techStack: string;
+  isVisible: boolean;
 }
 
 interface MyProfileProps {

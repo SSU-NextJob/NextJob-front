@@ -46,6 +46,10 @@ export interface UserProjectListResponse {
     participationProject: ParticipationProject[];
   };
 }
+export interface PatchUserDetailResponse {
+  success: boolean;
+  data: null;
+}
 
 // 사용자 리스트 조회 API 함수
 export const getUserListAPI = (params: GetUserListParams) => {
@@ -71,5 +75,30 @@ export const getUserDetailAPI = (userId: number) => {
 export const getUserProjectAPI = (userId: number) => {
   return fetcher<UserProjectListResponse>(`/projects?userId=${userId}`, {
     method: "GET",
+  });
+};
+
+// 사용자 정보 수정 API
+export const PatchUserDetailAPI = (userId: number, name: string, techStack: string, description: string, userType: string) => {
+  return fetcher<PatchUserDetailResponse>(`/users/me`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      userId: userId,
+      name: name,
+      techStack: techStack,
+      description: description,
+      userType: userType
+    }),
+  });
+};
+
+// 사용자 노출 여부 수정 API
+export const PatchUserVisibleAPI = (userId: number, isVisible: boolean) => {
+  return fetcher<PatchUserDetailResponse>(`/users/visibility`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      userId: userId,
+      isVisible: isVisible
+    }),
   });
 };
