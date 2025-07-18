@@ -12,7 +12,7 @@ export interface CodeResponse {
   detailName: string; // 코드명
 }
 
-// 코드 목록 조회
+// 공통 코드 조회
 export const getGroupCode = (groupCode: "USER_TYPE" | "PROJECT_TYPE") => {
   return fetcher<GetCodeGroupResponse>(`/detail/codes?groupCode=${groupCode}`, {
     method: "GET",
