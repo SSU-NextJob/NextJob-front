@@ -6,6 +6,32 @@ import normalizedDate from "@/utils/normalizedDate";
 import { useUserStore } from "@/store/userStore";
 import { useState } from "react";
 
+// 임시 지원자 데이터 (실제 연동 시 교체)
+const applicantsData = [
+  {
+    id: 1,
+    name: "홍길동",
+    role: "프론트엔드 개발자",
+    intro: "React, TypeScript 기반의 웹 프론트엔드 개발 경험 보유.",
+    location: "서울 강남구",
+    avatar: "https://placehold.co/40x40?text=U1",
+    skills: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
+    experience: "3년 이상",
+    availability: "풀타임",
+  },
+  {
+    id: 2,
+    name: "김철수",
+    role: "UI/UX 디자이너",
+    intro: "사용자 경험 중심의 디자인 설계 및 프로토타이핑 경험.",
+    location: "경기 성남시",
+    avatar: "https://placehold.co/40x40?text=U2",
+    skills: ["Figma", "Sketch", "Adobe XD"],
+    experience: "4년 이상",
+    availability: "파트타임",
+  },
+];
+
 export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
   const navigate = useNavigate();
   const { onOpenModal } = useModalStore();
@@ -22,6 +48,9 @@ export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
   };
 
   if (!post) return null;
+
+  // 프로젝트 소유자인지 판별
+  const isProjectOwner = userId && userId === post.userId;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -68,17 +97,18 @@ export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
               >
                 프로젝트 정보
               </button>
-              {/* 지원자 탭은 실제 데이터 연동 시 구현 */}
-              {/* <button
-                onClick={() => setActiveTab("applicants")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "applicants"
-                    ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-400 hover:text-gray-900"
-                }`}
-              >
-                지원자 (0)
-              </button> */}
+              {/* {isProjectOwner && (
+                <button
+                  onClick={() => setActiveTab("applicants")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === "applicants"
+                      ? "border-blue-600 text-blue-600"
+                      : "border-transparent text-gray-400 hover:text-gray-900"
+                  }`}
+                >
+                  지원자 ({applicantsData.length})
+                </button>
+              )} */}
             </nav>
           </div>
         </div>
@@ -210,6 +240,64 @@ export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
                   참가하기
                 </Button>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* 지원자 탭 */}
+        {activeTab === "applicants" && isProjectOwner && (
+          <div className="rounded-2xl border bg-white shadow-sm p-8 text-left">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900">
+              지원자 목록
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {applicantsData.map((applicant) => (
+                <div
+                  key={applicant.id}
+                  className="border rounded-xl bg-white p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <img
+                      src={applicant.avatar}
+                      alt={applicant.name}
+                      className="w-12 h-12 rounded-full object-cover bg-gray-200 border"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-gray-900 truncate">
+                        {applicant.name}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {applicant.role}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-700 line-clamp-2 mb-1">
+                    {applicant.intro}
+                  </div>
+                  <div className="flex flex-wrap gap-1 mb-1">
+                    {applicant.skills.slice(0, 3).map((skill, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded-full"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                    {applicant.skills.length > 3 && (
+                      <span className="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded-full">
+                        +{applicant.skills.length - 3}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center text-xs text-gray-400 gap-2">
+                    <span>{applicant.location}</span>
+                    <span>·</span>
+                    <span>{applicant.experience}</span>
+                    <span>·</span>
+                    <span>{applicant.availability}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
