@@ -1,4 +1,5 @@
 ﻿import { Button } from "@/components/atoms/Button";
+import { useUserStore } from "@/store/userStore";
 import React, { useState } from "react";
 
 interface CreateProjectModalProps {
@@ -14,16 +15,17 @@ export const CreateProjectModal = ({
 }: CreateProjectModalProps) => {
   const [projectName, setProjectName] = useState("");
   const [content, setContent] = useState("");
-  const [creatorId] = useState(1); // 임시 고정
   const [startAt, setStartAt] = useState("");
   const [endAt, setEndAt] = useState("");
   const [projectType, setProjectType] = useState("progress");
   const [type, setType] = useState("contest");
   const [image, setImage] = useState<File | null>(null);
 
+  const { userId } = useUserStore()
+
   // 필수값 체크
   const isValid =
-    projectName && creatorId && startAt && endAt && projectType && type;
+    projectName && userId && startAt && endAt && projectType && type;
 
   if (!isOpen) return null;
 
@@ -32,7 +34,7 @@ export const CreateProjectModal = ({
     console.log("onCreate", {
       name: projectName,
       content,
-      creatorId,
+      creatorId: userId,
       startAt,
       endAt,
       projectType,
@@ -42,7 +44,7 @@ export const CreateProjectModal = ({
     onCreate({
       name: projectName,
       content,
-      creatorId,
+      creatorId: userId,
       startAt,
       endAt,
       projectType,
