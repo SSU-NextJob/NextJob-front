@@ -2,7 +2,7 @@
 import { SideTab } from "@/components/Sidebar";
 import { MyProfile } from "@/components/MyProfile";
 import { MyProject } from "@/components/MyProject";
-import { MyAlarm } from "@/components/MyAlarm";
+import { MyNotification } from "@/components/MyNotification";
 
 export const MyPage = () => {
   const [currentTab, setCurrentTab] = useState<
@@ -15,7 +15,7 @@ export const MyPage = () => {
       <div className="flex-1 px-8 py-10">
         {currentTab === "profile" && <MyProfile />}
         {currentTab === "projects" && <MyProject />}
-        {currentTab === "alarm" && <MyAlarm />}
+        {currentTab === "alarm" && <MyNotification />}
       </div>
     </div>
   );
