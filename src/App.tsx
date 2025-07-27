@@ -20,6 +20,8 @@ import "./index.css";
 import { AppRoutes } from "./routes";
 import { Header } from "@/components/HeaderMenu";
 import { ModalRoot } from "@/components/modules/@modal/ModalRoot";
+import { Loading } from "@/components/atoms/Loading";
+import { useLoadingStore } from "@/store/loadingStore";
 
 const queryClient = new QueryClient();
 
@@ -36,18 +38,19 @@ async function enableMocking() {
 }
 
 function App() {
-  const [isReady, setIsReady] = useState(false);
+  const loadingStore = useLoadingStore();
 
   useEffect(() => {
     const initApp = async () => {
+      loadingStore.setLoading("appInit", true);
       await enableMocking();
-      setIsReady(true);
+      loadingStore.setLoading("appInit", false);
     };
     initApp();
   }, []);
 
-  if (!isReady) {
-    return <div>Loading...</div>;
+  if (loadingStore.isLoading("appInit")) {
+    return <Loading message="앱 초기화 중..." />;
   }
 
   return (
