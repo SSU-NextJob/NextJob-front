@@ -79,6 +79,8 @@ import { useEffect, useState } from "react";
 import type { UserData } from "@/apis/user";
 import { getUserListAPI } from "@/apis/user";
 import { UserCard } from "@/components/UserCard";
+import { Loading } from "@/components/atoms/Loading";
+import { useLoadingStore } from "@/store/loadingStore";
 
 type UserListProps = {
   userType: string;
@@ -87,10 +89,11 @@ type UserListProps = {
 
 export const UserList = ({ userType, keyword }: UserListProps) => {
   const [users, setUsers] = useState<UserData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const loadingStore = useLoadingStore();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    loadingStore.setLoading("userList", true);
     getUserListAPI({
       userType: userType,
       search: keyword,
@@ -102,11 +105,31 @@ export const UserList = ({ userType, keyword }: UserListProps) => {
         else setError("데이터를 불러오지 못했습니다.");
       })
       .catch(() => setError("에러가 발생했습니다."))
-      .finally(() => setLoading(false));
+      .finally(() => loadingStore.setLoading("userList", false));
   }, [userType, keyword]);
 
-  if (loading) return <div>로딩 중...</div>;
+  if (loadingStore.isLoading("userList")) return <Loading />;
   if (error) return <div>{error}</div>;
+  if (users.length === 0) {
+    return (
+      <div className="w-full flex flex-col items-center justify-center py-16 text-gray-400">
+        <svg
+          className="w-16 h-16 mb-4 text-blue-200"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+        <div className="text-lg font-semibold">찾으시는 팀원이 없습니다!</div>
+      </div>
+    );
+  }
 
   return <UserCard users={users} />;
 };

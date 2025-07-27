@@ -1,0 +1,34 @@
+---
+description: |
+  NextJob-front는 구직/구인 플랫폼의 프론트엔드 프로젝트입니다. React, TypeScript, Vite, TailwindCSS를 기반으로 하며, 코드 일관성과 협업 효율을 높이기 위한 규칙을 정의합니다.
+globs:
+  - src/**
+  - public/**
+  - package.json
+  - tsconfig*.json
+  - tailwind.config.js
+  - vite.config.ts
+alwaysApply: true
+rules:
+  - 모든 커밋 메시지, 코드 주석, 커뮤니케이션은 한글로 작성한다.
+  - 컴포넌트, 훅, 유틸 함수 등은 역할별로 디렉토리를 구분한다.
+  - 모달 컴포넌트는 src/components/modules/@modal/에 위치시키고, 반드시 ModalRoot를 통해 렌더링한다.
+  - 상태 관리는 src/store/ 내 zustand를 사용한다.
+  - API 호출 함수는 src/apis/ 내에서만 정의하며, 도메인별로 디렉토리를 구분한다.
+  - 스타일은 TailwindCSS를 우선 사용하고, 커스텀 스타일은 App.css, index.css에서만 추가한다.
+  - 불필요한 콘솔 로그는 커밋 전에 반드시 제거한다.
+  - PR 및 코드리뷰 시, 동작 스크린샷 또는 설명을 첨부한다.
+  - README.md, docs/ 내 문서는 항상 최신 상태로 유지한다.
+  - 새로운 기능 추가 시, 관련 문서와 타입 정의를 함께 작성한다.
+  - 반복되는 UI/로직은 반드시 컴포넌트 또는 유틸 함수로 분리한다.
+  - 외부 라이브러리 도입 시, 팀원과 사전 논의 후 적용한다.
+  - 사이트의 상단에 상단바가 있고, 그 밑에 컨텐츠가 있다.
+  - POST, PUT, DELETE, PATCH 메소드 API를 호출한 경우 반드시 해당 API와 관련된 GET 메소드의 API를 호출해야한다.
+  - 페이지 이동이나 API 호출 등 데이터 렌더링이 필요할 땐 @modal과 비슷한 원리로 구현된 loading이 화면에 나타나야한다.
+  - 작업이 끝난 후 loading이 화면에서 사라져야 한다.
+  - 기존에 제작된 컴포넌트를 사용하되, 없는 것을 새로 창조해낼 때는 shadcn-ui의 컴포넌트를 적극 활용한다.
+  - 모든 컴포넌트와 스타일의 px 비율이 맞아야 한다.
+  - 모든 변수와 프롭스의 네이밍은 API와 관련된 경우, 해당 API의 payload, response의 네이밍에 따라야 한다. (이미 API 스펙과 다르게 개발된 경우, 스펙에 맞춰 네이밍과 type을 변경해야한다.)
+  - enum 대신 as const 객체를 사용해야 한다. (이처럼 다른 선택지가 있음에도 불구하고 특정 하나를 선택을 한 경우, 이에 대한 문서나 주석이 있어야 한다.)
+  - 만약 png나 jpg와 같은 파일이 적용된 경우, webp로 변환하는 로직을 통해 (로직이 없는 경우 생성하여) 변환하고 적용한다.
+---

@@ -7,6 +7,8 @@ import {
 } from "@/apis/request";
 import { Badge } from "@/components/atoms/Badge";
 import normalizedDate from "@/utils/normalizedDate";
+import { Loading } from "@/components/atoms/Loading";
+import { useLoadingStore } from "@/store/loadingStore";
 
 export const MyNotification = () => {
   const { userId } = useUserStore();
@@ -14,11 +16,11 @@ export const MyNotification = () => {
   const [incomingSuggest, setIncomingSuggest] = useState<RequestItem[]>([]);
   const [outgoingApply, setOutgoingApply] = useState<RequestItem[]>([]);
   const [outgoingSuggest, setOutgoingSuggest] = useState<RequestItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const loadingStore = useLoadingStore();
 
   useEffect(() => {
     if (!userId) return;
-    setLoading(true);
+    loadingStore.setLoading("myNotification", true);
     getRequests(userId)
       .then((res) => {
         if (res.success) {
@@ -28,8 +30,10 @@ export const MyNotification = () => {
           setOutgoingSuggest(res.data.outgoingRequests.suggest || []);
         }
       })
-      .finally(() => setLoading(false));
+      .finally(() => loadingStore.setLoading("myNotification", false));
   }, [userId]);
+
+  if (loadingStore.isLoading("myNotification")) return <Loading />;
 
   // 모집 공고 카드 렌더 함수
   const renderProjectCard = (req: RequestItem) => (
@@ -79,7 +83,7 @@ export const MyNotification = () => {
 
   return (
     <div className="w-full max-w-4xl text-left">
-      {loading ? (
+      {loadingStore.isLoading("myNotification") ? (
         <div className="text-center text-gray-500">불러오는 중...</div>
       ) : (
         <div className="space-y-10">
