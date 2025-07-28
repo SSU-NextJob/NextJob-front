@@ -42,7 +42,7 @@ export const MyNotification = () => {
       className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition text-left"
     >
       <div className="text-xs font-medium text-gray-500 flex justify-between mb-1 text-left">
-        <Badge type={req.project.projectType} />
+        <Badge type={req.project.status} />
         <span>{normalizedDate(req.requestDate)}</span>
       </div>
       <h3 className="font-semibold text-gray-900 text-sm mb-1 text-left">
@@ -110,7 +110,7 @@ export const MyNotification = () => {
                       </p>
                       <div className="flex flex-wrap gap-2 mb-2">
                         <span className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full">
-                          {req.project.projectType}
+                          {req.project.status}
                         </span>
                       </div>
                       <div className="text-xs text-gray-400 mb-1">
@@ -174,7 +174,7 @@ export const MyNotification = () => {
                       </p>
                       <div className="flex flex-wrap gap-2 mb-2">
                         <span className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full">
-                          {req.project.projectType}
+                          {req.project.status}
                         </span>
                       </div>
                       <div className="text-xs text-gray-400 mb-1">
@@ -250,7 +250,7 @@ export const MyNotification = () => {
                       </p>
                       <div className="flex flex-wrap gap-2 mb-2">
                         <span className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full">
-                          {req.project.projectType}
+                          {req.project.status}
                         </span>
                       </div>
                       <div className="text-xs text-gray-400 mb-1">

@@ -37,7 +37,7 @@ export const SideTab = ({ currentTab }: SideTabsProps) => {
             : "border-transparent text-gray-800 hover:bg-gray-50"
         }`}
       >
-        <span className="mr-2">🔔</span> 내 알람
+        <span className="mr-2">🔔</span> 내 알림
       </div>
     </div>
   );

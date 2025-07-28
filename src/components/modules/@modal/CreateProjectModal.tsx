@@ -17,15 +17,14 @@ export const CreateProjectModal = ({
   const [content, setContent] = useState("");
   const [startAt, setStartAt] = useState("");
   const [endAt, setEndAt] = useState("");
-  const [projectType, setProjectType] = useState("progress");
+  const [status, setProjectType] = useState("progress");
   const [type, setType] = useState("contest");
   const [image, setImage] = useState<File | null>(null);
 
-  const { userId } = useUserStore()
+  const { userId } = useUserStore();
 
   // 필수값 체크
-  const isValid =
-    projectName && userId && startAt && endAt && projectType && type;
+  const isValid = projectName && userId && startAt && endAt && status && type;
 
   if (!isOpen) return null;
 
@@ -37,7 +36,7 @@ export const CreateProjectModal = ({
       creatorId: userId,
       startAt,
       endAt,
-      projectType,
+      status,
       image: image ? image.name : "",
       type,
     });
@@ -47,7 +46,7 @@ export const CreateProjectModal = ({
       creatorId: userId,
       startAt,
       endAt,
-      projectType,
+      status,
       image: image ? image.name : "",
       type,
     });
@@ -125,7 +124,7 @@ export const CreateProjectModal = ({
             <label className="text-sm font-semibold">진행 방식 *</label>
             <select
               className="w-full border px-3 py-2 rounded-md text-sm"
-              value={projectType}
+              value={status}
               onChange={(e) => setProjectType(e.target.value)}
               required
             >

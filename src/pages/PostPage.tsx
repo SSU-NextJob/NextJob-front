@@ -10,10 +10,10 @@ export default function PostPage() {
   const [projectOptions, setProjectOptions] = useState<CodeResponse[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [searchParams, setSearchParams] = useState<{
-    projectType: string;
+    status: string;
     keyword: string;
   }>({
-    projectType: "",
+    status: "",
     keyword: "",
   });
 
@@ -29,7 +29,7 @@ export default function PostPage() {
 
   const handleSearch = () => {
     setSearchParams({
-      projectType: selectedProjectType,
+      status: selectedProjectType,
       keyword: searchKeyword,
     });
   };
@@ -71,10 +71,7 @@ export default function PostPage() {
       </div>
 
       <div>
-        <PostList
-          projectType={searchParams.projectType}
-          keyword={searchParams.keyword}
-        />
+        <PostList status={searchParams.status} keyword={searchParams.keyword} />
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ export interface UserData {
 
 // 사용자가 참여했던 프로젝트 데이터 타입
 export interface ParticipationProject {
-  project_id: number;
+  projectId: number;
   name: string;
   type: string;
   content: string;
@@ -79,7 +79,13 @@ export const getUserProjectAPI = (userId: number) => {
 };
 
 // 사용자 정보 수정 API
-export const PatchUserDetailAPI = (userId: number, name: string, techStack: string, description: string, userType: string) => {
+export const PatchUserDetailAPI = (
+  userId: number,
+  name: string,
+  techStack: string,
+  description: string,
+  userType: string
+) => {
   return fetcher<PatchUserDetailResponse>(`/users/me`, {
     method: "PATCH",
     body: JSON.stringify({
@@ -87,7 +93,7 @@ export const PatchUserDetailAPI = (userId: number, name: string, techStack: stri
       name: name,
       techStack: techStack,
       description: description,
-      userType: userType
+      userType: userType,
     }),
   });
 };
@@ -98,7 +104,7 @@ export const PatchUserVisibleAPI = (userId: number, isVisible: boolean) => {
     method: "PATCH",
     body: JSON.stringify({
       userId: userId,
-      isVisible: isVisible
+      isVisible: isVisible,
     }),
   });
 };

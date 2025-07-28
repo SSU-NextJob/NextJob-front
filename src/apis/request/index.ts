@@ -4,7 +4,7 @@ export interface ProjectSummary {
   projectId: number;
   name: string;
   content: string;
-  projectType: string;
+  status: string;
   startAt: string; // datetime string
   endAt: string; // datetime string
   image: string;

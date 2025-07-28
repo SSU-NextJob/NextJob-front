@@ -171,6 +171,12 @@ export const Header = () => {
             >
               로그인 2
             </Button>
+            <Button
+              onClick={() => setUser({ userId: 3, userName: "테스트 3" })}
+              color={"white"}
+            >
+              로그인 3
+            </Button>
           </>
         )}
       </div>

@@ -13,7 +13,7 @@ export const postsHandlers = [
       user_id: 1,
       user_name: "홍길동",
       project: {
-        project_id: 1,
+        projectId: 1,
         name: "AI 챗봇 개발 프로젝트",
         content: "Python과 TensorFlow를 사용한 자연어 처리 챗봇 개발",
         type: "사이드 프로젝트",

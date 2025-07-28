@@ -6,7 +6,7 @@ export interface CreateProjectRequest {
   creatorId: number;
   startAt: string;
   endAt: string;
-  projectType: string;
+  status: string;
   image?: string;
   type: string;
 }

@@ -124,7 +124,7 @@ export const MyProjectsCard = ({
                 onClick={() => navigate(`/post/detail/${post.postId}`)}
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1 text-left">
-                  <Badge type={post.project.projectType} />
+                  <Badge type={post.project.status} />
                   <span>{normalizedDate(post.createAt)}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1 text-left">

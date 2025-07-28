@@ -31,15 +31,15 @@ export const projectHandlers = [
     const { id } = params;
     const body = await request.json();
     const data = typeof body === "object" && body !== null ? body : {};
-    const project_id = (data as any).project_id;
-    if (!project_id) {
+    const projectId = (data as any).projectId;
+    if (!projectId) {
       return Response.json(
-        { message: "project_id가 필요합니다." },
+        { message: "projectId가 필요합니다." },
         { status: 400 }
       );
     }
     return Response.json({
-      message: `user(${id})에게 프로젝트(${project_id})를 제안했습니다.`,
+      message: `user(${id})에게 프로젝트(${projectId})를 제안했습니다.`,
     });
   }),
   http.get("/users/:id/projects", async ({ params }) => {

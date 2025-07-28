@@ -5,11 +5,11 @@ import { Loading } from "@/components/atoms/Loading";
 import { useLoadingStore } from "@/store/loadingStore";
 
 type PostListProps = {
-  projectType: string;
+  status: string;
   keyword: string;
 };
 
-export const PostList = ({ projectType, keyword }: PostListProps) => {
+export const PostList = ({ status, keyword }: PostListProps) => {
   const [postList, setPostList] = useState<PostResponse[]>([]);
   const loadingStore = useLoadingStore();
   // const [error, setError] = useState<string>("");
@@ -17,7 +17,7 @@ export const PostList = ({ projectType, keyword }: PostListProps) => {
   useEffect(() => {
     loadingStore.setLoading("postList", true);
     getPostList({
-      type: projectType,
+      type: status,
       role: "",
       search: keyword,
       page: "1",
@@ -28,7 +28,7 @@ export const PostList = ({ projectType, keyword }: PostListProps) => {
         // else setError("데이터를 불러오지 못했습니다.");
       })
       .finally(() => loadingStore.setLoading("postList", false));
-  }, [projectType, keyword]);
+  }, [status, keyword]);
 
   if (loadingStore.isLoading("postList")) return <Loading />;
   if (postList.length === 0) {
