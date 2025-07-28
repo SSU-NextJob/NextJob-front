@@ -32,7 +32,7 @@ export const PostCard = ({ posts }: { posts: PostResponse[] }) => {
               className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition flex flex-col"
             >
               <div className="flex justify-between items-center mb-3 text-sm text-gray-500">
-                <Badge type={post.project.status} />
+                <Badge type={post.project.type} />
                 <span className="flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

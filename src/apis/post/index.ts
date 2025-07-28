@@ -29,7 +29,7 @@ export interface PostResponse {
   project: {
     projectId: number; // 프로젝트 아이디
     projectName: string; // 프로젝트 이름
-    status: string; // 프로젝트 종류
+    type: string; // 프로젝트 종류
     startAt: Date; // 프로젝트 시작일
     endAt: Date; // 프로젝트 종료일
   };
