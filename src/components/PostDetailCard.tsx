@@ -205,7 +205,7 @@ export const PostDetailCard = ({ post }: { post?: PostDetailResponse }) => {
                         {post.project.name}
                       </span>
                       <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium border bg-gray-50 text-gray-700 border-gray-200">
-                        {post.project.status}
+                        {post.project.type}
                       </span>
                     </div>
                     <div className="flex gap-3 text-xs text-gray-400 mb-1 flex-wrap">
