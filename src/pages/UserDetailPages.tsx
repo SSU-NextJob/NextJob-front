@@ -1,11 +1,17 @@
-﻿import { useParams } from "react-router-dom";
-import { UserDetail } from "@/components/UserDetail";
+﻿import { UserDetail } from "@/components/UserDetail";
+import { useUserDetail } from "@/hooks/useUserDetail";
+import { useParams } from "react-router-dom";
 
 export default function UserDetailPage() {
-  const { id } = useParams(); // URL에서 id 추출
-  console.log("id", id);
+  const { id } = useParams();
+  const { userDetail, userProjectList, isLoading, error } = useUserDetail(id);
 
-  if (!id) return <div>존재하지 않는 유저입니다.</div>;
-
-  return <UserDetail />;
+  return (
+    <UserDetail
+      userDetail={userDetail}
+      userProjectList={userProjectList}
+      isLoading={isLoading}
+      error={error}
+    />
+  );
 }
