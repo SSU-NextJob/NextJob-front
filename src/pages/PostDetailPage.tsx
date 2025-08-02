@@ -1,10 +1,12 @@
 ﻿import { PostDetail } from "@/components/PostDetail";
+import { usePostDetail } from "@/hooks/usePostDetail";
 import { useParams } from "react-router-dom";
 
 export default function PostDetailPage() {
-  const { id } = useParams(); // URL에서 id 추출
+  const { id } = useParams();
+  const { postDetail, isLoading, error } = usePostDetail(id);
 
-  if (!id) return <div>존재하지 않는 프로젝트입니다.</div>;
-
-  return <PostDetail />;
+  return (
+    <PostDetail postDetail={postDetail} isLoading={isLoading} error={error} />
+  );
 }
