@@ -1,7 +1,12 @@
 ﻿import { create } from "zustand";
 import { nanoid } from "nanoid";
 
-export type ModalType = "createProject" | "apply" | "suggest" | "recruit";
+export type ModalType =
+  | "createProject"
+  | "apply"
+  | "suggest"
+  | "recruit"
+  | "error";
 
 export interface ModalStackItem {
   id: string;

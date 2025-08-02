@@ -124,7 +124,7 @@ export const MyProjectsCard = ({
                 onClick={() => navigate(`/post/detail/${post.postId}`)}
               >
                 <div className="text-xs font-medium text-gray-500 flex justify-between mb-1 text-left">
-                  <Badge type={post.project.status} />
+                  <Badge type={post.project.type} />
                   <span>{normalizedDate(post.createAt)}</span>
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm mb-1 text-left">
@@ -158,8 +158,8 @@ export const MyProjectsCard = ({
                       className="size-4 mr-1"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
