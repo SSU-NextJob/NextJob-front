@@ -1,37 +1,19 @@
-import { getPostList, type PostResponse } from "@/apis/post";
-import { PostCard } from "@/components/PostCard";
-import { useEffect, useState } from "react";
 import { Loading } from "@/components/atoms/Loading";
-import { useLoadingStore } from "@/store/loadingStore";
+import { PostCard } from "@/components/PostCard";
+import type { PostResponse } from "@/apis/post";
 
-type PostListProps = {
-  status: string;
-  keyword: string;
-};
+interface PostListProps {
+  posts: PostResponse[];
+  isLoading: boolean;
+  error: string | null;
+}
 
-export const PostList = ({ status, keyword }: PostListProps) => {
-  const [postList, setPostList] = useState<PostResponse[]>([]);
-  const loadingStore = useLoadingStore();
-  // const [error, setError] = useState<string>("");
+export const PostList = ({ posts, isLoading, error }: PostListProps) => {
+  if (isLoading) return <Loading />;
 
-  useEffect(() => {
-    loadingStore.setLoading("postList", true);
-    getPostList({
-      type: status,
-      role: "",
-      search: keyword,
-      page: "1",
-      pageSize: "10",
-    })
-      .then((res) => {
-        if (res.success) setPostList(res.data);
-        // else setError("데이터를 불러오지 못했습니다.");
-      })
-      .finally(() => loadingStore.setLoading("postList", false));
-  }, [status, keyword]);
+  if (error) return <div className="text-red-500">{error}</div>;
 
-  if (loadingStore.isLoading("postList")) return <Loading />;
-  if (postList.length === 0) {
+  if (posts.length === 0) {
     return (
       <div className="w-full flex flex-col items-center justify-center py-16 text-gray-400">
         <svg
@@ -53,5 +35,6 @@ export const PostList = ({ status, keyword }: PostListProps) => {
       </div>
     );
   }
-  return <PostCard posts={postList} />;
+
+  return <PostCard posts={posts} />;
 };

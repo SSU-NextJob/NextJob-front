@@ -1,38 +1,20 @@
-﻿import { getGroupCode, type CodeResponse } from "@/apis/group";
-import { MultiSelector } from "@/components/modules/Dropdown";
-import { SearchBar } from "@/components/modules/SearchBar";
+﻿import { PostSearchForm } from "@/components/PostSearchForm";
 import { PostList } from "@/components/PostList";
-import { Button } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { usePostSearchPage } from "@/hooks/usePostSearchPage";
 
 export default function PostPage() {
-  const [selectedProjectType, setSelectedProjectType] = useState<string>("");
-  const [projectOptions, setProjectOptions] = useState<CodeResponse[]>([]);
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [searchParams, setSearchParams] = useState<{
-    status: string;
-    keyword: string;
-  }>({
-    status: "",
-    keyword: "",
-  });
-
-  useEffect(() => {
-    getGroupCode("PROJECT_TYPE").then((res) => {
-      if (res.success) setProjectOptions(res.data);
-    });
-  }, []);
-
-  const handleSelect = (selected: string) => {
-    setSelectedProjectType(selected);
-  };
-
-  const handleSearch = () => {
-    setSearchParams({
-      status: selectedProjectType,
-      keyword: searchKeyword,
-    });
-  };
+  const {
+    projectOptions,
+    selectedProjectType,
+    searchKeyword,
+    postList,
+    listLoading,
+    listError,
+    handleSelect,
+    handleKeywordChange,
+    handleSearch,
+    handleSearchOnly,
+  } = usePostSearchPage();
 
   return (
     <div className="w-full mx-auto text-left py-8 px-4 md:px-8">
@@ -41,37 +23,18 @@ export default function PostPage() {
         {/* <p className="text-base text-gray-500">협업할 흥미로운 프로젝트 탐색</p> */}
       </div>
 
-      <div className="flex items-start flex-wrap gap-4 mb-8">
-        <MultiSelector
-          rawOptions={projectOptions.map((option) => ({
-            label: option.detailName,
-            value: option.detailCode,
-          }))}
-          isOptionObject={true}
-          isTotalDefault={false}
-          value={selectedProjectType}
-          onSelectOption={handleSelect}
-        />
-        <div className="flex gap-[12px]">
-          <SearchBar
-            className="w-[250px]"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            onEnter={handleSearch}
-            placeholder="프로젝트명 검색"
-          />
-          <Button
-            backgroundColor="#015bd6"
-            color="white"
-            onClick={handleSearch}
-          >
-            검색
-          </Button>
-        </div>
-      </div>
+      <PostSearchForm
+        projectOptions={projectOptions}
+        selectedProjectType={selectedProjectType}
+        searchKeyword={searchKeyword}
+        onSelect={handleSelect}
+        onKeywordChange={handleKeywordChange}
+        onSearch={handleSearch}
+        onSearchOnly={handleSearchOnly}
+      />
 
       <div>
-        <PostList status={searchParams.status} keyword={searchParams.keyword} />
+        <PostList posts={postList} isLoading={listLoading} error={listError} />
       </div>
     </div>
   );
