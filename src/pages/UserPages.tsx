@@ -7,7 +7,6 @@ export default function UserPage() {
     userTypeOptions,
     selectedUserType,
     searchKeyword,
-    effectiveKeyword,
     users,
     listLoading,
     listError,

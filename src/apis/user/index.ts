@@ -2,10 +2,10 @@
 
 // 사용자 리스트 조회 쿼리 파라미터 타입
 export interface GetUserListParams {
-  userType: string;
-  search: string;
-  page: string;
-  pageSize: string;
+  userType?: string;
+  search?: string;
+  page?: string;
+  pageSize?: string;
 }
 
 // 사용자 데이터 타입
@@ -53,12 +53,23 @@ export interface PatchUserDetailResponse {
 
 // 사용자 리스트 조회 API 함수
 export const getUserListAPI = (params: GetUserListParams) => {
-  const query = new URLSearchParams({
-    userType: params.userType,
-    search: params.search,
-    page: params.page,
-    pageSize: params.pageSize,
-  }).toString();
+  const searchParams = new URLSearchParams();
+  
+  // undefined가 아닌 값만 추가
+  if (params.userType !== undefined) {
+    searchParams.append('userType', params.userType);
+  }
+  if (params.search !== undefined) {
+    searchParams.append('search', params.search);
+  }
+  if (params.page !== undefined) {
+    searchParams.append('page', params.page);
+  }
+  if (params.pageSize !== undefined) {
+    searchParams.append('pageSize', params.pageSize);
+  }
+  
+  const query = searchParams.toString();
   return fetcher<GetUserListResponse>(`/users?${query}`, {
     method: "GET",
   });

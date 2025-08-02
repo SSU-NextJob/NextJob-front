@@ -1,35 +1,39 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import type { UserData } from "@/apis/user";
 import { getUserListAPI } from "@/apis/user";
 import { useLoadingStore } from "@/store/loadingStore";
 
-interface UserListParams {
-  userType: string;
-  keyword: string;
-}
-
-export function useUserList({ userType, keyword }: UserListParams) {
+export function useUserList() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const loadingStore = useLoadingStore();
 
-  const searchUsers = useCallback(async (searchKeyword?: string) => {
+  const searchUsers = useCallback(async (userType?: string, keyword?: string) => {
     loadingStore.setLoading("userList", true);
     setError(null);
 
     try {
-      console.log('...keyword :: ', searchKeyword || keyword)
       const apiParams: any = {
-        search: searchKeyword || keyword,
-        userType,
         page: "1",
         pageSize: "20",
       };
+
+      // userType이 undefined가 아니고 실제 값이 있을 때만 추가
+      if (userType !== undefined && userType && userType.trim() !== "") {
+        apiParams.userType = userType;
+      }
+
+      // keyword가 undefined가 아니고 실제 값이 있을 때만 추가
+      if (keyword !== undefined && keyword && keyword.trim() !== "") {
+        apiParams.search = keyword;
+      }
 
       const res = await getUserListAPI(apiParams);
 
       if (res.success) {
         setUsers(res.data);
+        setIsInitialized(true);
       } else {
         setError("데이터를 불러오지 못했습니다.");
       }
@@ -38,17 +42,13 @@ export function useUserList({ userType, keyword }: UserListParams) {
     } finally {
       loadingStore.setLoading("userList", false);
     }
-  }, [userType, keyword, loadingStore]);
-
-  // 초기 렌더링 시 데이터 로드
-  useEffect(() => {
-    searchUsers();
-  }, []); // 컴포넌트 마운트 시 한 번만 실행
+  }, [loadingStore]);
 
   return {
     users,
     error,
     isLoading: loadingStore.isLoading("userList"),
+    isInitialized,
     searchUsers,
   };
 } 

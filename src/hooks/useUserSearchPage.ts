@@ -1,43 +1,39 @@
 import { useUserTypeOptions } from "./useUserTypeOptions";
 import { useUserSearch } from "./useUserSearch";
 import { useUserList } from "./useUserList";
+import { useCallback, useEffect } from "react";
 
 export function useUserSearchPage() {
+  // Level 1 훅들
   const { userTypeOptions, loading: typeLoading, error: typeError } = useUserTypeOptions();
-  const { 
-    selectedUserType, 
-    searchKeyword, 
-    effectiveKeyword,
-    handleSelect, 
-    handleKeywordChange,
-  } = useUserSearch();
-  
-  const { users, error: listError, isLoading: listLoading, searchUsers } = useUserList({ 
-    userType: selectedUserType, 
-    keyword: effectiveKeyword
-  });
+  const { selectedUserType, searchKeyword, handleSelect, handleKeywordChange } = useUserSearch();
+  const { users, error: listError, isLoading: listLoading, isInitialized, searchUsers } = useUserList();
 
-  // 검색 버튼 클릭 시에만 API 호출
-  const handleSearchWithAPI = () => {
+  // 페이지 진입 시 초기 데이터 로드 (파라미터 없이 호출)
+  useEffect(() => {
+    if (!isInitialized) {
+      searchUsers();
+    }
+  }, [isInitialized]);
 
-    searchUsers(searchKeyword);
-  };
+  // 검색 함수들
+  const handleSearch = useCallback(() => {
+    searchUsers(selectedUserType, searchKeyword);
+  }, [selectedUserType, searchKeyword, searchUsers]);
 
-  // Enter 키에서도 API 호출
-  const handleSearchOnlyWithAPI = () => {
-    searchUsers(searchKeyword);
-  };
+  const handleSearchOnly = useCallback(() => {
+    searchUsers(selectedUserType, searchKeyword);
+  }, [selectedUserType, searchKeyword, searchUsers]);
 
   return {
     // 검색 관련
     userTypeOptions,
     selectedUserType,
     searchKeyword,
-    effectiveKeyword, // 검색된 키워드 추가
     handleSelect,
     handleKeywordChange,
-    handleSearch: handleSearchWithAPI, // 검색 버튼용 함수
-    handleSearchOnly: handleSearchOnlyWithAPI, // Enter 키용 함수
+    handleSearch,
+    handleSearchOnly,
     
     // 데이터 관련
     users,
