@@ -20,5 +20,19 @@ export const fetcher = async <T>(
     throw new Error(errorBody.message || "API 호출 실패");
   }
 
-  return res.json();
+  const responseData = await res.json();
+
+  // success: false인 경우 에러 처리
+  if (responseData.success === false) {
+    const errorMessage =
+      responseData.error?.message || "요청 처리 중 오류가 발생했습니다.";
+
+    // 에러 모달 표시
+    const { showErrorModal } = await import("@/utils/showErrorModal");
+    showErrorModal(errorMessage);
+
+    throw new Error(errorMessage);
+  }
+
+  return responseData;
 };

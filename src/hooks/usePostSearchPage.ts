@@ -22,7 +22,7 @@ export function usePostSearchPage() {
 
   useEffect(() => {
     getGroupCode("PROJECT_TYPE").then((res) => {
-      if (res.success) setProjectOptions(res.data);
+      setProjectOptions(res.data);
     });
   }, []);
 
@@ -39,14 +39,7 @@ export function usePostSearchPage() {
       pageSize: "10",
     })
       .then((res) => {
-        if (res.success) {
-          setPostList(res.data);
-        } else {
-          setListError("데이터를 불러오지 못했습니다.");
-        }
-      })
-      .catch(() => {
-        setListError("데이터를 불러오지 못했습니다.");
+        setPostList(res.data);
       })
       .finally(() => loadingStore.setLoading("postList", false));
   }, [searchParams.status, searchParams.keyword]);

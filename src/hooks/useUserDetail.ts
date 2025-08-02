@@ -16,7 +16,8 @@ export function useUserDetail(userId: string | undefined) {
 
   useEffect(() => {
     if (!userId) {
-      setError("존재하지 않는 유저입니다.");
+      const errorMessage = "존재하지 않는 유저입니다.";
+      setError(errorMessage);
       return;
     }
 
@@ -24,29 +25,14 @@ export function useUserDetail(userId: string | undefined) {
     setError(null);
 
     // 사용자 상세 정보 가져오기
-    getUserDetailAPI(parseInt(userId))
-      .then((res) => {
-        if (res.success) {
-          setUserDetail(res.data);
-        } else {
-          setError("사용자 정보를 불러오지 못했습니다.");
-        }
-      })
-      .catch(() => {
-        setError("사용자 정보를 불러오지 못했습니다.");
-      });
+    getUserDetailAPI(parseInt(userId)).then((res) => {
+      setUserDetail(res.data);
+    });
 
     // 사용자 프로젝트 정보 가져오기
     getUserProjectAPI(parseInt(userId))
       .then((res) => {
-        if (res.success) {
-          setUserProjectList(res);
-        } else {
-          setError("프로젝트 정보를 불러오지 못했습니다.");
-        }
-      })
-      .catch(() => {
-        setError("프로젝트 정보를 불러오지 못했습니다.");
+        setUserProjectList(res);
       })
       .finally(() => loadingStore.setLoading("userDetail", false));
   }, [userId]);

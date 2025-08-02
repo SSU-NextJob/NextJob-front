@@ -5,6 +5,7 @@ import { CreateProjectModal } from "@/components/modules/@modal/CreateProjectMod
 import { ConfirmApplyModal } from "@/components/modules/@modal/ApplyModal";
 import { SuggestModal } from "@/components/modules/@modal/SuggestModal";
 import { RecruitTeamModal } from "@/components/modules/@modal/RecruitmenModal";
+import { ErrorModal } from "@/components/modules/@modal/ErrorModal";
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
 
@@ -13,6 +14,7 @@ const MODAL_COMPONENTS: Record<ModalType, any> = {
   apply: ConfirmApplyModal,
   suggest: SuggestModal,
   recruit: RecruitTeamModal,
+  error: ErrorModal,
 };
 
 export const ModalRoot = () => {
