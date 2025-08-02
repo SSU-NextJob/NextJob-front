@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { getGroupCode, type CodeResponse } from "@/apis/group";
 
+/**
+ * Level 1 - 원자적 훅: 사용자 타입 옵션만 관리
+ * 
+ * 단일 책임: 사용자 타입 옵션을 가져오는 것만 담당
+ * 재사용성: 다른 컴포넌트에서도 사용자 타입 옵션이 필요할 때 재사용 가능
+ */
 export function useUserTypeOptions() {
   const [userTypeOptions, setUserTypeOptions] = useState<CodeResponse[]>([]);
   const [loading, setLoading] = useState(false);

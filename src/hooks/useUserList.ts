@@ -3,10 +3,15 @@ import type { UserData } from "@/apis/user";
 import { getUserListAPI } from "@/apis/user";
 import { useLoadingStore } from "@/store/loadingStore";
 
+/**
+ * Level 1 - 원자적 훅: 사용자 목록 데이터만 관리
+ * 
+ * 단일 책임: 사용자 목록 데이터 fetching과 상태 관리만 담당
+ * 재사용성: 다른 사용자 목록 기능에서도 동일한 로직으로 재사용 가능
+ */
 export function useUserList() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
   const loadingStore = useLoadingStore();
 
   const searchUsers = useCallback(async (userType?: string, keyword?: string) => {
@@ -14,26 +19,15 @@ export function useUserList() {
     setError(null);
 
     try {
-      const apiParams: any = {
+      const res = await getUserListAPI({
+        userType,
+        search: keyword,
         page: "1",
         pageSize: "20",
-      };
-
-      // userType이 undefined가 아니고 실제 값이 있을 때만 추가
-      if (userType !== undefined && userType && userType.trim() !== "") {
-        apiParams.userType = userType;
-      }
-
-      // keyword가 undefined가 아니고 실제 값이 있을 때만 추가
-      if (keyword !== undefined && keyword && keyword.trim() !== "") {
-        apiParams.search = keyword;
-      }
-
-      const res = await getUserListAPI(apiParams);
+      });
 
       if (res.success) {
         setUsers(res.data);
-        setIsInitialized(true);
       } else {
         setError("데이터를 불러오지 못했습니다.");
       }
@@ -48,7 +42,6 @@ export function useUserList() {
     users,
     error,
     isLoading: loadingStore.isLoading("userList"),
-    isInitialized,
     searchUsers,
   };
 } 

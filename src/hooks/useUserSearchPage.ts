@@ -3,20 +3,23 @@ import { useUserSearch } from "./useUserSearch";
 import { useUserList } from "./useUserList";
 import { useCallback, useEffect } from "react";
 
+/**
+ * Level 2 - 조합 훅: Level 1 훅들을 조합하여 완전한 검색 페이지 기능 제공
+ * 
+ * 단일 책임: Level 1 훅들을 조합하여 검색 페이지의 전체 로직을 연결
+ * 조합 방식: useUserTypeOptions + useUserSearch + useUserList = 완전한 검색 기능
+ * 확장성: 각 Level 1 훅을 독립적으로 교체하거나 재사용 가능
+ */
 export function useUserSearchPage() {
-  // Level 1 훅들
   const { userTypeOptions, loading: typeLoading, error: typeError } = useUserTypeOptions();
   const { selectedUserType, searchKeyword, handleSelect, handleKeywordChange } = useUserSearch();
-  const { users, error: listError, isLoading: listLoading, isInitialized, searchUsers } = useUserList();
+  const { users, error: listError, isLoading: listLoading, searchUsers } = useUserList();
 
-  // 페이지 진입 시 초기 데이터 로드 (파라미터 없이 호출)
+  // 초기 데이터 로드
   useEffect(() => {
-    if (!isInitialized) {
-      searchUsers();
-    }
-  }, [isInitialized]);
+    searchUsers();
+  }, []);
 
-  // 검색 함수들
   const handleSearch = useCallback(() => {
     searchUsers(selectedUserType, searchKeyword);
   }, [selectedUserType, searchKeyword, searchUsers]);
@@ -26,7 +29,6 @@ export function useUserSearchPage() {
   }, [selectedUserType, searchKeyword, searchUsers]);
 
   return {
-    // 검색 관련
     userTypeOptions,
     selectedUserType,
     searchKeyword,
@@ -34,11 +36,7 @@ export function useUserSearchPage() {
     handleKeywordChange,
     handleSearch,
     handleSearchOnly,
-    
-    // 데이터 관련
     users,
-    
-    // 상태 관련
     typeLoading,
     typeError,
     listLoading,
