@@ -7,7 +7,7 @@
  */
 
 // 표준 라이브러리 (가장 작은 의존성)
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 // 서드파티 라이브러리 (외부 의존성)
 import { BrowserRouter } from "react-router-dom";
