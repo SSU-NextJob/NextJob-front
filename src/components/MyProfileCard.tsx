@@ -12,11 +12,7 @@ import { getGroupCode, type CodeResponse } from "@/apis/group";
 import { useEffect } from "react";
 import { PatchUserVisibleAPI } from "@/apis/user";
 
-const MyProfileCard = ({
-  userProfile,
-  joinedProjects,
-  onSave = () => {},
-}: MyProfileProps) => {
+const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
   if (!userProfile) return;
 
   const [isEditing, setIsEditing] = useState(false);
@@ -36,8 +32,10 @@ const MyProfileCard = ({
       getGroupCode("USER_TYPE").then((res) => {
         if (res.success) {
           setUserTypeOptions(res.data);
-          const selectedCode = res.data.find(opt => opt.detailName === userProfile.userType)?.detailCode;
-          setForm(prev => ({ ...prev, role: selectedCode || "" }));
+          const selectedCode = res.data.find(
+            (opt) => opt.detailName === userProfile.userType
+          )?.detailCode;
+          setForm((prev) => ({ ...prev, role: selectedCode || "" }));
         }
       });
     }
@@ -153,16 +151,21 @@ const MyProfileCard = ({
           {profileKeys.map((key: ProfileKey) => (
             <div key={key}>
               <span className="text-sm text-gray-500">
-                {{
-                  name: "이름",
-                  role: "역할",
-                  techStack: "기술 스택",
-                }[key]}
+                {
+                  {
+                    name: "이름",
+                    role: "역할",
+                    techStack: "기술 스택",
+                  }[key]
+                }
               </span>
               {isEditing ? (
                 key === "role" ? (
                   <MultiSelector
-                    rawOptions={userTypeOptions.map((opt) => ({ label: opt.detailName, value: opt.detailCode }))}
+                    rawOptions={userTypeOptions.map((opt) => ({
+                      label: opt.detailName,
+                      value: opt.detailCode,
+                    }))}
                     isOptionObject={true}
                     value={form.role}
                     onSelectOption={(val) => handleChange("role", val)}
@@ -206,11 +209,11 @@ const MyProfileCard = ({
         <button
           onClick={handleToggleVisible}
           tabIndex={-1}
-          onMouseDown={e => e.preventDefault()}
-          className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${isVisible ? 'bg-blue-500' : 'bg-gray-300'}`}
+          onMouseDown={(e) => e.preventDefault()}
+          className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${isVisible ? "bg-blue-500" : "bg-gray-300"}`}
         >
           <span
-            className={`h-4 w-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${isVisible ? 'translate-x-4' : ''}`}
+            className={`h-4 w-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${isVisible ? "translate-x-4" : ""}`}
           />
         </button>
       </div>

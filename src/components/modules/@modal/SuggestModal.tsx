@@ -30,8 +30,6 @@ export const SuggestModal = ({
   memberId,
   isOpen,
   onClose,
-  onSubmit,
-  posts,
 }: SuggestModalProps) => {
   const { userId } = useUserStore();
   if (!userId) return;

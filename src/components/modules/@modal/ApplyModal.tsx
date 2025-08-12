@@ -13,7 +13,6 @@ interface ConfirmApplyModalProps {
 export const ConfirmApplyModal = ({
   isOpen,
   onClose,
-  onApply,
   projectId,
 }: ConfirmApplyModalProps) => {
   const { userId } = useUserStore();
