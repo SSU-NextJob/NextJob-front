@@ -73,6 +73,12 @@ export const Header = () => {
         >
           팀원 탐색
         </Link>
+        <Link
+          to="/workspace"
+          className={isActive("/workspace") ? "text-blue-600" : "text-black"}
+        >
+          워크스페이스
+        </Link>
         {userId && (
           <Link
             to="/mypage"

@@ -3,6 +3,7 @@ import PostPage from "./pages/PostPage";
 import PostDetailPage from "./pages/PostDetailPage";
 import UserPage from "./pages/UserPages";
 import UserDetailPages from "./pages/UserDetailPages";
+import WorkspacePage from "./pages/WorkspacePage";
 import { MyPage } from "./pages/MyPage";
 import { AuthGuard } from "./utils/AuthGuard";
 
@@ -12,6 +13,7 @@ export const AppRoutes = () => (
     <Route path="/post/detail/:id" element={<PostDetailPage />} />
     <Route path="/user" element={<UserPage />} />
     <Route path="/user/detail/:id" element={<UserDetailPages />} />
+    <Route path="/workspace" element={<WorkspacePage />} />
     <Route
       path="/mypage"
       element={
