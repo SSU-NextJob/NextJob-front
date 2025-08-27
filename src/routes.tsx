@@ -6,6 +6,7 @@ import UserDetailPages from "./pages/UserDetailPages";
 import WorkspacePage from "./pages/WorkspacePage";
 import { MyPage } from "./pages/MyPage";
 import { AuthGuard } from "./utils/AuthGuard";
+import { AuthCallbackPage } from "./pages/AuthCallbackPage";
 
 export const AppRoutes = () => (
   <Routes>
@@ -14,6 +15,7 @@ export const AppRoutes = () => (
     <Route path="/user" element={<UserPage />} />
     <Route path="/user/detail/:id" element={<UserDetailPages />} />
     <Route path="/workspace" element={<WorkspacePage />} />
+    <Route path="/auth/callback" element={<AuthCallbackPage />} />
     <Route
       path="/mypage"
       element={

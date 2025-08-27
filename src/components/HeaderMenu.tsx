@@ -3,12 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/atoms/Button";
 import { HeaderNofication } from "./HeaderNofication";
 import { useModalStore } from "@/store/modalStore";
-import { postCreateProject } from "@/apis/project";
+import { postCreateProject, type CreateProjectRequest } from "@/apis/project";
 import { useMutation } from "@tanstack/react-query";
 import { useUserStore } from "@/store/userStore";
 import { getNotificationList } from "@/apis/notification";
 import { useEffect } from "react";
 import type { NotificationItem } from "@/apis/notification";
+import { googleLogoutAPI } from "@/apis/user";
 
 export const Header = () => {
   const location = useLocation();
@@ -22,27 +23,65 @@ export const Header = () => {
     onSuccess: () => {
       alert("프로젝트가 성공적으로 생성되었습니다.");
     },
-    onError: (e: any) => {
-      alert(e.message || "프로젝트 생성에 실패했습니다.");
+    onError: (error: Error) => {
+      alert(error.message || "프로젝트 생성에 실패했습니다.");
     },
   });
 
   // userStore 연동
-  const { userId, setUser, clearUser } = useUserStore();
+  const { userId, clearUser, isSessionValid } = useUserStore();
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationList, setNotificationList] = useState<NotificationItem[]>(
     []
   );
 
+  // Google 로그인 mutation
+  const googleLoginMutation = useMutation({
+    mutationFn: () => {
+      // Google OAuth2 authorization endpoint로 직접 리다이렉트
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || "";
+      const redirectUri = encodeURIComponent(
+        `${baseUrl}/oauth2/google/callback`
+      );
+
+      // OAuth2 authorization URL 생성
+      const authUrl = `${baseUrl}/oauth2/authorization/google?redirect_uri=${redirectUri}`;
+      window.location.href = authUrl;
+      return Promise.resolve(); // 리다이렉트이므로 빈 Promise 반환
+    },
+    onError: (error: Error) => {
+      alert(error.message || "Google 로그인에 실패했습니다.");
+    },
+  });
+
+  // Google 로그아웃 mutation
+  const googleLogoutMutation = useMutation({
+    mutationFn: (userId: number) => googleLogoutAPI(userId),
+    onSuccess: () => {
+      clearUser();
+      alert("로그아웃되었습니다.");
+    },
+    onError: (error: Error) => {
+      alert(error.message || "로그아웃에 실패했습니다.");
+    },
+  });
+
   useEffect(() => {
     if (!userId) return;
+
+    // 세션 유효성 검사
+    if (!isSessionValid()) {
+      clearUser();
+      return;
+    }
+
     getNotificationList(userId).then((res) => {
       if (res.success) {
         setNotificationList(res.data);
         setUnreadCount(res.data.filter((n) => !n.isRead).length);
       }
     });
-  }, [userId]);
+  }, [userId, isSessionValid, clearUser]);
 
   // 페이지 이동 시 알림창 닫기
   useEffect(() => {
@@ -142,14 +181,18 @@ export const Header = () => {
               />
             )}
             {/* 로그아웃 버튼 */}
-            <Button onClick={clearUser} color={"white"}>
-              로그아웃
+            <Button
+              onClick={() => userId && googleLogoutMutation.mutate(userId)}
+              color={"white"}
+              disabled={googleLogoutMutation.isPending}
+            >
+              {googleLogoutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
             </Button>
             {/* 프로젝트 생성, 팀원 모집 */}
             <Button
               onClick={() =>
                 onOpenModal("createProject", {
-                  onCreate: (data: any) => {
+                  onCreate: (data: CreateProjectRequest) => {
                     createProjectMutation.mutate(data);
                   },
                 })
@@ -164,24 +207,13 @@ export const Header = () => {
           </>
         ) : (
           <>
-            {/* 로그아웃 상태: 로그인 버튼만 */}
+            {/* 로그아웃 상태: Google 로그인 버튼 */}
             <Button
-              onClick={() => setUser({ userId: 1, userName: "테스트 1" })}
-              color={"white"}
+              onClick={() => googleLoginMutation.mutate()}
+              color={"blue"}
+              disabled={googleLoginMutation.isPending}
             >
-              로그인 1
-            </Button>
-            <Button
-              onClick={() => setUser({ userId: 2, userName: "테스트 2" })}
-              color={"white"}
-            >
-              로그인 2
-            </Button>
-            <Button
-              onClick={() => setUser({ userId: 3, userName: "테스트 3" })}
-              color={"white"}
-            >
-              로그인 3
+              {googleLoginMutation.isPending ? "로그인 중..." : "Google 로그인"}
             </Button>
           </>
         )}
