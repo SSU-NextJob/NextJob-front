@@ -15,7 +15,6 @@ export const HeaderNofication = ({
   notificationList,
   setNotificationList,
   onMarkAsRead,
-  onMarkAllAsRead,
 }: HeaderNoficationProps) => {
   const navigate = useNavigate();
   const location = useLocation();

@@ -4,9 +4,15 @@ import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
 import App from "./App";
 import "./index.css";
 
+// 개발 환경에서 MSW 시작
+if (import.meta.env.DEV) {
+  const { worker } = await import("./mocks/browser");
+  worker.start();
+}
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ChakraProvider resetCSS={false} cssVarsRoot="body" value={defaultSystem}>
+    <ChakraProvider value={defaultSystem}>
       <App />
     </ChakraProvider>
   </StrictMode>
