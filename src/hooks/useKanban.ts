@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createTask,
   updateTask,
@@ -6,7 +6,7 @@ import {
   getTasks,
   getTaskDetail,
   changeTaskColumn,
-} from '@/apis/kanban';
+} from "@/apis/workspace/kanban";
 import type {
   CreateTaskRequest,
   UpdateTaskRequest,
@@ -14,11 +14,12 @@ import type {
   GetTasksRequest,
   GetTaskDetailRequest,
   ChangeTaskColumnRequest,
-} from '@/apis/kanban/types';
+} from "@/apis/workspace/kanban/types";
 
 const KANBAN_QUERY_KEYS = {
-  tasks: (kanbanId: number) => ['kanban', 'tasks', kanbanId] as const,
-  taskDetail: (taskId: number, kanbanId: number) => ['kanban', 'task', taskId, kanbanId] as const,
+  tasks: (kanbanId: number) => ["kanban", "tasks", kanbanId] as const,
+  taskDetail: (taskId: number, kanbanId: number) =>
+    ["kanban", "task", taskId, kanbanId] as const,
 };
 
 export const useCreateTask = () => {
@@ -38,14 +39,22 @@ export const useUpdateTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ taskId, data }: { taskId: number; data: UpdateTaskRequest }) =>
-      updateTask(taskId, data),
+    mutationFn: ({
+      taskId,
+      data,
+    }: {
+      taskId: number;
+      data: UpdateTaskRequest;
+    }) => updateTask(taskId, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: KANBAN_QUERY_KEYS.tasks(variables.data.taskId),
       });
       queryClient.invalidateQueries({
-        queryKey: KANBAN_QUERY_KEYS.taskDetail(variables.taskId, variables.data.taskId),
+        queryKey: KANBAN_QUERY_KEYS.taskDetail(
+          variables.taskId,
+          variables.data.taskId
+        ),
       });
     },
   });
@@ -55,14 +64,22 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ taskId, data }: { taskId: number; data: DeleteTaskRequest }) =>
-      deleteTask(taskId, data),
+    mutationFn: ({
+      taskId,
+      data,
+    }: {
+      taskId: number;
+      data: DeleteTaskRequest;
+    }) => deleteTask(taskId, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: KANBAN_QUERY_KEYS.tasks(variables.data.kanbanId),
       });
       queryClient.removeQueries({
-        queryKey: KANBAN_QUERY_KEYS.taskDetail(variables.taskId, variables.data.kanbanId),
+        queryKey: KANBAN_QUERY_KEYS.taskDetail(
+          variables.taskId,
+          variables.data.kanbanId
+        ),
       });
     },
   });

@@ -55,7 +55,7 @@ export default function WorkspacePage() {
     switch (activeView) {
       case "kanban":
         return (
-          <KanbanBoard 
+          <KanbanBoard
             onTaskSelect={handleTaskSelect}
             onNewTask={handleNewTask}
             tasks={tasks}
@@ -68,7 +68,7 @@ export default function WorkspacePage() {
         return <DocumentsView />;
       default:
         return (
-          <KanbanBoard 
+          <KanbanBoard
             onTaskSelect={handleTaskSelect}
             onNewTask={handleNewTask}
             tasks={tasks}
@@ -82,27 +82,34 @@ export default function WorkspacePage() {
     <div className="w-full h-screen bg-gray-50">
       <DndProvider backend={HTML5Backend}>
         <div className="flex h-full">
-          <WorkspaceSidebar activeView={activeView} onViewChange={handleViewChange} />
-          
+          <WorkspaceSidebar
+            activeView={activeView}
+            onViewChange={handleViewChange}
+          />
+
           <div className="flex flex-1 overflow-hidden">
             {!isDetailExpanded && (
               <main className="flex-1 overflow-hidden">
                 {isLoading ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="text-lg text-gray-600">데이터를 불러오는 중...</div>
+                    <div className="text-lg text-gray-600">
+                      데이터를 불러오는 중...
+                    </div>
                   </div>
                 ) : error ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="text-lg text-red-600">데이터 로드 중 오류가 발생했습니다.</div>
+                    <div className="text-lg text-red-600">
+                      데이터 로드 중 오류가 발생했습니다.
+                    </div>
                   </div>
                 ) : (
                   renderMainContent()
                 )}
               </main>
             )}
-            
+
             {isShowDetail && (
-              <TaskDetail 
+              <TaskDetail
                 task={selectedTask}
                 isExpanded={isDetailExpanded}
                 isNewTask={isNewTask}

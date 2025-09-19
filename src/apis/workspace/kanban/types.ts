@@ -8,7 +8,7 @@ export interface KanbanTask {
   startDate: string;
   endDate: string;
   users: number[];
-  importance: 'Y' | 'N';
+  importance: "Y" | "N";
   sort: number;
 }
 
@@ -18,26 +18,24 @@ export interface CreateTaskRequest {
   userId: number;
   kanbanId: number;
   columnId: number;
+  users: number[];
   startDate: string;
   endDate: string;
-  users: number[];
-  importance: 'Y' | 'N';
+  importance: "Y" | "N";
   sort: number;
 }
 
 export interface UpdateTaskRequest {
   taskId: number;
-  name: string;
-  content: string;
+  kanbanId: number;
   columnId: number;
+  subject: string;
+  users: number[];
+  content: string;
+  name: string;
   startDate: string;
   endDate: string;
-  users: number[];
-  importance: 'Y' | 'N';
-}
-
-export interface DeleteTaskRequest {
-  kanbanId: number;
+  importance: "Y" | "N";
 }
 
 export interface GetTasksRequest {
@@ -56,8 +54,17 @@ export interface ChangeTaskColumnRequest {
 export interface TaskListResponse {
   columnId: number;
   taskId: number;
+  subject: string;
+  importance: boolean;
   startDate: string;
   endDate: string;
+  sort: number;
+}
+
+export interface TaskUser {
+  userId: number;
+  name: string;
+  profileImage: string;
 }
 
 export interface TaskDetailResponse {
@@ -68,8 +75,13 @@ export interface TaskDetailResponse {
   importance: boolean;
   startDate: string;
   endDate: string;
+  users: TaskUser[];
+}
+
+export interface ColumnResponse {
+  columnId: number;
+  name: string;
   sort: number;
-  users: number[] | null;
 }
 
 export interface ApiResponse<T = null> {
