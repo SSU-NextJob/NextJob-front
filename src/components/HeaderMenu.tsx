@@ -1,5 +1,5 @@
 ﻿import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/atoms/Button";
 import { HeaderNofication } from "./HeaderNofication";
 import { useModalStore } from "@/store/modalStore";
@@ -14,6 +14,7 @@ export const Header = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const { onOpenModal } = useModalStore();
+  const navigate = useNavigate();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
@@ -33,6 +34,33 @@ export const Header = () => {
   const [notificationList, setNotificationList] = useState<NotificationItem[]>(
     []
   );
+
+  /**
+   * Google OAuth 로그인 처리 함수
+   * 구글 인증 서버로 리다이렉트하여 인가코드를 요청합니다.
+   */
+  const handleGoogleLogin = () => {
+    const clientId =
+      "1063797360219-4o0kfk27r300n6nvl6cbbue3frnndddm.apps.googleusercontent.com";
+    const redirectUri = "https://nextjob-api.site/oauth2/google/callback";
+    const scope =
+      "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile";
+    const responseType = "code";
+
+    const isLocalhost =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
+
+    let googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=${responseType}`;
+
+    if (isLocalhost) {
+      googleAuthUrl += `&state=local`;
+    } else {
+      googleAuthUrl += `&state=prod`;
+    }
+
+    window.location.href = googleAuthUrl;
+  };
 
   useEffect(() => {
     if (!userId) return;
@@ -165,7 +193,7 @@ export const Header = () => {
         ) : (
           <>
             {/* 로그아웃 상태: 로그인 버튼만 */}
-            <Button
+            {/* <Button
               onClick={() => setUser({ userId: 1, userName: "테스트 1" })}
               color={"white"}
             >
@@ -182,6 +210,15 @@ export const Header = () => {
               color={"white"}
             >
               로그인 3
+            </Button> */}
+            <Button
+              onClick={() => {
+                // navigate("/login");
+                handleGoogleLogin();
+              }}
+              color={"white"}
+            >
+              로그인
             </Button>
           </>
         )}
