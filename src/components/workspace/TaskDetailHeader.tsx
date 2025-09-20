@@ -30,7 +30,7 @@ export function TaskDetailHeader({
             className="p-2 hover:bg-gray-100 rounded-md transition-colors"
             aria-label={isExpanded ? "축소" : "확장"}
           >
-            <span className="text-sm">
+            <span className="text-sm text-gray-700 hover:text-gray-900">
               {isExpanded ? "⤡" : "⤢"}
             </span>
           </button>
@@ -43,7 +43,7 @@ export function TaskDetailHeader({
           className="p-2 hover:bg-gray-100 rounded-md transition-colors"
           aria-label="닫기"
         >
-          <span className="text-lg">×</span>
+          <span className="text-lg text-gray-700 hover:text-gray-900">×</span>
         </button>
       </div>
 

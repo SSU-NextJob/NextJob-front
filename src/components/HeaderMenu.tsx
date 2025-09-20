@@ -117,12 +117,12 @@ export const Header = () => {
         >
           팀원 탐색
         </Link>
-        <Link
+        {/* <Link
           to="/workspace"
           className={isActive("/workspace") ? "text-blue-600" : "text-black"}
         >
           워크스페이스
-        </Link>
+        </Link> */}
         {userId && (
           <Link
             to="/mypage"
@@ -149,7 +149,7 @@ export const Header = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6"
+                className="size-6 text-gray-700 hover:text-gray-900"
               >
                 <path
                   strokeLinecap="round"

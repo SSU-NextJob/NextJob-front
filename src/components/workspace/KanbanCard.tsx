@@ -96,6 +96,13 @@ export function KanbanCard({
     onClick(task);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick(task);
+    }
+  };
+
   return (
     <Card 
       ref={dragRef}
@@ -106,12 +113,7 @@ export function KanbanCard({
       role="button"
       tabIndex={0}
       aria-label={`Task: ${title}. Priority: ${priority}. Assigned to: ${assignee.name}. Due: ${dueDate}`}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick(e as unknown as React.MouseEvent);
-        }
-      }}
+      onKeyDown={handleKeyDown}
     >
       <CardContent className="p-4">
         <div className="space-y-3 text-left">

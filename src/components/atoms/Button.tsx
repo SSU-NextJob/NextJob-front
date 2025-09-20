@@ -12,7 +12,7 @@ export const Button = ({
   children,
   disabled = false,
   onClick,
-  color = "none",
+  color = "gray",
   className = "",
 }: ButtonProps) => {
   const base = "text-sm px-4 py-1.5 rounded-md font-semibold transition";
