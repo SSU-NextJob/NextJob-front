@@ -1,5 +1,5 @@
 // 표준 라이브러리
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 // Avatar 크기 타입
 type AvatarSize = "sm" | "md" | "lg" | "xl";
@@ -34,12 +34,12 @@ interface AvatarFallbackProps {
  * Avatar 컴포넌트
  * 사용자 프로필 이미지를 표시합니다.
  */
-export const Avatar = ({ 
-  src, 
-  alt = "Avatar", 
-  size = "md", 
-  className = "", 
-  children 
+export const Avatar = ({
+  src,
+  alt = "Avatar",
+  size = "md",
+  className = "",
+  children,
 }: AvatarProps) => {
   // 크기별 스타일
   const sizeClasses: Record<AvatarSize, string> = {
@@ -56,36 +56,25 @@ export const Avatar = ({
   if (src) {
     return (
       <div className={finalClassName}>
-        <img
-          src={src}
-          alt={alt}
-          className="h-full w-full object-cover"
-        />
+        <img src={src} alt={alt} className="h-full w-full object-cover" />
       </div>
     );
   }
 
-  return (
-    <div className={finalClassName}>
-      {children}
-    </div>
-  );
+  return <div className={finalClassName}>{children}</div>;
 };
 
 /**
  * AvatarFallback 컴포넌트
  * Avatar 이미지가 없을 때 표시되는 fallback입니다.
  */
-export const AvatarFallback = ({ 
-  children, 
-  className = "" 
+export const AvatarFallback = ({
+  children,
+  className = "",
 }: AvatarFallbackProps) => {
-  const baseClass = "h-full w-full flex items-center justify-center bg-gray-100 text-gray-600 font-medium";
+  const baseClass =
+    "h-full w-full flex items-center justify-center bg-gray-100 text-gray-600 font-medium";
   const finalClassName = `${baseClass} ${className}`.trim();
 
-  return (
-    <div className={finalClassName}>
-      {children}
-    </div>
-  );
+  return <div className={finalClassName}>{children}</div>;
 };

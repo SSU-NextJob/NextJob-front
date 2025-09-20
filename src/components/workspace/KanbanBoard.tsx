@@ -1,9 +1,7 @@
-// 표준 라이브러리
-import { useState } from "react";
-
 // 서드파티 라이브러리
 import { useDrop } from "react-dnd";
 import { Plus } from "lucide-react";
+import { useRef } from "react";
 
 // 내부 모듈
 import { KanbanCard } from "./KanbanCard";
@@ -46,18 +44,19 @@ interface ColumnProps {
   onTaskMove: (taskId: string, newStatus: TaskStatus) => void;
 }
 
-function KanbanColumn({ 
-  id, 
-  title, 
-  tasks, 
-  headerColor, 
-  titleColor, 
-  onTaskSelect, 
+function KanbanColumn({
+  id,
+  title,
+  tasks,
+  headerColor,
+  titleColor,
+  onTaskSelect,
   onNewTask,
-  onTaskMove 
+  onTaskMove,
 }: ColumnProps) {
+  const dropRef = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
-    accept: 'task',
+    accept: "task",
     drop: (item: { id: string; status: string }) => {
       if (item.status !== id) {
         onTaskMove(item.id, id);
@@ -67,33 +66,35 @@ function KanbanColumn({
       isOver: monitor.isOver(),
     }),
   }));
+  
+  drop(dropRef);
 
   return (
     <section
       className="flex-shrink-0 w-80"
       aria-labelledby={`column-${id}-title`}
     >
-      <div 
-        ref={drop}
-        className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden ${isOver ? 'ring-2 ring-blue-200' : ''} transition-all`}
+      <div
+        ref={dropRef}
+        className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden ${isOver ? "ring-2 ring-blue-200" : ""} transition-all`}
       >
         <header className={`p-4 ${headerColor}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h3 className={`font-semibold ${titleColor}`} id={`column-${id}-title`}>
+              <h3
+                className={`font-semibold ${titleColor}`}
+                id={`column-${id}-title`}
+              >
                 {title}
               </h3>
-              <span 
+              <span
                 className="bg-white/80 text-gray-600 text-xs px-2 py-1 rounded-full font-medium"
                 aria-label={`${tasks.length} tasks`}
               >
                 {tasks.length}
               </span>
             </div>
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              className="h-8 w-8 p-0"
+            <Button
               onClick={() => onNewTask(id)}
               aria-label={`Add new task to ${title} column`}
             >
@@ -101,24 +102,20 @@ function KanbanColumn({
             </Button>
           </div>
         </header>
-        
-        <main 
+
+        <main
           className="p-4 space-y-3 min-h-[500px] bg-gray-50/50"
           role="list"
           aria-labelledby={`column-${id}-title`}
         >
           {tasks.map((task) => (
             <div key={task.id} role="listitem">
-              <KanbanCard 
-                {...task} 
-                onClick={onTaskSelect}
-              />
+              <KanbanCard {...task} onClick={onTaskSelect} />
             </div>
           ))}
-          
-          <Button 
-            variant="outline" 
-            className="w-full h-12 border-2 border-dashed border-gray-300 text-gray-500 bg-white hover:border-gray-400"
+
+          <Button
+            // className="w-full h-12 border-2 border-dashed border-gray-300 text-gray-500 bg-white hover:border-gray-400"
             onClick={() => onNewTask(id)}
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -134,39 +131,46 @@ function KanbanColumn({
  * 칸반 보드 컴포넌트
  * 태스크를 To Do, In Progress, Done 컬럼으로 관리합니다.
  */
-export function KanbanBoard({ onTaskSelect, onNewTask, tasks, onTaskMove }: KanbanBoardProps) {
+export function KanbanBoard({
+  onTaskSelect,
+  onNewTask,
+  tasks,
+  onTaskMove,
+}: KanbanBoardProps) {
   const COLUMN_CONFIGS = [
-    { 
-      id: "todo" as TaskStatus, 
-      title: "To Do", 
+    {
+      id: "todo" as TaskStatus,
+      title: "To Do",
       tasks: tasks.todo || [],
       headerColor: "bg-red-50 border-t-4 border-t-red-400",
-      titleColor: "text-red-700"
+      titleColor: "text-red-700",
     },
-    { 
-      id: "inprogress" as TaskStatus, 
-      title: "In Progress", 
+    {
+      id: "inprogress" as TaskStatus,
+      title: "In Progress",
       tasks: tasks.inprogress || [],
       headerColor: "bg-yellow-50 border-t-4 border-t-yellow-400",
-      titleColor: "text-yellow-700"
+      titleColor: "text-yellow-700",
     },
-    { 
-      id: "done" as TaskStatus, 
-      title: "Done", 
+    {
+      id: "done" as TaskStatus,
+      title: "Done",
       tasks: tasks.done || [],
       headerColor: "bg-green-50 border-t-4 border-t-green-400",
-      titleColor: "text-green-700"
-    }
+      titleColor: "text-green-700",
+    },
   ] as const;
 
   return (
     <div className="flex-1 p-6 overflow-x-auto bg-gray-50">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold mb-2 text-gray-900">Kanban Board</h1>
+        <h1 className="text-2xl font-semibold mb-2 text-gray-900">
+          Kanban Board
+        </h1>
         <p className="text-gray-600">Manage your tasks and track progress</p>
       </header>
-      
-      <div 
+
+      <div
         className="flex space-x-6 min-w-max"
         role="application"
         aria-label="Kanban board for task management"

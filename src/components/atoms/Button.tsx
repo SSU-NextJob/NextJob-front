@@ -1,8 +1,11 @@
-﻿interface ButtonProps {
-  children: string;
+﻿import type { ReactNode } from "react";
+
+interface ButtonProps {
+  children: ReactNode;
   disabled?: boolean;
-  onClick?: (e: any) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   color?: "gray" | "blue" | "red" | "green" | "black" | "white" | "none";
+  className?: string;
 }
 
 export const Button = ({
@@ -10,6 +13,7 @@ export const Button = ({
   disabled = false,
   onClick,
   color = "none",
+  className = "",
 }: ButtonProps) => {
   const base = "text-sm px-4 py-1.5 rounded-md font-semibold transition";
 
@@ -39,7 +43,7 @@ export const Button = ({
       onClick={onClick}
       className={`${base} ${
         disabled ? disabledClass[color] : colorClass[color]
-      }`}
+      } ${className}`}
     >
       {children}
     </button>

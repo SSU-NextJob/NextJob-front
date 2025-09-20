@@ -2,6 +2,9 @@ import { fetcher } from "../../index";
 import type {
   CreateTaskRequest,
   UpdateTaskRequest,
+  DeleteTaskRequest,
+  GetTasksRequest,
+  GetTaskDetailRequest,
   ChangeTaskColumnRequest,
   ApiResponse,
   TaskListResponse,
@@ -31,18 +34,18 @@ export const updateTask = async (
 };
 
 // 작업 삭제 API - DELETE /kanban/tasks/:taskId
-export const deleteTask = async (taskId: number): Promise<ApiResponse> => {
-  return await fetcher<ApiResponse>(`/kanban/tasks/${taskId}`, {
+export const deleteTask = async (taskId: number, data: DeleteTaskRequest): Promise<ApiResponse> => {
+  return await fetcher<ApiResponse>(`/kanban/tasks/${taskId}?kanbanId=${data.kanbanId}`, {
     method: "DELETE",
   });
 };
 
 // 작업 목록 조회 API - GET /kanban/tasks (완)
 export const getTasks = async (
-  kanbanId: number
+  data: GetTasksRequest
 ): Promise<ApiResponse<TaskListResponse[]>> => {
   return await fetcher<ApiResponse<TaskListResponse[]>>(
-    `/kanban/tasks?kanbanId=${kanbanId}`,
+    `/kanban/tasks?kanbanId=${data.kanbanId}`,
     {
       method: "GET",
     }
@@ -52,10 +55,10 @@ export const getTasks = async (
 // 작업 상세 조회 API - GET /kanban/tasks/:taskId (완)
 export const getTaskDetail = async (
   taskId: number,
-  kanbanId: number
+  data: GetTaskDetailRequest
 ): Promise<ApiResponse<TaskDetailResponse>> => {
   return await fetcher<ApiResponse<TaskDetailResponse>>(
-    `/kanban/tasks/${taskId}?kanbanId=${kanbanId}`,
+    `/kanban/tasks/${taskId}?kanbanId=${data.kanbanId}`,
     {
       method: "GET",
     }

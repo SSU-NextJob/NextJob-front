@@ -46,6 +46,10 @@ export interface GetTaskDetailRequest {
   kanbanId: number;
 }
 
+export interface DeleteTaskRequest {
+  kanbanId: number;
+}
+
 export interface ChangeTaskColumnRequest {
   taskId: number;
   columnId: number;

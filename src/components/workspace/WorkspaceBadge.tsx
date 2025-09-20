@@ -1,5 +1,5 @@
 // 표준 라이브러리
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 // Badge 색상 타입
 type BadgeColor = "gray" | "blue" | "red" | "green" | "yellow" | "purple" | "pink";

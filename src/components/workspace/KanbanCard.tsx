@@ -1,6 +1,7 @@
 // 서드파티 라이브러리
 import { useDrag } from "react-dnd";
 import { Calendar, User, GripVertical } from "lucide-react";
+import { useRef } from "react";
 
 // 내부 UI 컴포넌트
 import { Card, CardContent } from "@/components/atoms/Card";
@@ -60,6 +61,7 @@ export function KanbanCard({
   startDate,
   onClick
 }: KanbanCardProps) {
+  const dragRef = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'task',
     item: { id, status },
@@ -67,6 +69,8 @@ export function KanbanCard({
       isDragging: monitor.isDragging(),
     }),
   }));
+  
+  drag(dragRef);
 
   // Badge 색상 맵핑
   const PRIORITY_COLOR_MAP: Record<TaskPriority, "red" | "yellow" | "green"> = {
@@ -94,7 +98,7 @@ export function KanbanCard({
 
   return (
     <Card 
-      ref={drag}
+      ref={dragRef}
       className={`mb-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-blue-300 bg-white group ${
         isDragging ? 'opacity-50 rotate-2 shadow-lg' : ''
       }`} 
@@ -105,7 +109,7 @@ export function KanbanCard({
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          handleClick(e as any);
+          handleClick(e as unknown as React.MouseEvent);
         }
       }}
     >

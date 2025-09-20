@@ -1,5 +1,6 @@
 // 표준 라이브러리
-import { ReactNode, forwardRef } from "react";
+import { forwardRef } from "react";
+import type { ReactNode } from "react";
 
 /**
  * Card 컴포넌트의 Props 타입
@@ -38,12 +39,14 @@ interface CardContentProps {
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ children, className = "", onClick, onKeyDown, ...props }, ref) => {
     const baseClass = "bg-white rounded-lg border border-gray-200 shadow-sm";
-    const clickableClass = onClick ? "cursor-pointer transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" : "";
-    
+    const clickableClass = onClick
+      ? "cursor-pointer transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      : "";
+
     const finalClassName = `${baseClass} ${clickableClass} ${className}`.trim();
 
     return (
-      <div 
+      <div
         ref={ref}
         className={finalClassName}
         onClick={onClick}
@@ -66,9 +69,5 @@ export const CardContent = ({ children, className = "" }: CardContentProps) => {
   const baseClass = "p-6";
   const finalClassName = `${baseClass} ${className}`.trim();
 
-  return (
-    <div className={finalClassName}>
-      {children}
-    </div>
-  );
+  return <div className={finalClassName}>{children}</div>;
 };
