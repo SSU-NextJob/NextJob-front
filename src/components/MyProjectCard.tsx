@@ -120,6 +120,21 @@ export const MyProjectsCard = ({
                   <Button onClick={() => {}} color={"blue"}>
                     모집
                   </Button> */}
+                   <Button
+                    onClick={() => {
+                      if (project.workspaceId) {
+                        navigate(
+                          `/workspace?workspaceId=${project.workspaceId}`
+                        );
+                      } else {
+                        navigate("/workspace");
+                      }
+                    }}
+                    color={"gray"}
+                  >
+                    {/* 상세보기 */}
+                    워크스페이스
+                  </Button>
                 </div>
               </div>
             );
