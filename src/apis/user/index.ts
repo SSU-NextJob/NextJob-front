@@ -95,7 +95,8 @@ export const PatchUserDetailAPI = (
   name: string,
   techStack: string,
   description: string,
-  userType: string
+  userType: string,
+  profileImageUrl?: string
 ) => {
   return fetcher<PatchUserDetailResponse>(`/users/me`, {
     method: "PATCH",
@@ -105,6 +106,7 @@ export const PatchUserDetailAPI = (
       techStack: techStack,
       description: description,
       userType: userType,
+      profileImageUrl: profileImageUrl,
     }),
   });
 };
