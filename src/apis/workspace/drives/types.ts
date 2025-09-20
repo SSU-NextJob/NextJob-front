@@ -17,6 +17,7 @@ export interface DownloadBlobRequest {
 }
 
 export interface BlobResponse {
+  blobId: number;
   fileName: string;
   blobUrl: string;
   ext: string;
