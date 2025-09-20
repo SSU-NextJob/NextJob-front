@@ -108,7 +108,7 @@ function KanbanColumn({
         </header>
 
         <main
-          className="p-4 space-y-3 min-h-[500px] bg-gray-50/50"
+          className="p-4 space-y-3 h-[500px] bg-gray-50/50 overflow-y-auto"
           role="list"
           aria-labelledby={`column-${id}-title`}
         >
@@ -119,7 +119,7 @@ function KanbanColumn({
           ))}
 
           <Button
-            // className="w-full h-12 border-2 border-dashed border-gray-300 text-gray-500 bg-white hover:border-gray-400"
+            className="w-full h-12 border-2 border-dashed border-gray-300 text-gray-500 bg-white hover:border-gray-400 flex items-center justify-center"
             onClick={() => onNewTask(id)}
           >
             <Plus className="h-4 w-4 mr-2" />

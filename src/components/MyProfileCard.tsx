@@ -48,11 +48,12 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  //
   const handleSave = async () => {
     if (!userId) return;
     try {
       let profileImageUrl = userProfile.profileImage;
-      
+
       // 이미지가 선택되었으면 먼저 업로드
       if (selectedImage) {
         try {

@@ -1,11 +1,4 @@
-import {
-  FileText,
-  FileSpreadsheet,
-  FileImage,
-  Archive,
-  File,
-} from "lucide-react";
-import type { ReactElement } from "react";
+// Removed unused imports
 
 /**
  * 문서 타입 정의

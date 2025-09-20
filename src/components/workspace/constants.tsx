@@ -27,5 +27,5 @@ export const PRIORITY_LABELS = {
 
 export const CONTAINER_STYLES = {
   expanded: "fixed inset-0 z-50 bg-white",
-  collapsed: "w-[480px] border-l border-gray-200"
+  collapsed: "w-[480px] border-l border-gray-200 ml-auto"
 } as const;

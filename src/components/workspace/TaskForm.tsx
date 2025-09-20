@@ -31,9 +31,9 @@ export function TaskForm({
     onTaskChange({ ...task, [field]: value });
   };
 
-  const updateAssignee = (name: string) => {
-    onTaskChange({ ...task, assignee: { ...task.assignee, name } });
-  };
+  // const updateAssignee = (name: string) => {
+  //   onTaskChange({ ...task, assignee: { ...task.assignee, name } });
+  // };
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -56,7 +56,7 @@ export function TaskForm({
       )}
 
       {/* 제목 */}
-      <div>
+      <div className="text-left">
         <label className="text-sm font-medium text-gray-700 block mb-2 text-left">
           제목
         </label>
@@ -111,7 +111,7 @@ export function TaskForm({
       <Separator />
 
       {/* 우선순위 */}
-      <div>
+      <div className="flex flex-col justify-start items-start">
         <label className="text-sm font-medium text-gray-700 block mb-2 text-left">
           우선순위
         </label>
@@ -139,11 +139,12 @@ export function TaskForm({
       <Separator />
 
       {/* 담당자 */}
-      <div>
+      {/*  <div>
+     
         <label className="text-sm font-medium text-gray-700 block text-left mb-3">
           담당자
         </label>
-        {isEditing ? (
+         {isEditing ? (
           <Input
             value={task.assignee.name}
             onChange={(e) => updateAssignee(e.target.value)}
@@ -168,9 +169,9 @@ export function TaskForm({
             </div>
           </div>
         )}
-      </div>
+      </div> 
 
-      <Separator />
+      <Separator />*/}
 
       {/* 날짜 */}
       <div className="grid grid-cols-2 gap-4">

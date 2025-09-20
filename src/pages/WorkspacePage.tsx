@@ -55,7 +55,10 @@ export default function WorkspacePage() {
     handleTaskCreate,
     handleTaskUpdate,
     handleTaskDelete,
+    getTaskDetailById,
   } = useKanbanAPI(kanbanId);
+
+  console.log("...tasks??? ", tasks);
 
   // 태스크 저장 핸들러
   const handleTaskSave = async (task: KanbanCardProps) => {
@@ -155,6 +158,7 @@ export default function WorkspacePage() {
                 onSave={handleTaskSave}
                 onStatusChange={handleStatusChange}
                 onDelete={handleTaskDelete}
+                getTaskDetail={getTaskDetailById}
               />
             )}
           </div>
