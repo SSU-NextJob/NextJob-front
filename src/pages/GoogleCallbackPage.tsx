@@ -9,37 +9,55 @@ const GoogleCallbackPage = () => {
   useEffect(() => {
     const handleCallback = () => {
       try {
-        // URL에서 백엔드가 제공한 JSON 데이터를 파싱
         const urlParams = new URLSearchParams(window.location.search);
-        const userData = urlParams.get("data");
 
-        if (userData) {
-          const response = JSON.parse(decodeURIComponent(userData));
-
+        // JSON 데이터가 있는 경우 (기존 방식)
+        const jsonData = urlParams.get("data");
+        if (jsonData) {
+          const response = JSON.parse(decodeURIComponent(jsonData));
           if (response.success && response.data) {
-            const {
-              name,
-              userId,
-              // , email, description, techStack, profileImage, isVisible, userType
-            } = response.data;
-
-            // 전체 응답을 localStorage에 저장
+            const { name, userId } = response.data;
             localStorage.setItem("googleAuthData", JSON.stringify(response));
-
-            // userStore에 사용자 정보 저장
             setUser({ userId, userName: name });
-
-            // 기본 주소로 이동
+            // window.alert("로그인 성공 1");
             navigate("/", { replace: true });
-          } else {
-            console.error("Authentication failed:", response.error);
-            navigate("/", { replace: true });
+            return;
           }
+        }
+
+        // 개별 파라미터로 전달된 경우 (새로운 방식)
+        const userId = urlParams.get("userId");
+        const name = urlParams.get("name");
+        const email = urlParams.get("email");
+
+        if (userId && name) {
+          const decodedName = decodeURIComponent(name);
+
+          const userData = {
+            userId: parseInt(userId, 10),
+            name: decodedName,
+            email: email ? decodeURIComponent(email) : undefined,
+            description: urlParams.get("description") || undefined,
+            techStack: urlParams.get("techStack") || undefined,
+            profileImage: urlParams.get("profileImage") || undefined,
+            isVisible: urlParams.get("isVisible")
+              ? urlParams.get("isVisible") === "true"
+              : undefined,
+            userType: urlParams.get("userType") || undefined,
+          };
+
+          const response = { success: true, data: userData };
+          localStorage.setItem("googleAuthData", JSON.stringify(response));
+          setUser({ userId: userData.userId, userName: userData.name });
+          // window.alert("로그인 성공");
+          navigate("/", { replace: true });
         } else {
           console.error("No authentication data received");
+          // window.alert("로그인 실패 - 필수 정보 누락");
           navigate("/", { replace: true });
         }
       } catch (error) {
+        // window.alert("로그인 실패 - 처리 오류");
         console.error("Error processing authentication callback:", error);
         navigate("/", { replace: true });
       }

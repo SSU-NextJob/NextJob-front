@@ -119,3 +119,20 @@ export const PatchUserVisibleAPI = (userId: number, isVisible: boolean) => {
     }),
   });
 };
+
+// 로그아웃 응답 타입
+export interface LogoutResponse {
+  success: boolean;
+  data: null;
+  error: null;
+}
+
+// 로그아웃 API
+export const postLogoutAPI = (userId: number) => {
+  return fetcher<LogoutResponse>(`/oauth2/google/logout`, {
+    method: "POST",
+    body: JSON.stringify({
+      userId: userId,
+    }),
+  });
+};

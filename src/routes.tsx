@@ -7,6 +7,7 @@ import WorkspacePage from "./pages/WorkspacePage";
 import { MyPage } from "./pages/MyPage";
 import { LoginPage } from "./pages/LoginPage";
 import { AuthGuard } from "./utils/AuthGuard";
+import GoogleCallbackPage from "./pages/GoogleCallbackPage";
 
 export const AppRoutes = () => (
   <Routes>
@@ -16,6 +17,7 @@ export const AppRoutes = () => (
     <Route path="/user" element={<UserPage />} />
     <Route path="/user/detail/:id" element={<UserDetailPages />} />
     <Route path="/workspace" element={<WorkspacePage />} />
+    <Route path="/oauth2/google/callback" element={<GoogleCallbackPage />} />
     <Route
       path="/mypage"
       element={

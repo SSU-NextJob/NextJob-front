@@ -11,6 +11,8 @@ export const MyProfile = () => {
     []
   );
 
+  console.log("...userId", userId);
+
   useEffect(() => {
     if (!userId) return;
 

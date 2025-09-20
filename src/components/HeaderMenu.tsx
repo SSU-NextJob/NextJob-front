@@ -7,6 +7,7 @@ import { postCreateProject } from "@/apis/project";
 import { useMutation } from "@tanstack/react-query";
 import { useUserStore } from "@/store/userStore";
 import { getNotificationList } from "@/apis/notification";
+import { postLogoutAPI } from "@/apis/user";
 import { useEffect } from "react";
 import type { NotificationItem } from "@/apis/notification";
 
@@ -25,6 +26,21 @@ export const Header = () => {
     },
     onError: (e: any) => {
       alert(e.message || "프로젝트 생성에 실패했습니다.");
+    },
+  });
+
+  const logoutMutation = useMutation({
+    mutationFn: () => postLogoutAPI(userId!),
+    onSuccess: () => {
+      localStorage.removeItem("googleAuthData");
+      clearUser();
+      navigate("/");
+    },
+    onError: (e: any) => {
+      localStorage.removeItem("googleAuthData");
+      clearUser();
+      navigate("/");
+      console.error("로그아웃 API 호출 실패:", e.message);
     },
   });
 
@@ -170,7 +186,7 @@ export const Header = () => {
               />
             )}
             {/* 로그아웃 버튼 */}
-            <Button onClick={clearUser} color={"white"}>
+            <Button onClick={() => logoutMutation.mutate()} color={"white"}>
               로그아웃
             </Button>
             {/* 프로젝트 생성, 팀원 모집 */}
