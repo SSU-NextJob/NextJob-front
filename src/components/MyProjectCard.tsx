@@ -22,7 +22,9 @@ export const MyProjectsCard = ({
     <div className="flex flex-col gap-10 w-full">
       {/* 참여중인 프로젝트 */}
       <section>
-        <h2 className="text-lg font-bold mb-4 text-left">참여중인 프로젝트</h2>
+        <h2 className="text-lg font-bold mb-4 text-gray-700 text-left">
+          참여중인 프로젝트
+        </h2>
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {participatingProjects.map((project) => {
             return (
@@ -55,7 +57,18 @@ export const MyProjectsCard = ({
                   ⏱ {project.dDay}일 남음
                 </div> */}
                 <div className="flex gap-2 mt-auto justify-end">
-                  <Button onClick={() => {}} color={"gray"} disabled>
+                  <Button
+                    onClick={() => {
+                      if (project.workspaceId) {
+                        navigate(
+                          `/workspace?workspaceId=${project.workspaceId}`
+                        );
+                      } else {
+                        navigate("/workspace");
+                      }
+                    }}
+                    color={"gray"}
+                  >
                     {/* 상세보기 */}
                     워크스페이스
                   </Button>
@@ -68,7 +81,9 @@ export const MyProjectsCard = ({
 
       {/* 내가 만든 프로젝트 */}
       <section>
-        <h2 className="text-lg font-bold mb-4 text-left">내가 만든 프로젝트</h2>
+        <h2 className="text-lg font-bold mb-4 text-gray-700 text-left">
+          내가 만든 프로젝트
+        </h2>
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {createdProjects.map((project) => {
             return (
@@ -114,7 +129,9 @@ export const MyProjectsCard = ({
 
       {/* 모집 공고 */}
       <section>
-        <h2 className="text-lg font-bold mb-4 text-left">모집 공고</h2>
+        <h2 className="text-lg font-bold mb-4 text-gray-700 text-left">
+          모집 공고
+        </h2>
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {recruitPostList.map((post) => {
             return (
@@ -134,7 +151,7 @@ export const MyProjectsCard = ({
                   연결된 프로젝트
                 </div>
                 <div className="text-xs font-medium mb-2 text-left">
-                  {!!post.project.projectName ? post.project.projectName : "-"}
+                  {post.project.projectName ? post.project.projectName : "-"}
                 </div>
                 <div className="text-xs text-gray-500 mb-1 text-left">
                   모집 역할

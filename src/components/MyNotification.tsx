@@ -89,7 +89,7 @@ export const MyNotification = () => {
         <div className="space-y-10">
           {/* 내 프로젝트 참여 요청한 사람 - UserCard 스타일 */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">
+            <h2 className="text-lg font-semibold mb-3 text-gray-700">
               내 프로젝트 참여 요청한 사람
             </h2>
             {incomingApply.length === 0 ? (
@@ -153,7 +153,7 @@ export const MyNotification = () => {
 
           {/* 내게 온 프로젝트 제안 - 내 프로젝트 참여 요청한 사람과 동일한 카드/버튼 */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">
+            <h2 className="text-lg font-semibold mb-3 text-gray-700">
               내게 온 프로젝트 제안
             </h2>
             {incomingSuggest.length === 0 ? (
@@ -217,7 +217,7 @@ export const MyNotification = () => {
 
           {/* 내가 참여 요청한 프로젝트 - 모집 공고 카드 스타일 */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">
+            <h2 className="text-lg font-semibold mb-3 text-gray-700">
               내가 참여 요청한 프로젝트
             </h2>
             {outgoingApply.length === 0 ? (
@@ -231,7 +231,9 @@ export const MyNotification = () => {
 
           {/* 내가 제안한 사람 - 버튼 없이 정보만 */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">내가 제안한 사람</h2>
+            <h2 className="text-lg font-semibold mb-3 text-gray-700">
+              내가 제안한 사람
+            </h2>
             {outgoingSuggest.length === 0 ? (
               <div className="text-gray-400 text-sm">요청이 없습니다.</div>
             ) : (

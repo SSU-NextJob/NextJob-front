@@ -2,7 +2,11 @@ import { Input } from "../atoms/Input";
 import { Textarea } from "../atoms/Textarea";
 import { Select, SelectItem } from "../atoms/Select";
 import { Separator } from "../atoms/Separator";
-import { FORM_FIELD_WIDTHS, PRIORITY_COLORS, PRIORITY_LABELS } from "./constants";
+import {
+  FORM_FIELD_WIDTHS,
+  PRIORITY_COLORS,
+  PRIORITY_LABELS,
+} from "./constants";
 import type { KanbanCardProps } from "./KanbanCard";
 
 interface TaskFormProps {
@@ -10,12 +14,18 @@ interface TaskFormProps {
   isEditing: boolean;
   onTaskChange: (task: KanbanCardProps) => void;
   onStatusChange?: (newStatus: "todo" | "inprogress" | "done") => void;
+  errors?: string[];
 }
 
-
-export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: TaskFormProps) {
+export function TaskForm({
+  task,
+  isEditing,
+  onTaskChange,
+  onStatusChange,
+  errors = [],
+}: TaskFormProps) {
   const updateTask = <K extends keyof KanbanCardProps>(
-    field: K, 
+    field: K,
     value: KanbanCardProps[K]
   ) => {
     onTaskChange({ ...task, [field]: value });
@@ -27,18 +37,40 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
 
   return (
     <div className="space-y-6 max-w-2xl">
+      {/* 에러 메시지 */}
+      {errors.length > 0 && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <span className="text-red-600">⚠️</span>
+            <h4 className="text-sm font-medium text-red-800">입력 오류</h4>
+          </div>
+          <ul className="mt-2 text-sm text-red-700 space-y-1">
+            {errors.map((error, index) => (
+              <li key={index} className="flex items-start space-x-2">
+                <span>•</span>
+                <span>{error}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* 제목 */}
       <div>
-        <label className="text-sm font-medium text-gray-700 block mb-2">제목</label>
+        <label className="text-sm font-medium text-gray-700 block mb-2 text-left">
+          제목
+        </label>
         {isEditing ? (
           <Input
             value={task.title}
             onChange={(e) => updateTask("title", e.target.value)}
             placeholder="태스크 제목을 입력하세요..."
-            className="text-xl font-semibold"
+            className="font-semibold"
           />
         ) : (
-          <h3 className="text-xl font-semibold text-gray-900">{task.title || "제목 없음"}</h3>
+          <h3 className="font-semibold text-gray-900">
+            {task.title || "제목 없음"}
+          </h3>
         )}
       </div>
 
@@ -46,11 +78,15 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
 
       {/* 상태 */}
       <div>
-        <label className="text-sm font-medium text-gray-700 block mb-2">상태</label>
+        <label className="text-sm font-medium text-gray-700 block mb-2 text-left">
+          상태
+        </label>
         {isEditing ? (
           <Select
             value={task.status}
-            onValueChange={(value) => updateTask("status", value as "todo" | "inprogress" | "done")}
+            onValueChange={(value) =>
+              updateTask("status", value as "todo" | "inprogress" | "done")
+            }
             className={FORM_FIELD_WIDTHS.select}
           >
             <SelectItem value="todo">할 일</SelectItem>
@@ -58,9 +94,11 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
             <SelectItem value="done">완료</SelectItem>
           </Select>
         ) : (
-          <Select 
-            value={task.status} 
-            onValueChange={(value) => onStatusChange?.(value as "todo" | "inprogress" | "done")}
+          <Select
+            value={task.status}
+            onValueChange={(value) =>
+              onStatusChange?.(value as "todo" | "inprogress" | "done")
+            }
             className={FORM_FIELD_WIDTHS.select}
           >
             <SelectItem value="todo">할 일</SelectItem>
@@ -74,11 +112,15 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
 
       {/* 우선순위 */}
       <div>
-        <label className="text-sm font-medium text-gray-700 block mb-2">우선순위</label>
+        <label className="text-sm font-medium text-gray-700 block mb-2 text-left">
+          우선순위
+        </label>
         {isEditing ? (
           <Select
             value={task.priority}
-            onValueChange={(value) => updateTask("priority", value as "high" | "medium" | "low")}
+            onValueChange={(value) =>
+              updateTask("priority", value as "high" | "medium" | "low")
+            }
             className={FORM_FIELD_WIDTHS.select}
           >
             <SelectItem value="high">높음</SelectItem>
@@ -87,7 +129,7 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
           </Select>
         ) : (
           <span
-            className={`inline-flex px-3 py-1 rounded-full text-sm font-medium border ${PRIORITY_COLORS[task.priority]}`}
+            className={`inline-flex px-3 py-1 rounded-full text-sm font-medium border text-left ${PRIORITY_COLORS[task.priority]}`}
           >
             {PRIORITY_LABELS[task.priority]} 우선순위
           </span>
@@ -98,7 +140,9 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
 
       {/* 담당자 */}
       <div>
-        <label className="text-sm font-medium text-gray-700 block mb-3">담당자</label>
+        <label className="text-sm font-medium text-gray-700 block text-left mb-3">
+          담당자
+        </label>
         {isEditing ? (
           <Input
             value={task.assignee.name}
@@ -107,14 +151,19 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
           />
         ) : (
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium">
+            <div className="h-10 w-10 bg-blue-100 rounded-full flex text-left items-center justify-center text-blue-600 font-medium">
               {task.assignee.name
-                ? task.assignee.name.split(' ').map(n => n[0]).join('').toUpperCase()
-                : '?'
-              }
+                ? task.assignee.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()
+                : "?"}
             </div>
             <div>
-              <p className="font-medium text-gray-900">{task.assignee.name || "배정되지 않음"}</p>
+              <p className="font-medium text-gray-900">
+                {task.assignee.name || "배정되지 않음"}
+              </p>
               <p className="text-sm text-gray-500">담당자</p>
             </div>
           </div>
@@ -126,7 +175,9 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
       {/* 날짜 */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium text-gray-700 block mb-2">시작일</label>
+          <label className="text-sm font-medium text-gray-700 block text-left mb-2">
+            시작일
+          </label>
           {isEditing ? (
             <Input
               type="date"
@@ -142,7 +193,9 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700 block mb-2">마감일</label>
+          <label className="text-sm font-medium text-gray-700 text-left block mb-2">
+            마감일
+          </label>
           {isEditing ? (
             <Input
               type="date"
@@ -162,7 +215,9 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
 
       {/* 설명 */}
       <div>
-        <label className="text-sm font-medium text-gray-700 block mb-3">설명</label>
+        <label className="text-sm font-medium text-gray-700 text-left block mb-3">
+          설명
+        </label>
         {isEditing ? (
           <Textarea
             value={task.description || ""}
@@ -173,9 +228,13 @@ export function TaskForm({ task, isEditing, onTaskChange, onStatusChange }: Task
         ) : (
           <div className="bg-gray-50 rounded-lg p-4 min-h-[120px]">
             {task.description ? (
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{task.description}</p>
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-left">
+                {task.description}
+              </p>
             ) : (
-              <p className="text-gray-400 italic">설명이 제공되지 않았습니다</p>
+              <p className="text-gray-400 italic text-left">
+                설명이 제공되지 않았습니다
+              </p>
             )}
           </div>
         )}
