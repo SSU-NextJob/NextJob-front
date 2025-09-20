@@ -26,6 +26,6 @@ export const PRIORITY_LABELS = {
 } as const;
 
 export const CONTAINER_STYLES = {
-  expanded: "fixed inset-0 z-50 bg-white",
+  expanded: "fixed inset-0 z-50 bg-white w-full h-full",
   collapsed: "w-[480px] border-l border-gray-200 ml-auto"
 } as const;

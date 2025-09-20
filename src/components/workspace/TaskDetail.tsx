@@ -88,6 +88,7 @@ export function TaskDetail({
   const [isEditing, setIsEditing] = useState(isNewTask);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [detailError, setDetailError] = useState<string | null>(null);
   const [editedTask, setEditedTask] = useState<KanbanCardProps>(
     task || {
       id: "",
@@ -108,8 +109,11 @@ export function TaskDetail({
       if (!task || isNewTask || !getTaskDetail || !task.id) return;
 
       setIsLoadingDetail(true);
+      setDetailError(null);
+
       try {
         const detailResponse = await getTaskDetail(task.id);
+        console.log("...detailResponse", detailResponse);
         if (detailResponse) {
           // API 응답을 UI에서 사용하는 형태로 변환
           const updatedTask: KanbanCardProps = {
@@ -119,14 +123,21 @@ export function TaskDetail({
             priority: detailResponse.importance ? "high" : "medium",
             dueDate: detailResponse.endDate || task.dueDate,
             startDate: detailResponse.startDate || task.startDate,
-            assignee: detailResponse.users?.length > 0 
-              ? { name: detailResponse.users[0].name, avatar: detailResponse.users[0].profileImage }
-              : task.assignee,
+            assignee:
+              detailResponse.users?.length > 0
+                ? {
+                    name: detailResponse.users[0].name,
+                    avatar: detailResponse.users[0].profileImage,
+                  }
+                : task.assignee,
           };
           setEditedTask(updatedTask);
+        } else {
+          setDetailError("태스크 상세 정보를 불러올 수 없습니다.");
         }
       } catch (error) {
         console.error("Failed to load task detail:", error);
+        setDetailError("태스크 상세 정보 로드 중 오류가 발생했습니다.");
       } finally {
         setIsLoadingDetail(false);
       }
@@ -137,7 +148,7 @@ export function TaskDetail({
 
   if (!task && !isNewTask) return null;
 
-  const currentTask = task || editedTask;
+  const currentTask = editedTask;
 
   const handleSave = async () => {
     // Validation 수행
@@ -191,8 +202,12 @@ export function TaskDetail({
   };
 
   const handleDelete = async () => {
+    console.log("진입 1");
+    console.log("진입 tas", task);
     if (task && onDelete) {
+      console.log("진입 2");
       const success = await onDelete(task.id);
+      console.log("success??", success);
       if (success) {
         onClose();
       }
@@ -217,7 +232,39 @@ export function TaskDetail({
       <main className="flex-1 p-6 overflow-y-auto">
         {isLoadingDetail ? (
           <div className="flex items-center justify-center h-32">
-            <div className="text-gray-500">태스크 상세 정보를 불러오는 중...</div>
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <div className="text-gray-500">
+                태스크 상세 정보를 불러오는 중...
+              </div>
+            </div>
+          </div>
+        ) : detailError ? (
+          <div className="flex items-center justify-center h-32">
+            <div className="text-center">
+              <div className="text-red-500 mb-4">
+                <svg
+                  className="w-8 h-8 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div className="text-red-600 mb-2">{detailError}</div>
+              <button
+                onClick={() => window.location.reload()}
+                className="text-sm text-blue-600 hover:text-blue-800 underline"
+              >
+                다시 시도
+              </button>
+            </div>
           </div>
         ) : (
           <TaskForm

@@ -1,5 +1,5 @@
 // 서드파티 라이브러리
-import { useDrag } from "react-dnd";
+import { useDrag, useDrop } from "react-dnd";
 import { Calendar, User, GripVertical } from "lucide-react";
 import { useRef } from "react";
 
@@ -42,8 +42,16 @@ export interface KanbanCardProps {
   dueDate: string;
   /** 시작일 (YYYY-MM-DD 형식, 선택사항) */
   startDate?: string;
+  /** 정렬 순서 */
+  sort?: number;
   /** 카드 클릭 이벤트 핸들러 */
   onClick: (task: KanbanCardProps) => void;
+  /** 드래그앤드롭 hover 시 UI 변경 핸들러 (선택사항) */
+  onHover?: (dragId: string, hoverId: string, targetIndex: number) => void;
+  /** 드래그앤드롭 drop 시 API 호출 핸들러 (선택사항) */
+  onDrop?: (dragId: string, hoverId: string, targetIndex: number) => void;
+  /** 현재 카드의 인덱스 */
+  index?: number;
 }
 
 /**
@@ -59,18 +67,74 @@ export function KanbanCard({
   assignee, 
   dueDate,
   startDate,
-  onClick
+  onClick,
+  onHover,
+  onDrop,
+  index = 0
 }: KanbanCardProps) {
   const dragRef = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'task',
-    item: { id, status },
+    item: { id, status, index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   }));
   
-  drag(dragRef);
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'task',
+    hover: (item: { id: string; status: string; index: number }, monitor) => {
+      if (!dragRef.current || !onHover) {
+        return;
+      }
+
+      const dragIndex = item.index;
+      const hoverIndex = index;
+
+      // 같은 위치면 아무것도 하지 않음
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      // 호버링 영역 계산
+      const hoverBoundingRect = dragRef.current.getBoundingClientRect();
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      
+      if (!clientOffset) {
+        return;
+      }
+      
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+      // 드래그하는 요소가 아래로 이동하는데 마우스가 아직 중간점 위에 있으면 아무것도 하지 않음
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      // 드래그하는 요소가 위로 이동하는데 마우스가 아직 중간점 아래에 있으면 아무것도 하지 않음
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+
+      // UI 상태만 변경 (API 호출 없음)
+      onHover(item.id, id, hoverIndex);
+
+      // 무한 루프 방지를 위해 인덱스 업데이트
+      item.index = hoverIndex;
+    },
+    drop: (item: { id: string; status: string; index: number }) => {
+      // Drop 시에만 API 호출
+      if (onDrop) {
+        onDrop(item.id, id, index);
+      }
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
+  
+  drag(drop(dragRef));
 
   // Badge 색상 맵핑
   const PRIORITY_COLOR_MAP: Record<TaskPriority, "red" | "yellow" | "green"> = {

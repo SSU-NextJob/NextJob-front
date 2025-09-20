@@ -18,11 +18,17 @@ interface KanbanBoardProps {
   onNewTask: (columnId: TaskStatus) => void;
   /** 칸반 태스크 데이터 */
   tasks: Record<string, KanbanCardProps[]>;
-  /** 태스크 이동 핸들러 */
-  onTaskMove: (
+  /** 태스크 이동 핸들러 (hover 시 UI 변경용) */
+  onTaskHover: (
     taskId: string,
     newStatus: TaskStatus,
-    targetIndex?: number
+    targetIndex: number
+  ) => void;
+  /** 태스크 드롭 핸들러 (drop 시 API 호출용) */
+  onTaskDrop: (
+    taskId: string,
+    newStatus: TaskStatus,
+    targetIndex: number
   ) => void;
 }
 
@@ -44,8 +50,10 @@ interface ColumnProps {
   onTaskSelect: (task: KanbanCardProps) => void;
   /** 새 태스크 생성 핸들러 */
   onNewTask: (columnId: TaskStatus) => void;
-  /** 태스크 이동 핸들러 */
-  onTaskMove: (taskId: string, newStatus: TaskStatus) => void;
+  /** 태스크 hover 핸들러 */
+  onTaskHover: (taskId: string, newStatus: TaskStatus, targetIndex: number) => void;
+  /** 태스크 drop 핸들러 */
+  onTaskDrop: (taskId: string, newStatus: TaskStatus, targetIndex: number) => void;
 }
 
 function KanbanColumn({
@@ -56,14 +64,17 @@ function KanbanColumn({
   titleColor,
   onTaskSelect,
   onNewTask,
-  onTaskMove,
+  onTaskHover,
+  onTaskDrop,
 }: ColumnProps) {
   const dropRef = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "task",
-    drop: (item: { id: string; status: string }) => {
-      if (item.status !== id) {
-        onTaskMove(item.id, id);
+    drop: (item: { id: string; status: string }, monitor) => {
+      if (!monitor.didDrop()) {
+        // 컬럼의 끝에 추가하는 경우
+        const targetIndex = tasks.length;
+        onTaskDrop(item.id, id, targetIndex);
       }
     },
     collect: (monitor) => ({
@@ -112,9 +123,25 @@ function KanbanColumn({
           role="list"
           aria-labelledby={`column-${id}-title`}
         >
-          {tasks.map((task) => (
+          {tasks.map((task, index) => (
             <div key={task.id} role="listitem">
-              <KanbanCard {...task} onClick={onTaskSelect} />
+              <KanbanCard 
+                {...task} 
+                onClick={onTaskSelect}
+                index={index}
+                onHover={(dragId, hoverId, targetIndex) => {
+                  // 같은 컬럼 내에서의 순서 변경 (UI만)
+                  if (dragId !== hoverId) {
+                    onTaskHover(dragId, id, targetIndex);
+                  }
+                }}
+                onDrop={(dragId, hoverId, targetIndex) => {
+                  // 드롭 시 API 호출
+                  if (dragId !== hoverId) {
+                    onTaskDrop(dragId, id, targetIndex);
+                  }
+                }}
+              />
             </div>
           ))}
 
@@ -161,7 +188,8 @@ export function KanbanBoard({
   onTaskSelect,
   onNewTask,
   tasks,
-  onTaskMove,
+  onTaskHover,
+  onTaskDrop,
 }: KanbanBoardProps) {
   // 컬럼 설정과 태스크 데이터를 결합, tasks가 변경될 때만 재계산
   const columnConfigsWithTasks = useMemo(
@@ -193,7 +221,8 @@ export function KanbanBoard({
             {...column}
             onTaskSelect={onTaskSelect}
             onNewTask={onNewTask}
-            onTaskMove={onTaskMove}
+            onTaskHover={onTaskHover}
+            onTaskDrop={onTaskDrop}
           />
         ))}
       </div>

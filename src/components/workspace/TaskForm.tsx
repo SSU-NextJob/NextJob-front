@@ -36,7 +36,7 @@ export function TaskForm({
   // };
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6 max-w">
       {/* 에러 메시지 */}
       {errors.length > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -140,36 +140,43 @@ export function TaskForm({
 
       {/* 담당자 */}
       {/*  <div>
-     
         <label className="text-sm font-medium text-gray-700 block text-left mb-3">
           담당자
         </label>
-         {isEditing ? (
+        {isEditing ? (
           <Input
-            value={task.assignee.name}
+            value={task.assignee?.name || ""}
             onChange={(e) => updateAssignee(e.target.value)}
             placeholder="담당자 이름..."
           />
         ) : (
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-blue-100 rounded-full flex text-left items-center justify-center text-blue-600 font-medium">
-              {task.assignee.name
-                ? task.assignee.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .toUpperCase()
-                : "?"}
-            </div>
+            {task.assignee?.avatar ? (
+              <img
+                src={task.assignee.avatar}
+                alt={task.assignee.name}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium">
+                {task.assignee?.name
+                  ? task.assignee.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                  : "?"}
+              </div>
+            )}
             <div>
               <p className="font-medium text-gray-900">
-                {task.assignee.name || "배정되지 않음"}
+                {task.assignee?.name || "배정되지 않음"}
               </p>
               <p className="text-sm text-gray-500">담당자</p>
             </div>
           </div>
         )}
-      </div> 
+      </div>
 
       <Separator />*/}
 

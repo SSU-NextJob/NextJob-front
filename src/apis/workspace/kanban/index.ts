@@ -9,6 +9,7 @@ import type {
   ApiResponse,
   TaskListResponse,
   UpdateOrderAndStatusRequest,
+  UpdateBoardRequest,
   TaskDetailResponse,
   ColumnResponse,
 } from "./types";
@@ -36,10 +37,19 @@ export const updateTask = async (
 
 // 순서/상태 변경 API - PATCH /kanban/tasks/status
 export const updateOrderAndStatus = async (
-  taskId: number,
   data: UpdateOrderAndStatusRequest
 ): Promise<ApiResponse> => {
   return await fetcher<ApiResponse>(`/kanban/tasks/status/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+};
+
+// 칸반 보드 전체 업데이트 API - PUT /kanban/board
+export const updateBoard = async (
+  data: UpdateBoardRequest
+): Promise<ApiResponse> => {
+  return await fetcher<ApiResponse>(`/kanban/tasks/status`, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
@@ -50,12 +60,10 @@ export const deleteTask = async (
   taskId: number,
   data: DeleteTaskRequest
 ): Promise<ApiResponse> => {
-  return await fetcher<ApiResponse>(
-    `/kanban/tasks/${taskId}?kanbanId=${data.kanbanId}`,
-    {
-      method: "DELETE",
-    }
-  );
+  return await fetcher<ApiResponse>(`/kanban/tasks/${taskId}`, {
+    method: "DELETE",
+    body: JSON.stringify(data),
+  });
 };
 
 // 작업 목록 조회 API - GET /kanban/tasks (완)
