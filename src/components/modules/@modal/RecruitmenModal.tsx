@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { postRecruiment } from "@/apis/recruitment";
 import { useUserStore } from "@/store/userStore";
 import { getGroupCode, type CodeResponse } from "@/apis/group";
+import { getPostList } from "@/apis/post";
 
 interface RecruitModalProps {
   isOpen: boolean;
@@ -51,6 +52,7 @@ export const RecruitTeamModal = ({
     mutationFn: postRecruiment,
     onSuccess: () => {
       alert("모집 공고를 생성했습니다.");
+      window.location.reload();
       onClose();
     },
     onError: (e: any) => {
