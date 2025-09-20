@@ -40,6 +40,7 @@ export const SuggestModal = ({
     mutationFn: postProjectSuggest,
     onSuccess: () => {
       alert("프로젝트를 성공적으로 제안했습니다.");
+      onClose();
     },
     onError: (e: any) => {
       alert(e.message || "프로젝트 제안에 실패했습니다.");

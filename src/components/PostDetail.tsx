@@ -25,7 +25,8 @@ export const PostDetail = ({
 
   const handleOpenApplyModal = (post: PostDetailResponse) => {
     onOpenModal("apply", {
-      projectId: post.postId,
+      projectId: post.project.projectId,
+      postId: post.postId,
       onApply: () => {
         /* ... */
       },
