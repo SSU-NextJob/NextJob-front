@@ -14,7 +14,7 @@ export interface CreateProjectRequest {
 export interface ProjectApplyRequest {
   projectId: number;
   userId: number;
-  postId: number;
+  postId?: number;
 }
 
 export interface GetCreatedProjectsResponse {
