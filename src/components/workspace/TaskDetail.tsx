@@ -1,5 +1,8 @@
-// 내부 타입
+import { useState } from "react";
 import type { KanbanCardProps } from "./KanbanCard";
+import { TaskDetailHeader } from "./TaskDetailHeader";
+import { TaskForm } from "./TaskForm";
+import { CONTAINER_STYLES } from "./constants";
 
 /**
  * 태스크 상세 컴포넌트의 Props 타입
@@ -18,62 +21,91 @@ interface TaskDetailProps {
   /** 저장 이벤트 핸들러 */
   onSave: (task: KanbanCardProps) => void;
   /** 상태 변경 이벤트 핸들러 */
-  onStatusChange: (taskId: string, newStatus: "todo" | "inprogress" | "done") => void;
+  onStatusChange: (
+    taskId: string,
+    newStatus: "todo" | "inprogress" | "done"
+  ) => void;
 }
 
 /**
  * 태스크 상세 정보 컴포넌트
  * 태스크의 상세 정보를 표시하고 편집할 수 있는 패널입니다.
  */
-export function TaskDetail({ 
-  task, 
-  isExpanded, 
-  isNewTask, 
-  onClose, 
-  onExpand, 
+export function TaskDetail({
+  task,
+  isExpanded,
+  isNewTask,
+  onClose,
+  onExpand,
   onSave,
-  onStatusChange 
+  onStatusChange,
 }: TaskDetailProps) {
+  const [isEditing, setIsEditing] = useState(isNewTask);
+  const [editedTask, setEditedTask] = useState<KanbanCardProps>(
+    task || {
+      id: '',
+      title: '',
+      description: '',
+      priority: 'medium',
+      status: 'todo',
+      assignee: { name: '' },
+      dueDate: '',
+      startDate: '',
+      onClick: () => {}
+    }
+  );
+
   if (!task && !isNewTask) return null;
 
-  return (
-    <div className={`${isExpanded ? 'fixed inset-0 z-50 bg-white' : 'w-[480px]'} h-full ${!isExpanded ? 'border-l border-gray-200' : ''} flex flex-col`}>
-      {/* Header */}
-      <header className="p-6 border-b border-gray-100">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            {isNewTask ? 'New Task' : 'Task Details'}
-          </h2>
-          <div className="flex space-x-2">
-            <button 
-              onClick={onExpand}
-              className="p-2 hover:bg-gray-100 rounded-md"
-              aria-label={isExpanded ? "Minimize" : "Expand"}
-            >
-              {isExpanded ? "↙" : "↗"}
-            </button>
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-md"
-              aria-label="Close"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      </header>
+  const currentTask = task || editedTask;
 
-      {/* Content */}
+  const handleSave = () => {
+    if (editedTask.title.trim()) {
+      const taskToSave = {
+        ...editedTask,
+        id: editedTask.id || Date.now().toString()
+      };
+      onSave(taskToSave);
+      setIsEditing(false);
+      if (isNewTask) {
+        onClose();
+      }
+    }
+  };
+
+  const handleStatusChange = (newStatus: "todo" | "inprogress" | "done") => {
+    if (task) {
+      onStatusChange(task.id, newStatus);
+      setEditedTask(prev => ({ ...prev, status: newStatus }));
+    }
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedTask(currentTask);
+  };
+
+  return (
+    <div
+      className={`${isExpanded ? CONTAINER_STYLES.expanded : CONTAINER_STYLES.collapsed} h-full flex flex-col`}
+    >
+      <TaskDetailHeader
+        isNewTask={isNewTask}
+        isExpanded={isExpanded}
+        isEditing={isEditing}
+        onExpand={onExpand}
+        onClose={onClose}
+        onSave={handleSave}
+        onEdit={handleEdit}
+      />
+
       <main className="flex-1 p-6 overflow-y-auto">
-        <div className="bg-gray-50 rounded-lg p-8 text-center">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Task Detail Panel</h3>
-          <p className="text-gray-600">
-            {task ? `Selected task: ${task.title}` : "Creating new task"}
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            태스크 상세 편집 기능은 곧 추가될 예정입니다.
-          </p>
-        </div>
+        <TaskForm
+          task={isEditing ? editedTask : currentTask}
+          isEditing={isEditing}
+          onTaskChange={setEditedTask}
+          onStatusChange={handleStatusChange}
+        />
       </main>
     </div>
   );

@@ -209,7 +209,7 @@ export const Header = () => {
         ) : (
           <>
             {/* 로그아웃 상태: 로그인 버튼만 */}
-            {/* <Button
+            <Button
               onClick={() => setUser({ userId: 1, userName: "테스트 1" })}
               color={"white"}
             >
@@ -226,8 +226,8 @@ export const Header = () => {
               color={"white"}
             >
               로그인 3
-            </Button> */}
-            <Button
+            </Button>
+            {/* <Button
               onClick={() => {
                 // navigate("/login");
                 handleGoogleLogin();
@@ -235,7 +235,7 @@ export const Header = () => {
               color={"white"}
             >
               로그인
-            </Button>
+            </Button> */}
           </>
         )}
       </div>
