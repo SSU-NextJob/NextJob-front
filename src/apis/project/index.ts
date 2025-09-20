@@ -42,6 +42,7 @@ export interface ProjectResponse {
   startAt: Date; // 프로젝트 시작일
   endAt: Date; // 프로젝트 종료일
   image?: string; // 프로젝트 이미지
+  workspaceId?: number; // 워크스페이스 아이디
 }
 
 // 프로젝트 생성

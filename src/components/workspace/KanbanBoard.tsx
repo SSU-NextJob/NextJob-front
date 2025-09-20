@@ -1,7 +1,7 @@
 // 서드파티 라이브러리
 import { useDrop } from "react-dnd";
 import { Plus } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 
 // 내부 모듈
 import { KanbanCard } from "./KanbanCard";
@@ -19,7 +19,11 @@ interface KanbanBoardProps {
   /** 칸반 태스크 데이터 */
   tasks: Record<string, KanbanCardProps[]>;
   /** 태스크 이동 핸들러 */
-  onTaskMove: (taskId: string, newStatus: TaskStatus) => void;
+  onTaskMove: (
+    taskId: string,
+    newStatus: TaskStatus,
+    targetIndex?: number
+  ) => void;
 }
 
 /**
@@ -66,7 +70,7 @@ function KanbanColumn({
       isOver: monitor.isOver(),
     }),
   }));
-  
+
   drop(dropRef);
 
   return (
@@ -104,7 +108,7 @@ function KanbanColumn({
         </header>
 
         <main
-          className="p-4 space-y-3 min-h-[500px] bg-gray-50/50"
+          className="p-4 space-y-3 h-[500px] bg-gray-50/50 overflow-y-auto"
           role="list"
           aria-labelledby={`column-${id}-title`}
         >
@@ -115,7 +119,7 @@ function KanbanColumn({
           ))}
 
           <Button
-            // className="w-full h-12 border-2 border-dashed border-gray-300 text-gray-500 bg-white hover:border-gray-400"
+            className="w-full h-12 border-2 border-dashed border-gray-300 text-gray-500 bg-white hover:border-gray-400 flex items-center justify-center"
             onClick={() => onNewTask(id)}
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -127,6 +131,28 @@ function KanbanColumn({
   );
 }
 
+// 컬럼 설정을 컴포넌트 외부로 이동하여 불필요한 재생성 방지
+const COLUMN_CONFIGS = [
+  {
+    id: "todo" as TaskStatus,
+    title: "To Do",
+    headerColor: "bg-red-50 border-t-4 border-t-red-400",
+    titleColor: "text-red-700",
+  },
+  {
+    id: "inprogress" as TaskStatus,
+    title: "In Progress",
+    headerColor: "bg-yellow-50 border-t-4 border-t-yellow-400",
+    titleColor: "text-yellow-700",
+  },
+  {
+    id: "done" as TaskStatus,
+    title: "Done",
+    headerColor: "bg-green-50 border-t-4 border-t-green-400",
+    titleColor: "text-green-700",
+  },
+] as const;
+
 /**
  * 칸반 보드 컴포넌트
  * 태스크를 To Do, In Progress, Done 컬럼으로 관리합니다.
@@ -137,37 +163,23 @@ export function KanbanBoard({
   tasks,
   onTaskMove,
 }: KanbanBoardProps) {
-  const COLUMN_CONFIGS = [
-    {
-      id: "todo" as TaskStatus,
-      title: "To Do",
-      tasks: tasks.todo || [],
-      headerColor: "bg-red-50 border-t-4 border-t-red-400",
-      titleColor: "text-red-700",
-    },
-    {
-      id: "inprogress" as TaskStatus,
-      title: "In Progress",
-      tasks: tasks.inprogress || [],
-      headerColor: "bg-yellow-50 border-t-4 border-t-yellow-400",
-      titleColor: "text-yellow-700",
-    },
-    {
-      id: "done" as TaskStatus,
-      title: "Done",
-      tasks: tasks.done || [],
-      headerColor: "bg-green-50 border-t-4 border-t-green-400",
-      titleColor: "text-green-700",
-    },
-  ] as const;
+  // 컬럼 설정과 태스크 데이터를 결합, tasks가 변경될 때만 재계산
+  const columnConfigsWithTasks = useMemo(
+    () =>
+      COLUMN_CONFIGS.map((config) => ({
+        ...config,
+        tasks: tasks[config.id] || [],
+      })),
+    [tasks]
+  );
 
   return (
     <div className="flex-1 p-6 overflow-x-auto bg-gray-50">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold mb-2 text-gray-900">
-          Kanban Board
+        <h1 className="text-2xl font-semibold mb-2 text-gray-900 text-left">
+          칸반보드
         </h1>
-        <p className="text-gray-600">Manage your tasks and track progress</p>
+        {/* <p className="text-gray-600">Manage your tasks and track progress</p> */}
       </header>
 
       <div
@@ -175,7 +187,7 @@ export function KanbanBoard({
         role="application"
         aria-label="Kanban board for task management"
       >
-        {COLUMN_CONFIGS.map((column) => (
+        {columnConfigsWithTasks.map((column) => (
           <KanbanColumn
             key={column.id}
             {...column}

@@ -2,7 +2,6 @@ import { fetcher } from "../../index";
 import type {
   UploadFileRequest,
   DeleteBlobRequest,
-  GetBlobsRequest,
   DownloadBlobRequest,
   ApiResponse,
   BlobResponse,
@@ -14,20 +13,42 @@ export const uploadFile = async (
   data: UploadFileRequest
 ): Promise<ApiResponse> => {
   const formData = new FormData();
+  console.log("....data", data);
   formData.append("file", data.file);
-  formData.append("userId", data.userId);
+  formData.append("userId", data.userId.toString());
 
-  return await fetcher<ApiResponse>(`/drives/${driveId}/blobs/upload`, {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
+  const url = BASE_URL
+    ? `${BASE_URL}/drives/${driveId}/blobs/upload`
+    : `/drives/${driveId}/blobs/upload`;
+
+  return fetch(url, {
     method: "POST",
     body: formData,
+    credentials: "include",
+  }).then(async (res) => {
+    if (!res.ok) {
+      const errorBody = await res.json().catch(() => ({}));
+      throw new Error(errorBody.message || "API 호출 실패");
+    }
+
+    const responseData = await res.json();
+
+    if (responseData.success === false) {
+      const errorMessage =
+        responseData.error?.message || "요청 처리 중 오류가 발생했습니다.";
+      throw new Error(errorMessage);
+    }
+
+    return responseData;
   });
 };
 
 // 문서 삭제 API - DELETE /drives/blobs/:blobId
 export const deleteBlob = async (
-  blobId: DeleteBlobRequest
+  request: DeleteBlobRequest
 ): Promise<ApiResponse> => {
-  return await fetcher<ApiResponse>(`/drives/blobs/${blobId}`, {
+  return await fetcher<ApiResponse>(`/drives/blobs/${request.blobId}`, {
     method: "DELETE",
   });
 };
@@ -48,9 +69,12 @@ export const getBlobs = async (
 
 // 문서 다운로드 API - GET /drives/blobs/:blobId/download
 export const downloadBlob = async (
-  blobId: DownloadBlobRequest
+  request: DownloadBlobRequest
 ): Promise<ApiResponse> => {
-  return await fetcher<ApiResponse>(`/drives/blobs/${blobId}/download`, {
-    method: "GET",
-  });
+  return await fetcher<ApiResponse>(
+    `/drives/blobs/${request.blobId}/download`,
+    {
+      method: "GET",
+    }
+  );
 };

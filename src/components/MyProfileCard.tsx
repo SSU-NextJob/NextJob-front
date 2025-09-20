@@ -48,11 +48,12 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  //
   const handleSave = async () => {
     if (!userId) return;
     try {
       let profileImageUrl = userProfile.profileImage;
-      
+
       // 이미지가 선택되었으면 먼저 업로드
       if (selectedImage) {
         try {
@@ -109,7 +110,7 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
     <div className="flex flex-col bg-white rounded-xl p-6 w-full max-w-7xl text-left">
       {/* 헤더 */}
       <div className="flex justify-between items-start mb-6">
-        <h1 className="text-2xl font-bold">내 프로필</h1>
+        <h1 className="text-2xl text-gray-700 font-bold">내 프로필</h1>
         {isEditing ? (
           <div className="flex gap-2">
             <Button onClick={handleCancel} color={"gray"}>

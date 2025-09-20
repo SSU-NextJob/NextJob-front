@@ -38,6 +38,11 @@ export interface UpdateTaskRequest {
   importance: "Y" | "N";
 }
 
+export interface UpdateOrderAndStatusRequest {
+  taskId: number;
+  sort: number;
+}
+
 export interface GetTasksRequest {
   kanbanId: number;
 }

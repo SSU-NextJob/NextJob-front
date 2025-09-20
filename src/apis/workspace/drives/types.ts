@@ -1,6 +1,6 @@
 export interface UploadFileRequest {
   file: File;
-  userId: string;
+  userId: number;
 }
 
 export interface DeleteBlobRequest {
