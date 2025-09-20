@@ -11,6 +11,7 @@ import { MultiSelector } from "@/components/modules/Dropdown";
 import { getGroupCode, type CodeResponse } from "@/apis/group";
 import { useEffect } from "react";
 import { PatchUserVisibleAPI } from "@/apis/user";
+import { uploadImageAPI } from "@/apis/image";
 
 const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
   if (!userProfile) return;
@@ -22,6 +23,8 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
     techStack: userProfile.techStack,
     description: userProfile.description,
   });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const { userId } = useUserStore();
   const [userTypeOptions, setUserTypeOptions] = useState<CodeResponse[]>([]);
@@ -48,12 +51,26 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
   const handleSave = async () => {
     if (!userId) return;
     try {
+      let profileImageUrl = userProfile.profileImage;
+      
+      // 이미지가 선택되었으면 먼저 업로드
+      if (selectedImage) {
+        const uploadResult = await uploadImageAPI(selectedImage, "profile");
+        if (uploadResult.success) {
+          profileImageUrl = uploadResult.data.imageUrl;
+        } else {
+          alert("이미지 업로드에 실패했습니다.");
+          return;
+        }
+      }
+
       await PatchUserDetailAPI(
         userId,
         form.name,
         form.techStack,
         form.description,
-        form.role
+        form.role,
+        profileImageUrl
       );
       window.location.reload();
     } catch (e) {
@@ -68,6 +85,8 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
       techStack: userProfile.techStack,
       description: userProfile.description,
     });
+    setSelectedImage(null);
+    setPreviewImage(null);
     setIsEditing(false);
   };
 
@@ -107,9 +126,15 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
 
       {/* 기본 정보 */}
       <div className="flex items-start gap-4 mb-6">
-        <div className="flex flex-col items-start gap-2">
+        <div className="flex flex-col items-center gap-2">
           <div className="w-32 h-32 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
-            {userProfile.profileImage ? (
+            {previewImage ? (
+              <img
+                src={previewImage}
+                alt="프로필 이미지 미리보기"
+                className="w-full h-full object-cover"
+              />
+            ) : userProfile.profileImage ? (
               <img
                 src={userProfile.profileImage}
                 alt="프로필 이미지"
@@ -132,20 +157,28 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
               </svg>
             )}
           </div>
-          <label className="text-xs text-blue-600 cursor-pointer hover:underline">
-            이미지 업로드
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  console.log("선택한 이미지 파일:", file.name);
-                }
-              }}
-            />
-          </label>
+          {isEditing && (
+            <label className="text-xs text-blue-600 cursor-pointer hover:underline">
+              이미지 업로드
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setSelectedImage(file);
+                    // 미리보기 URL 생성
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      setPreviewImage(e.target?.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+              />
+            </label>
+          )}
         </div>
         <div className="flex flex-col gap-2 w-full">
           {profileKeys.map((key: ProfileKey) => (
