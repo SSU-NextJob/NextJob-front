@@ -1,6 +1,3 @@
-// 표준 라이브러리
-import { useState } from "react";
-
 // 서드파티 라이브러리
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";

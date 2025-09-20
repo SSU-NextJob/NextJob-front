@@ -8,6 +8,7 @@ import type {
   ChangeTaskColumnRequest,
   ApiResponse,
   TaskListResponse,
+  UpdateOrderAndStatusRequest,
   TaskDetailResponse,
   ColumnResponse,
 } from "./types";
@@ -33,11 +34,28 @@ export const updateTask = async (
   });
 };
 
-// 작업 삭제 API - DELETE /kanban/tasks/:taskId
-export const deleteTask = async (taskId: number, data: DeleteTaskRequest): Promise<ApiResponse> => {
-  return await fetcher<ApiResponse>(`/kanban/tasks/${taskId}?kanbanId=${data.kanbanId}`, {
-    method: "DELETE",
+// 순서/상태 변경 API - PATCH /kanban/tasks/status
+export const updateOrderAndStatus = async (
+  taskId: number,
+  data: UpdateOrderAndStatusRequest
+): Promise<ApiResponse> => {
+  return await fetcher<ApiResponse>(`/kanban/tasks/status/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
   });
+};
+
+// 작업 삭제 API - DELETE /kanban/tasks/:taskId
+export const deleteTask = async (
+  taskId: number,
+  data: DeleteTaskRequest
+): Promise<ApiResponse> => {
+  return await fetcher<ApiResponse>(
+    `/kanban/tasks/${taskId}?kanbanId=${data.kanbanId}`,
+    {
+      method: "DELETE",
+    }
+  );
 };
 
 // 작업 목록 조회 API - GET /kanban/tasks (완)
