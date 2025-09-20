@@ -1,6 +1,7 @@
 ﻿import { Button } from "@/components/atoms/Button";
 import { useUserStore } from "@/store/userStore";
 import React, { useState } from "react";
+import { uploadImageAPI } from "@/apis/image";
 
 interface CreateProjectModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const CreateProjectModal = ({
   const [status, setProjectType] = useState("progress");
   const [type, setType] = useState("contest");
   const [image, setImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const { userId } = useUserStore();
 
@@ -28,34 +30,61 @@ export const CreateProjectModal = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isValid) return;
-    console.log("onCreate", {
-      name: projectName,
-      content,
-      creatorId: userId,
-      startAt,
-      endAt,
-      status,
-      image: image ? image.name : "",
-      type,
-    });
-    onCreate({
-      name: projectName,
-      content,
-      creatorId: userId,
-      startAt,
-      endAt,
-      status,
-      image: image ? image.name : "",
-      type,
-    });
-    onClose();
+    
+    try {
+      let imageUrl = "";
+      
+      // 이미지가 선택되었으면 먼저 업로드
+      if (image) {
+        try {
+          const uploadResult = await uploadImageAPI(image, "project");
+          if (uploadResult.success) {
+            imageUrl = uploadResult.data.imageUrl;
+          }
+        } catch (error) {
+          console.warn("이미지 업로드에 실패했습니다:", error);
+          // 이미지 업로드 실패해도 계속 진행
+        }
+      }
+
+      console.log("onCreate", {
+        name: projectName,
+        content,
+        creatorId: userId,
+        startAt,
+        endAt,
+        status,
+        image: imageUrl,
+        type,
+      });
+      onCreate({
+        name: projectName,
+        content,
+        creatorId: userId,
+        startAt,
+        endAt,
+        status,
+        image: imageUrl,
+        type,
+      });
+      onClose();
+    } catch (e) {
+      alert("프로젝트 생성에 실패했습니다.");
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setImage(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      // 미리보기 URL 생성
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -153,25 +182,35 @@ export const CreateProjectModal = ({
             <label className="text-sm font-semibold">
               프로젝트 이미지 (선택)
             </label>
-            <label
-              htmlFor="imageUpload"
-              className="w-full border border-dashed border-gray-300 rounded-md cursor-pointer py-8 flex flex-col items-center justify-center text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition"
-            >
-              <svg
-                className="w-6 h-6 mb-1"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 0l-4 4m4-4l4 4"
+            {previewImage ? (
+              <div className="w-full border rounded-md overflow-hidden">
+                <img
+                  src={previewImage}
+                  alt="프로젝트 이미지 미리보기"
+                  className="w-full h-32 object-cover"
                 />
-              </svg>
-              Click to upload image
-            </label>
+              </div>
+            ) : (
+              <label
+                htmlFor="imageUpload"
+                className="w-full border border-dashed border-gray-300 rounded-md cursor-pointer py-8 flex flex-col items-center justify-center text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition"
+              >
+                <svg
+                  className="w-6 h-6 mb-1"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 0l-4 4m4-4l4 4"
+                  />
+                </svg>
+                Click to upload image
+              </label>
+            )}
 
             <input
               id="imageUpload"
@@ -181,10 +220,21 @@ export const CreateProjectModal = ({
               onChange={handleImageUpload}
             />
 
-            {image && (
-              <p className="text-xs text-gray-500 mt-1">
-                선택된 파일: {image.name}
-              </p>
+            {previewImage && (
+              <div className="flex justify-between items-center mt-2">
+                <p className="text-xs text-gray-500">
+                  선택된 파일: {image?.name}
+                </p>
+                <button
+                  onClick={() => {
+                    setImage(null);
+                    setPreviewImage(null);
+                  }}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  제거
+                </button>
+              </div>
             )}
           </div>
 
