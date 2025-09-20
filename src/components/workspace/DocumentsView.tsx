@@ -33,7 +33,7 @@ function convertBlobToDocument(blob: BlobResponse, index: number): Document {
 
   return {
     id: blob.blobUrl,
-    blobId: numericBlobId,
+    blobId: blob.blobId,
     name: blob.fileName,
     size: blob.size,
     uploader: blob.userName,
