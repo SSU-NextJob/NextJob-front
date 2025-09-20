@@ -55,12 +55,14 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
       
       // 이미지가 선택되었으면 먼저 업로드
       if (selectedImage) {
-        const uploadResult = await uploadImageAPI(selectedImage, "profile");
-        if (uploadResult.success) {
-          profileImageUrl = uploadResult.data.imageUrl;
-        } else {
-          alert("이미지 업로드에 실패했습니다.");
-          return;
+        try {
+          const uploadResult = await uploadImageAPI(selectedImage, "profile");
+          if (uploadResult.success) {
+            profileImageUrl = uploadResult.data.imageUrl;
+          }
+        } catch (error) {
+          console.warn("이미지 업로드에 실패했습니다:", error);
+          // 이미지 업로드 실패해도 계속 진행 (기존 이미지 URL 유지)
         }
       }
 
