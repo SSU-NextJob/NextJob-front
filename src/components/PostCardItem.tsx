@@ -19,6 +19,7 @@ export const PostCardItem = ({ post }: PostCardItemProps) => {
     if (post.userId === userId) return;
     onOpenModal("apply", {
       projectId: post.project.projectId,
+      postId: post.postId,
       onApply: () => {
         /* ... */
       },
