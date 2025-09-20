@@ -40,7 +40,7 @@ export const SearchBar = ({
         onChange={onChange}
         placeholder={placeholder}
         onKeyDown={handleKeyDown}
-        className="w-full rounded-lg border border-gray-300 py-2 pl-4 pr-4 text-gray-800 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="w-full bg-white rounded-lg border border-gray-300 py-2 pl-4 pr-4 text-gray-800 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
     </div>
   );

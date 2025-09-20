@@ -17,7 +17,7 @@ export default function PostPage() {
   } = usePostSearchPage();
 
   return (
-    <div className="w-full mx-auto text-left py-8 px-4 md:px-8">
+    <div className="min-h-screen w-full mx-auto text-left py-8 px-4 md:px-8 bg-white">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">프로젝트 탐색</h1>
         {/* <p className="text-base text-gray-500">협업할 흥미로운 프로젝트 탐색</p> */}

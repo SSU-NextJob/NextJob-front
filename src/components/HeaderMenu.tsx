@@ -19,6 +19,13 @@ export const Header = () => {
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
+  // userStore 연동
+  const { userId, setUser, clearUser } = useUserStore();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notificationList, setNotificationList] = useState<NotificationItem[]>(
+    []
+  );
+
   const createProjectMutation = useMutation({
     mutationFn: postCreateProject,
     onSuccess: () => {
@@ -43,13 +50,6 @@ export const Header = () => {
       console.error("로그아웃 API 호출 실패:", e.message);
     },
   });
-
-  // userStore 연동
-  const { userId, setUser, clearUser } = useUserStore();
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [notificationList, setNotificationList] = useState<NotificationItem[]>(
-    []
-  );
 
   /**
    * Google OAuth 로그인 처리 함수
