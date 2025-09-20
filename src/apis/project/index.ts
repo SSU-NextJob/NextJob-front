@@ -14,6 +14,7 @@ export interface CreateProjectRequest {
 export interface ProjectApplyRequest {
   projectId: number;
   userId: number;
+  postId: number;
 }
 
 export interface GetCreatedProjectsResponse {
@@ -61,10 +62,11 @@ export const getProjectDetail = (projectId: number) => {
 export const postProjectApply = ({
   projectId,
   userId,
+  postId,
 }: ProjectApplyRequest) => {
   return fetcher<{ message: string }>(`/projects/${projectId}/apply`, {
     method: "POST",
-    body: JSON.stringify({ userId: userId }),
+    body: JSON.stringify({ userId: userId, postId: postId }),
     headers: { "Content-Type": "application/json" },
   });
 };
