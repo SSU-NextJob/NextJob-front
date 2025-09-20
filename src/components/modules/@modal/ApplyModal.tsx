@@ -8,19 +8,22 @@ interface ConfirmApplyModalProps {
   onClose: () => void;
   onApply: () => void;
   projectId?: number;
+  postId?: number;
 }
 
 export const ConfirmApplyModal = ({
   isOpen,
   onClose,
   projectId,
+  postId,
 }: ConfirmApplyModalProps) => {
   const { userId } = useUserStore();
   const mutation = useMutation({
     mutationFn: () => {
       if (!projectId) throw new Error("프로젝트 ID가 없습니다.");
       if (!userId) throw new Error("userID가 없습니다.");
-      return postProjectApply({ projectId, userId });
+      if (!postId) throw new Error("게시글 ID가 없습니다.");
+      return postProjectApply({ projectId, userId, postId });
     },
     onSuccess: () => {
       alert("지원이 완료되었습니다.");
