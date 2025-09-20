@@ -43,6 +43,21 @@ export interface UpdateOrderAndStatusRequest {
   sort: number;
 }
 
+export interface UpdateBoardRequest {
+  kanbanId: number;
+  tasks: Task[];
+}
+
+export interface TaskItem {
+  taskId: number;
+  sort: number; // 숫자가 작을수록 상단에 위치
+}
+
+export interface Task {
+  columnId: number;
+  items: TaskItem[];
+}
+
 export interface GetTasksRequest {
   kanbanId: number;
 }

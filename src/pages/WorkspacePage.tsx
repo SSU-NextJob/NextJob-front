@@ -51,7 +51,9 @@ export default function WorkspacePage() {
     tasks,
     isLoading: isKanbanLoading,
     error: kanbanError,
-    handleTaskMove,
+    loadInitialData,
+    handleTaskHover,
+    handleTaskDrop,
     handleTaskCreate,
     handleTaskUpdate,
     handleTaskDelete,
@@ -82,7 +84,22 @@ export default function WorkspacePage() {
     taskId: string,
     newStatus: "todo" | "inprogress" | "done"
   ) => {
-    await handleTaskMove(taskId, newStatus);
+    // 상태 변경 시에는 끝에 추가하도록 처리
+    await handleTaskDrop(taskId, newStatus, 0);
+  };
+
+  // 삭제 후 새로고침 핸들러
+  const handleTaskDeleteWithRefresh = async (
+    taskId: string
+  ): Promise<boolean> => {
+    console.log("진입... taskId", taskId);
+    const success = await handleTaskDelete(taskId);
+    console.log("진입... success", success);
+    if (success) {
+      // 삭제 성공 시 데이터 새로고침
+      await loadInitialData();
+    }
+    return success;
   };
 
   const renderMainContent = () => {
@@ -93,7 +110,8 @@ export default function WorkspacePage() {
             onTaskSelect={handleTaskSelect}
             onNewTask={handleNewTask}
             tasks={tasks}
-            onTaskMove={handleTaskMove}
+            onTaskHover={handleTaskHover}
+            onTaskDrop={handleTaskDrop}
           />
         );
       case "calendar":
@@ -106,7 +124,8 @@ export default function WorkspacePage() {
             onTaskSelect={handleTaskSelect}
             onNewTask={handleNewTask}
             tasks={tasks}
-            onTaskMove={handleTaskMove}
+            onTaskHover={handleTaskHover}
+            onTaskDrop={handleTaskDrop}
           />
         );
     }
@@ -157,7 +176,7 @@ export default function WorkspacePage() {
                 onExpand={handleExpandDetail}
                 onSave={handleTaskSave}
                 onStatusChange={handleStatusChange}
-                onDelete={handleTaskDelete}
+                onDelete={handleTaskDeleteWithRefresh}
                 getTaskDetail={getTaskDetailById}
               />
             )}

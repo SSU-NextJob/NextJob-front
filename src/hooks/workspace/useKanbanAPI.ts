@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
   getTasks,
   getTaskDetail,
-  updateOrderAndStatus,
+  updateBoard,
   deleteTask,
   createTask,
   updateTask,
@@ -13,6 +13,9 @@ import type {
   TaskDetailResponse,
   CreateTaskRequest,
   UpdateTaskRequest,
+  UpdateBoardRequest,
+  Task,
+  TaskItem,
 } from "@/apis/workspace/kanban/types";
 import type {
   KanbanCardProps,
@@ -36,6 +39,7 @@ const mapTaskToKanbanCard = (
     assignee: { name: "User" },
     dueDate: task.endDate,
     startDate: task.startDate,
+    sort: task.sort,
     onClick: () => {},
   };
 };
@@ -72,6 +76,53 @@ const getColumnIdFromStatus = (
   );
 
   return column?.columnId || 1;
+};
+
+// 현재 칸반 보드 상태를 UpdateBoardRequest 형태로 변환
+const convertTasksToUpdateBoardPayload = (
+  tasks: Record<string, KanbanCardProps[]>,
+  kanbanId: number
+): UpdateBoardRequest => {
+  const boardTasks: Task[] = [];
+
+  // 각 상태별로 태스크를 처리
+  Object.entries(tasks).forEach(([status, taskList]) => {
+    let columnId: number;
+    
+    // status에 따른 columnId 매핑
+    switch (status as TaskStatus) {
+      case 'todo':
+        columnId = 1; // '할 일'
+        break;
+      case 'inprogress':
+        columnId = 2; // '진행 중'
+        break;
+      case 'done':
+        columnId = 3; // '완료'
+        break;
+      default:
+        columnId = 1;
+    }
+
+    // 태스크 리스트를 TaskItem 형태로 변환
+    const items: TaskItem[] = taskList.map((task, index) => ({
+      taskId: parseInt(task.id),
+      sort: index, // 배열 인덱스를 sort 값으로 사용
+    }));
+
+    // Task 객체 생성
+    if (items.length > 0) {
+      boardTasks.push({
+        columnId,
+        items,
+      });
+    }
+  });
+
+  return {
+    kanbanId,
+    tasks: boardTasks,
+  };
 };
 
 // Task validation 함수
@@ -136,7 +187,7 @@ export function useKanbanAPI(kanbanId?: number) {
     setError(null);
 
     try {
-      console.log("???wlsdlq");
+      console.log("Loading tasks...");
       const [tasksResponse] = await Promise.all([
         getTasks({ kanbanId }),
         // getColumns(kanbanId),
@@ -193,6 +244,11 @@ export function useKanbanAPI(kanbanId?: number) {
           groupedTasks[kanbanCard.status].push(kanbanCard);
         });
 
+        // 각 컬럼의 태스크를 sort 순서로 정렬
+        Object.keys(groupedTasks).forEach((status) => {
+          groupedTasks[status].sort((a, b) => (a.sort || 0) - (b.sort || 0));
+        });
+
         setTasks(groupedTasks);
       } else {
         setError(tasksResponse.error || "데이터 로드 실패");
@@ -210,13 +266,9 @@ export function useKanbanAPI(kanbanId?: number) {
     loadInitialData();
   }, [loadInitialData]);
 
-  // 태스크 이동 및 상태 변경
-  const handleTaskMove = useCallback(
-    async (taskId: string, newStatus: TaskStatus) => {
-      // 이전 상태 백업
-      const previousTasks = { ...tasks };
-
-      // 낙관적 업데이트
+  // 태스크 hover 시 UI만 변경 (API 호출 없음)
+  const handleTaskHover = useCallback(
+    (taskId: string, newStatus: TaskStatus, targetIndex: number) => {
       setTasks((prev) => {
         const newTasks = { ...prev };
         let taskToMove: KanbanCardProps | null = null;
@@ -232,19 +284,67 @@ export function useKanbanAPI(kanbanId?: number) {
 
         // 새 위치에 태스크 추가
         if (taskToMove) {
-          newTasks[newStatus].push(taskToMove);
+          newTasks[newStatus].splice(targetIndex, 0, taskToMove);
         }
 
         return newTasks;
       });
+    },
+    []
+  );
+
+  // 태스크 drop 시 API 호출
+  const handleTaskDrop = useCallback(
+    async (taskId: string, newStatus: TaskStatus, targetIndex: number) => {
+      if (!kanbanId) return;
+
+      // 이전 상태 백업
+      const previousTasks = { ...tasks };
 
       try {
-        const taskIdNumber = parseInt(taskId);
+        // UI 상태를 먼저 업데이트 (낙관적 업데이트)
+        setTasks((prev) => {
+          const newTasks = { ...prev };
+          let taskToMove: KanbanCardProps | null = null;
 
-        const response = await updateOrderAndStatus(taskIdNumber, {
-          taskId: taskIdNumber,
-          sort: 0,
+          // 기존 위치에서 태스크 제거
+          Object.keys(newTasks).forEach((status) => {
+            const taskIndex = newTasks[status].findIndex((t) => t.id === taskId);
+            if (taskIndex !== -1) {
+              taskToMove = { ...newTasks[status][taskIndex], status: newStatus };
+              newTasks[status].splice(taskIndex, 1);
+            }
+          });
+
+          // 새 위치에 태스크 추가
+          if (taskToMove) {
+            newTasks[newStatus].splice(targetIndex, 0, taskToMove);
+          }
+
+          return newTasks;
         });
+
+        // 현재 상태 기준으로 전체 보드 상태를 API에 전송
+        const currentTasks = { ...tasks };
+        
+        // 이동된 태스크를 임시로 반영한 상태 생성
+        let taskToMove: KanbanCardProps | null = null;
+        Object.keys(currentTasks).forEach((status) => {
+          const taskIndex = currentTasks[status].findIndex((t) => t.id === taskId);
+          if (taskIndex !== -1) {
+            taskToMove = { ...currentTasks[status][taskIndex], status: newStatus };
+            currentTasks[status].splice(taskIndex, 1);
+          }
+        });
+
+        if (taskToMove) {
+          currentTasks[newStatus].splice(targetIndex, 0, taskToMove);
+        }
+
+        // 변경된 상태를 UpdateBoardRequest 형태로 변환
+        const payload = convertTasksToUpdateBoardPayload(currentTasks, kanbanId);
+
+        const response = await updateBoard(payload);
 
         if (!response.success) {
           // 실패 시 이전 상태로 롤백
@@ -254,11 +354,11 @@ export function useKanbanAPI(kanbanId?: number) {
       } catch (err) {
         // 에러 발생 시 이전 상태로 롤백
         setTasks(previousTasks);
-        console.error("Task move error:", err);
-        setError("태스크 이동 중 오류가 발생했습니다.");
+        console.error("Task drop error:", err);
+        setError("태스크 드롭 중 오류가 발생했습니다.");
       }
     },
-    [tasks]
+    [tasks, kanbanId]
   );
 
   // 태스크 상세 정보 가져오기
@@ -278,36 +378,32 @@ export function useKanbanAPI(kanbanId?: number) {
   );
 
   // 태스크 삭제
-  const handleTaskDelete = useCallback(
-    async (taskId: string): Promise<boolean> => {
-      if (!kanbanId) return false;
+  const handleTaskDelete = async (taskId: string): Promise<boolean> => {
+    console.log("kanbanId??", kanbanId);
+    if (!kanbanId) return false;
 
-      try {
-        const response = await deleteTask(parseInt(taskId), { kanbanId });
+    try {
+      const response = await deleteTask(parseInt(taskId), { kanbanId });
 
-        if (response.success) {
-          // 로컬 상태에서 태스크 제거
-          setTasks((prev) => {
-            const newTasks = { ...prev };
-            Object.keys(newTasks).forEach((status) => {
-              newTasks[status] = newTasks[status].filter(
-                (t) => t.id !== taskId
-              );
-            });
-            return newTasks;
+      if (response.success) {
+        // 로컬 상태에서 태스크 제거
+        setTasks((prev) => {
+          const newTasks = { ...prev };
+          Object.keys(newTasks).forEach((status) => {
+            newTasks[status] = newTasks[status].filter((t) => t.id !== taskId);
           });
-          return true;
-        } else {
-          throw new Error(response.error || "태스크 삭제 실패");
-        }
-      } catch (err) {
-        console.error("Task delete error:", err);
-        setError("태스크 삭제 중 오류가 발생했습니다.");
-        return false;
+          return newTasks;
+        });
+        return true;
+      } else {
+        throw new Error(response.error || "태스크 삭제 실패");
       }
-    },
-    [kanbanId]
-  );
+    } catch (err) {
+      console.error("Task delete error:", err);
+      setError("태스크 삭제 중 오류가 발생했습니다.");
+      return false;
+    }
+  };
 
   // 태스크 생성
   const handleTaskCreate = useCallback(
@@ -425,7 +521,8 @@ export function useKanbanAPI(kanbanId?: number) {
     isLoading,
     error,
     loadInitialData,
-    handleTaskMove,
+    handleTaskHover,
+    handleTaskDrop,
     getTaskDetailById,
     handleTaskDelete,
     handleTaskCreate,
