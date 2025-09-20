@@ -26,14 +26,14 @@ interface Document {
 }
 
 function convertBlobToDocument(blob: BlobResponse, index: number): Document {
-    // Extract blobId from URL or use index as fallback
-    const urlParts = blob.blobUrl.split("/");
-    const blobId = urlParts[urlParts.length - 1];
-    const numericBlobId = parseInt(blobId) || index + 1;
-  
+  // Extract blobId from URL or use index as fallback
+  const urlParts = blob.blobUrl.split("/");
+  const blobId = urlParts[urlParts.length - 1];
+  const numericBlobId = parseInt(blobId) || index + 1;
+
   return {
     id: blob.blobUrl,
-    blobId: blob.blobId, // 서버에서 제공하는 실제 blobId 사용
+    blobId: blob.blobId,
     name: blob.fileName,
     size: blob.size,
     uploader: blob.userName,
