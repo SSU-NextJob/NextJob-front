@@ -110,14 +110,14 @@ export function KanbanCard({
       }}
     >
       <CardContent className="p-4">
-        <div className="space-y-3">
+        <div className="space-y-3 text-left">
           {/* Drag Handle & Title */}
           <div className="flex items-start space-x-2">
             <GripVertical 
               className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" 
               aria-hidden="true"
             />
-            <h4 className="font-medium text-gray-900 leading-tight flex-1">{title}</h4>
+            <h4 className="font-medium text-gray-900 leading-tight flex-1 text-left">{title}</h4>
           </div>
 
           {/* Priority Badge */}
