@@ -1,41 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { KanbanCardProps } from "./KanbanCard";
 import { TaskDetailHeader } from "./TaskDetailHeader";
 import { TaskForm } from "./TaskForm";
 import { CONTAINER_STYLES } from "./constants";
 import { useUserStore } from "@/store/userStore";
+import type { TaskDetailResponse } from "@/apis/workspace/kanban/types";
 
 // Task validation 함수 (useKanbanAPI와 동일한 로직)
-const validateTask = (task: KanbanCardProps): { isValid: boolean; errors: string[] } => {
+const validateTask = (
+  task: KanbanCardProps
+): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
-  
-  if (!task.title || task.title.trim() === '') {
-    errors.push('제목은 필수 입력 항목입니다.');
+
+  if (!task.title || task.title.trim() === "") {
+    errors.push("제목은 필수 입력 항목입니다.");
   }
-  
+
   if (task.title && task.title.length > 100) {
-    errors.push('제목은 100자 이하로 입력해주세요.');
+    errors.push("제목은 100자 이하로 입력해주세요.");
   }
-  
+
   if (task.description && task.description.length > 1000) {
-    errors.push('설명은 1000자 이하로 입력해주세요.');
+    errors.push("설명은 1000자 이하로 입력해주세요.");
   }
-  
-  if (!task.assignee?.name || task.assignee.name.trim() === '') {
-    errors.push('담당자는 필수 입력 항목입니다.');
-  }
-  
+
+  // if (!task.assignee?.name || task.assignee.name.trim() === '') {
+  //   errors.push('담당자는 필수 입력 항목입니다.');
+  // }
+
   if (task.startDate && task.dueDate) {
     const startDate = new Date(task.startDate);
     const endDate = new Date(task.dueDate);
     if (startDate > endDate) {
-      errors.push('시작일은 마감일보다 이전이어야 합니다.');
+      errors.push("시작일은 마감일보다 이전이어야 합니다.");
     }
   }
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
@@ -62,6 +65,8 @@ interface TaskDetailProps {
   ) => void;
   /** 삭제 이벤트 핸들러 */
   onDelete?: (taskId: string) => Promise<boolean>;
+  /** 태스크 상세 정보 가져오기 핸들러 */
+  getTaskDetail?: (taskId: string) => Promise<TaskDetailResponse | null>;
 }
 
 /**
@@ -77,23 +82,58 @@ export function TaskDetail({
   onSave,
   onStatusChange,
   onDelete,
+  getTaskDetail,
 }: TaskDetailProps) {
   const { userName } = useUserStore();
   const [isEditing, setIsEditing] = useState(isNewTask);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [editedTask, setEditedTask] = useState<KanbanCardProps>(
     task || {
-      id: '',
-      title: '',
-      description: '',
-      priority: 'medium',
-      status: 'todo',
-      assignee: { name: userName || '' }, // 현재 사용자 이름을 기본값으로 설정
-      dueDate: '',
-      startDate: '',
-      onClick: () => {}
+      id: "",
+      title: "",
+      description: "",
+      priority: "medium",
+      status: "todo",
+      assignee: { name: userName || "" }, // 현재 사용자 이름을 기본값으로 설정
+      dueDate: "",
+      startDate: "",
+      onClick: () => {},
     }
   );
+
+  // 태스크 상세 정보 로드
+  useEffect(() => {
+    const loadTaskDetail = async () => {
+      if (!task || isNewTask || !getTaskDetail || !task.id) return;
+
+      setIsLoadingDetail(true);
+      try {
+        const detailResponse = await getTaskDetail(task.id);
+        if (detailResponse) {
+          // API 응답을 UI에서 사용하는 형태로 변환
+          const updatedTask: KanbanCardProps = {
+            ...task,
+            title: detailResponse.subject || task.title,
+            description: detailResponse.content || task.description || "",
+            priority: detailResponse.importance ? "high" : "medium",
+            dueDate: detailResponse.endDate || task.dueDate,
+            startDate: detailResponse.startDate || task.startDate,
+            assignee: detailResponse.users?.length > 0 
+              ? { name: detailResponse.users[0].name, avatar: detailResponse.users[0].profileImage }
+              : task.assignee,
+          };
+          setEditedTask(updatedTask);
+        }
+      } catch (error) {
+        console.error("Failed to load task detail:", error);
+      } finally {
+        setIsLoadingDetail(false);
+      }
+    };
+
+    loadTaskDetail();
+  }, [task, isNewTask, getTaskDetail]);
 
   if (!task && !isNewTask) return null;
 
@@ -102,7 +142,7 @@ export function TaskDetail({
   const handleSave = async () => {
     // Validation 수행
     const validation = validateTask(editedTask);
-    
+
     if (!validation.isValid) {
       setValidationErrors(validation.errors);
       return;
@@ -110,12 +150,12 @@ export function TaskDetail({
 
     // Validation 통과 시 에러 상태 클리어
     setValidationErrors([]);
-    
+
     const taskToSave = {
       ...editedTask,
-      id: editedTask.id || Date.now().toString()
+      id: editedTask.id || Date.now().toString(),
     };
-    
+
     try {
       await onSave(taskToSave);
       setIsEditing(false);
@@ -132,7 +172,7 @@ export function TaskDetail({
   const handleStatusChange = (newStatus: "todo" | "inprogress" | "done") => {
     if (task) {
       onStatusChange(task.id, newStatus);
-      setEditedTask(prev => ({ ...prev, status: newStatus }));
+      setEditedTask((prev) => ({ ...prev, status: newStatus }));
     }
   };
 
@@ -175,13 +215,19 @@ export function TaskDetail({
       />
 
       <main className="flex-1 p-6 overflow-y-auto">
-        <TaskForm
-          task={isEditing ? editedTask : currentTask}
-          isEditing={isEditing}
-          onTaskChange={handleTaskChange}
-          onStatusChange={handleStatusChange}
-          errors={isEditing ? validationErrors : []}
-        />
+        {isLoadingDetail ? (
+          <div className="flex items-center justify-center h-32">
+            <div className="text-gray-500">태스크 상세 정보를 불러오는 중...</div>
+          </div>
+        ) : (
+          <TaskForm
+            task={isEditing ? editedTask : currentTask}
+            isEditing={isEditing}
+            onTaskChange={handleTaskChange}
+            onStatusChange={handleStatusChange}
+            errors={isEditing ? validationErrors : []}
+          />
+        )}
       </main>
     </div>
   );
