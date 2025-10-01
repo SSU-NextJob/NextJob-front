@@ -106,7 +106,7 @@ export const PatchUserDetailAPI = (
       techStack: techStack,
       description: description,
       userType: userType,
-      profileImageUrl: profileImageUrl,
+      profileImage: profileImageUrl,
     }),
   });
 };
