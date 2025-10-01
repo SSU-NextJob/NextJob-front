@@ -52,14 +52,14 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
   const handleSave = async () => {
     if (!userId) return;
     try {
-      let profileImageUrl = userProfile.profileImage;
+      let profileImage = userProfile.profileImage;
 
       // 이미지가 선택되었으면 먼저 업로드
       if (selectedImage) {
         try {
           const uploadResult = await uploadImageAPI(selectedImage, "profile");
           if (uploadResult.success) {
-            profileImageUrl = uploadResult.data.imageUrl;
+            profileImage = uploadResult.data.imageUrl;
           }
         } catch (error) {
           console.warn("이미지 업로드에 실패했습니다:", error);
@@ -73,7 +73,7 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
         form.techStack,
         form.description,
         form.role,
-        profileImageUrl
+        profileImage
       );
       window.location.reload();
     } catch (e) {
