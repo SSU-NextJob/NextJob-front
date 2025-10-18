@@ -108,11 +108,11 @@ export const UserDetail = ({
         </div>
 
         {/* 참여 프로젝트 */}
-        {userProjectList?.data.participationProject.length && (
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">
-              참여 프로젝트
-            </h3>
+        <div className="mb-6">
+          <h3 className="text-sm font-semibold text-gray-800 mb-2">
+            참여 프로젝트
+          </h3>
+          {userProjectList?.data.participationProject.length > 0 ? (
             <div className="flex gap-3">
               {userProjectList?.data.participationProject?.map((project) => (
                 <div
@@ -135,8 +135,10 @@ export const UserDetail = ({
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <p className="text-gray-500">참여한 프로젝트가 없습니다</p>
+          )}
+        </div>
 
         {/* 버튼 */}
         <div className="flex justify-end">
