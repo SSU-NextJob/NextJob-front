@@ -10,6 +10,7 @@ import { getNotificationList } from "@/apis/notification";
 import { postLogoutAPI } from "@/apis/user";
 import { useEffect } from "react";
 import type { NotificationItem } from "@/apis/notification";
+import logoImg from "@/img/logo.jpg";
 
 export const Header = () => {
   const location = useLocation();
@@ -99,7 +100,7 @@ export const Header = () => {
       <div className="flex items-center gap-3">
         <Link to="/" className="text-xl font-bold text-gray-900">
           {/* NextJob */}
-          <img src="/src/img/logo.jpg" alt="NextJob 로고" className="w-32" />
+          <img src={logoImg} alt="NextJob 로고" className="w-32" />
         </Link>
       </div>
 
