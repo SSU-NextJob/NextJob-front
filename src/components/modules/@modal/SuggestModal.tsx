@@ -61,7 +61,7 @@ export const SuggestModal = ({
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
       <div className="bg-white w-full max-w-xl rounded-lg shadow-lg p-6 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-lg font-bold mb-1">프로젝트 제안</h2>
+        <h2 className="text-lg font-bold mb-1 text-black">프로젝트 제안</h2>
         <p className="text-sm text-gray-600 mb-4">
           제안할 모집 공고를 선택해주세요.
         </p>

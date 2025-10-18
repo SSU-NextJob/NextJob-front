@@ -56,12 +56,18 @@ export const UserCardItem = ({ user, isDisableSuggest = false }: UserCardItemPro
           {user.description}
         </p>
         <div className="flex flex-wrap gap-2">
-          <span
-            key={user.techStack}
-            className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full"
-          >
-            {user.techStack}
-          </span>
+          {user.techStack && 
+            user.techStack
+              .split(',')
+              .map((tech, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full"
+                >
+                  {tech.trim()}
+                </span>
+              ))
+          }
         </div>
       </div>
 

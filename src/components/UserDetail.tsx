@@ -96,14 +96,18 @@ export const UserDetail = ({
             보유 기술
           </h3>
           <div className="flex flex-wrap gap-2">
-            {userDetail?.techStack && (
-              <span
-                key={userDetail.techStack}
-                className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full"
-              >
-                {userDetail.techStack}
-              </span>
-            )}
+            {userDetail?.techStack && 
+              userDetail.techStack
+                .split(',')
+                .map((tech, index) => (
+                  <span
+                    key={index}
+                    className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full"
+                  >
+                    {tech.trim()}
+                  </span>
+                ))
+            }
           </div>
         </div>
 
