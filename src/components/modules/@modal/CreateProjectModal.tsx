@@ -32,10 +32,10 @@ export const CreateProjectModal = ({
 
   const handleSubmit = async () => {
     if (!isValid) return;
-    
+
     try {
       let imageUrl = "";
-      
+
       // 이미지가 선택되었으면 먼저 업로드
       if (image) {
         try {
@@ -93,19 +93,23 @@ export const CreateProjectModal = ({
       <div className="bg-white rounded-xl w-[480px] p-6 shadow-lg">
         {/* Title + Close */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-bold">프로젝트 생성</h2>
-          <Button onClick={onClose}>X</Button>
+          <h2 className="text-lg font-bold" style={{color: "#333"}}>프로젝트 생성</h2>
+          <Button className="bg-white" onClick={onClose}>
+            X
+          </Button>
         </div>
 
         {/* Form */}
         <div className="flex flex-col gap-4">
           {/* 이름 */}
           <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">프로젝트 이름 *</label>
+            <label className="text-sm font-semibold text-gray-800">
+              프로젝트 이름 *
+            </label>
             <input
               type="text"
               placeholder="프로젝트명을 입력하세요"
-              className="w-full border px-3 py-2 rounded-md text-sm"
+              className="w-full border px-3 py-2 rounded-md text-sm bg-white text-gray-800 placeholder-gray-500"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               required
@@ -114,10 +118,10 @@ export const CreateProjectModal = ({
 
           {/* 설명 */}
           <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">설명</label>
+            <label className="text-sm font-semibold text-gray-800">설명</label>
             <textarea
               placeholder="프로젝트 설명을 입력하세요"
-              className="w-full border px-3 py-2 rounded-md text-sm resize-none"
+              className="w-full border px-3 py-2 rounded-md text-sm resize-none bg-white text-gray-800 placeholder-gray-500"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={4}
@@ -126,33 +130,41 @@ export const CreateProjectModal = ({
 
           {/* 시작일 */}
           <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">시작일 *</label>
+            <label className="text-sm font-semibold text-gray-800">
+              시작일 *
+            </label>
             <input
               type="date"
-              className="w-full border px-3 py-2 rounded-md text-sm"
+              className="w-full border px-3 py-2 rounded-md text-sm bg-white text-gray-800 placeholder-gray-500 cursor-pointer"
               value={startAt}
               onChange={(e) => setStartAt(e.target.value)}
+              onClick={(e) => e.currentTarget.showPicker()}
               required
             />
           </div>
 
           {/* 마감일 */}
           <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">마감일 *</label>
+            <label className="text-sm font-semibold text-gray-800">
+              마감일 *
+            </label>
             <input
               type="date"
-              className="w-full border px-3 py-2 rounded-md text-sm"
+              className="w-full border px-3 py-2 rounded-md text-sm bg-white text-gray-800 placeholder-gray-500 cursor-pointer"
               value={endAt}
               onChange={(e) => setEndAt(e.target.value)}
+              onClick={(e) => e.currentTarget.showPicker()}
               required
             />
           </div>
 
           {/* 프로젝트 진행 방식 */}
           <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">진행 방식 *</label>
+            <label className="text-sm font-semibold text-gray-800">
+              진행 방식 *
+            </label>
             <select
-              className="w-full border px-3 py-2 rounded-md text-sm"
+              className="w-full border px-3 py-2 rounded-md text-sm bg-white text-gray-800 placeholder-gray-500"
               value={status}
               onChange={(e) => setProjectType(e.target.value)}
               required
@@ -164,9 +176,11 @@ export const CreateProjectModal = ({
 
           {/* 유형 */}
           <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">유형 *</label>
+            <label className="text-sm font-semibold text-gray-800">
+              유형 *
+            </label>
             <select
-              className="w-full border px-3 py-2 rounded-md text-sm"
+              className="w-full border px-3 py-2 rounded-md text-sm bg-white text-gray-800 placeholder-gray-500"
               value={type}
               onChange={(e) => setType(e.target.value)}
               required
@@ -179,7 +193,7 @@ export const CreateProjectModal = ({
 
           {/* 이미지 */}
           <div className="flex flex-col items-start gap-1">
-            <label className="text-sm font-semibold">
+            <label className="text-sm font-semibold text-gray-800">
               프로젝트 이미지 (선택)
             </label>
             {previewImage ? (
@@ -193,10 +207,10 @@ export const CreateProjectModal = ({
             ) : (
               <label
                 htmlFor="imageUpload"
-                className="w-full border border-dashed border-gray-300 rounded-md cursor-pointer py-8 flex flex-col items-center justify-center text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition"
+                className="w-full border border-dashed border-gray-300 rounded-md cursor-pointer py-8 flex flex-col items-center justify-center text-sm text-gray-600 hover:border-blue-400 hover:text-blue-600 transition"
               >
                 <svg
-                  className="w-6 h-6 mb-1"
+                  className="w-6 h-6 mb-1 text-gray-700"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"

@@ -79,7 +79,7 @@ export const RecruitTeamModal = ({
       <div className="bg-white rounded-xl p-6 w-[600px]">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold">팀원 모집</h2>
+          <h2 className="text-xl font-bold text-[#333]">팀원 모집</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -92,11 +92,11 @@ export const RecruitTeamModal = ({
         <div className="flex flex-col gap-4">
           {/* Project select */}
           <div>
-            <label className="text-sm font-medium block mb-1">
+            <label className="text-sm font-semibold block mb-2 text-[#333]">
               프로젝트 선택
             </label>
             <select
-              className="border w-full px-3 py-2 rounded-md text-sm"
+              className="border w-full px-3 py-2 rounded-md text-sm bg-white text-[#333]"
               value={projectId}
               onChange={(e) => setProjectId(Number(e.target.value))}
             >
@@ -111,9 +111,9 @@ export const RecruitTeamModal = ({
 
           {/* title */}
           <div>
-            <label className="text-sm font-medium block mb-1">공고 제목</label>
+            <label className="text-sm font-semibold block mb-2 text-[#333]">공고 제목</label>
             <input
-              className="border w-full px-3 py-2 rounded-md text-sm"
+              className="border w-full px-3 py-2 rounded-md text-sm bg-white text-[#333]"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -121,9 +121,9 @@ export const RecruitTeamModal = ({
 
           {/* Summary */}
           <div>
-            <label className="text-sm font-medium block mb-1">주요 업무</label>
+            <label className="text-sm font-semibold block mb-2 text-[#333]">주요 업무</label>
             <textarea
-              className="border w-full px-3 py-2 rounded-md text-sm"
+              className="border w-full px-3 py-2 rounded-md text-sm bg-white text-[#333] placeholder:text-gray-500"
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
               placeholder="팀원들을 끌어들일 멋진 요약을 작성하세요..."
@@ -151,7 +151,7 @@ export const RecruitTeamModal = ({
 
           {/* Common roles */}
           <div>
-            <label className="text-sm font-medium block mb-1">필요 역할</label>
+            <label className="text-sm font-semibold block mb-2 text-[#333]">필요 역할</label>
             {/* <div className="text-xs text-gray-500 mb-1">주요 역할:</div> */}
             <div className="flex flex-wrap gap-2">
               {projectOptions.map((role) => (
