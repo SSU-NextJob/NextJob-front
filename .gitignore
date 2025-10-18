@@ -28,3 +28,6 @@ node_modules
 *.njsproj
 *.sln
 *.sw?
+
+# 개발 가이드라인
+dev-guidelines
