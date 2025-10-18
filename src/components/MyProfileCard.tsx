@@ -186,7 +186,7 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
         <div className="flex flex-col gap-2 w-full">
           {profileKeys.map((key: ProfileKey) => (
             <div key={key}>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-800 font-semibold">
                 {
                   {
                     name: "이름",
@@ -211,7 +211,7 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
                     type="text"
                     value={form[key]}
                     onChange={(e) => handleChange(key, e.target.value)}
-                    className="w-full border px-3 py-2 rounded-md text-sm mt-1"
+                    className="w-full border px-3 py-2 rounded-md text-sm mt-1 bg-white text-gray-800 placeholder-gray-500"
                   />
                 )
               ) : (
@@ -224,12 +224,12 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
 
       {/* 소개 */}
       <div className="mb-8">
-        <h2 className="text-sm text-gray-500 font-semibold mb-1">자기소개</h2>
+        <h2 className="text-sm text-gray-800 font-semibold mb-1">자기소개</h2>
         {isEditing ? (
           <textarea
             value={form.description}
             onChange={(e) => handleChange("description", e.target.value)}
-            className="w-full border px-3 py-2 rounded-md text-sm"
+            className="w-full border px-3 py-2 rounded-md text-sm bg-white text-gray-800 placeholder-gray-500"
             rows={4}
           />
         ) : (
@@ -254,7 +254,7 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
         </button>
       </div>
       <div>
-        <h2 className="text-sm text-gray-500 font-semibold mb-3">
+        <h2 className="text-sm text-gray-800 font-semibold mb-3">
           참여한 프로젝트
         </h2>
         <div className="flex flex-col gap-3">

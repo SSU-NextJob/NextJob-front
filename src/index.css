@@ -53,6 +53,16 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Date input calendar icon styling */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color: #333;
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  color: #000;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
