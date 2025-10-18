@@ -53,7 +53,7 @@ export const MultiSelector = ({
     <div className="relative w-[200px]">
       <button
         onClick={toggleOpen}
-        className="w-full border border-gray-300 px-4 py-2 rounded-md text-left bg-white shadow-sm hover:border-gray-400 transition"
+        className="w-full border border-gray-300 px-4 py-2 rounded-md text-left bg-white shadow-sm hover:border-gray-400 transition text-gray-900"
       >
         {options.find((o) => o.value === selectedValue)?.label || "전체"}
       </button>
@@ -63,7 +63,7 @@ export const MultiSelector = ({
           {options.map((opt) => (
             <label
               key={opt.value}
-              className="block text-sm mt-1 cursor-pointer flex items-center"
+              className="block text-sm mt-1 cursor-pointer flex items-center text-gray-900 hover:text-blue-600"
               onClick={() => handleSelect(opt.value)}
             >
               <input
@@ -72,7 +72,7 @@ export const MultiSelector = ({
                 checked={selectedValue === opt.value}
                 readOnly
               />
-              {opt.label}
+              <span className="text-gray-900">{opt.label}</span>
             </label>
           ))}
         </div>
