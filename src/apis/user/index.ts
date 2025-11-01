@@ -2,6 +2,7 @@
 
 // 사용자 리스트 조회 쿼리 파라미터 타입
 export interface GetUserListParams {
+  myUserId: number;
   userType?: string;
   search?: string;
   page?: string;
@@ -72,6 +73,10 @@ export const getUserListAPI = (params: GetUserListParams) => {
   const query = searchParams.toString();
   return fetcher<GetUserListResponse>(`/users?${query}`, {
     method: "GET",
+    body: JSON.stringify({
+      myUserId: params.myUserId,
+    }),
+    headers: { "Content-Type": "application/json" },
   });
 };
 
