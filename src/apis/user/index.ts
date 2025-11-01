@@ -2,7 +2,7 @@
 
 // 사용자 리스트 조회 쿼리 파라미터 타입
 export interface GetUserListParams {
-  myUserId: number;
+  myUserId?: number;
   userType?: string;
   search?: string;
   page?: string;
@@ -70,7 +70,7 @@ export const getUserListAPI = (params: GetUserListParams) => {
     searchParams.append("pageSize", params.pageSize);
   }
   if (params.myUserId !== undefined) {
-    searchParams.append("myUserId", params.myUserId);
+    searchParams.append("myUserId", params.myUserId.toString());
   }
 
   const query = searchParams.toString();
