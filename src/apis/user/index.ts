@@ -2,7 +2,7 @@
 
 // 사용자 리스트 조회 쿼리 파라미터 타입
 export interface GetUserListParams {
-  myUserId: number;
+  myUserId?: number;
   userType?: string;
   search?: string;
   page?: string;
@@ -55,27 +55,30 @@ export interface PatchUserDetailResponse {
 // 사용자 리스트 조회 API 함수
 export const getUserListAPI = (params: GetUserListParams) => {
   const searchParams = new URLSearchParams();
-  
+
   // undefined가 아닌 값만 추가
   if (params.userType !== undefined) {
-    searchParams.append('userType', params.userType);
+    searchParams.append("userType", params.userType);
   }
   if (params.search !== undefined) {
-    searchParams.append('search', params.search);
+    searchParams.append("search", params.search);
   }
   if (params.page !== undefined) {
-    searchParams.append('page', params.page);
+    searchParams.append("page", params.page);
   }
   if (params.pageSize !== undefined) {
-    searchParams.append('pageSize', params.pageSize);
+    searchParams.append("pageSize", params.pageSize);
   }
-  
+  if (params.myUserId !== undefined) {
+    searchParams.append("myUserId", params.myUserId.toString());
+  }
+
   const query = searchParams.toString();
   return fetcher<GetUserListResponse>(`/users?${query}`, {
     method: "GET",
-    body: JSON.stringify({
-      myUserId: params.myUserId,
-    }),
+    // body: JSON.stringify({
+    //   myUserId: params.myUserId,
+    // }),
     headers: { "Content-Type": "application/json" },
   });
 };
