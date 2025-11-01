@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "../../atoms/Button";
 import { Input } from "../../atoms/Input";
 import { Textarea } from "../../atoms/Textarea";
-import { getScheduleDetail, updateSchedule, type ScheduleDetail } from "@/apis/schedules";
+import { AssigneeDropdown } from "../AssigneeDropdown";
+import { getScheduleDetail, updateSchedule, deleteSchedule, type ScheduleDetail } from "@/apis/schedules";
+import { getWorkspaceUsers } from "@/apis/workspace";
+import type { WorkspaceUser } from "@/apis/workspace";
 
 interface ScheduleDetailModalProps {
   scheduleId: number;
@@ -11,30 +15,51 @@ interface ScheduleDetailModalProps {
 }
 
 export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleDetailModalProps) {
+  const [searchParams] = useSearchParams();
+  const workspaceId = searchParams.get("workspaceId");
+  
   const [scheduleDetail, setScheduleDetail] = useState<ScheduleDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editedSchedule, setEditedSchedule] = useState<ScheduleDetail | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [workspaceUsers, setWorkspaceUsers] = useState<WorkspaceUser[]>([]);
+  const [selectedAssigneeIds, setSelectedAssigneeIds] = useState<number[]>([]);
 
-  const fetchScheduleDetail = async () => {
+  const fetchWorkspaceUsers = useCallback(async () => {
+    if (!workspaceId) return;
+    
+    try {
+      const response = await getWorkspaceUsers(workspaceId);
+      if (response.success) {
+        setWorkspaceUsers(response.data);
+      }
+    } catch (error) {
+      console.error("워크스페이스 사용자 조회 실패:", error);
+    }
+  }, [workspaceId]);
+
+  const fetchScheduleDetailCallback = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await getScheduleDetail(scheduleId);
       if (response.success) {
         setScheduleDetail(response.data);
         setEditedSchedule(response.data);
+        setSelectedAssigneeIds(response.data.assignees.map(a => a.userId));
       }
     } catch (error) {
       console.error("일정 상세 조회 실패:", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [scheduleId]);
 
   useEffect(() => {
-    fetchScheduleDetail();
-  }, [scheduleId]);
+    fetchScheduleDetailCallback();
+    fetchWorkspaceUsers();
+  }, [fetchScheduleDetailCallback, fetchWorkspaceUsers]);
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "설정되지 않음";
@@ -116,11 +141,20 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <div className="text-xs text-gray-500 mb-1 text-left">담당자</div>
-              <div className="text-sm text-gray-900">
-                {scheduleDetail.assignees.length > 0
-                  ? scheduleDetail.assignees.map(assignee => assignee.name).join(", ")
-                  : "미지정"}
-              </div>
+              {isEditing ? (
+                <AssigneeDropdown
+                  users={workspaceUsers}
+                  selectedUserIds={selectedAssigneeIds}
+                  onUserSelect={setSelectedAssigneeIds}
+                  placeholder="담당자를 선택하세요"
+                />
+              ) : (
+                <div className="text-sm text-gray-900">
+                  {scheduleDetail.assignees.length > 0
+                    ? scheduleDetail.assignees.map(assignee => assignee.name).join(", ")
+                    : "미지정"}
+                </div>
+              )}
             </div>
             <div>
               <div className="text-xs text-gray-500 mb-1 text-left">일정 ID</div>
@@ -231,7 +265,7 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
                       content: editedSchedule.content,
                       startDate: editedSchedule.startDate,
                       endDate: editedSchedule.endDate,
-                      assignees: editedSchedule.assignees.map(a => a.userId),
+                      assignees: selectedAssigneeIds,
                     });
 
                     setScheduleDetail(editedSchedule);
@@ -249,7 +283,26 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
             </>
           ) : (
             <>
-              <Button color="red">삭제</Button>
+              <Button 
+                color="red"
+                disabled={isDeleting}
+                onClick={async () => {
+                  if (!confirm("정말로 이 일정을 삭제하시겠습니까?")) return;
+                  
+                  setIsDeleting(true);
+                  try {
+                    await deleteSchedule(scheduleId);
+                    onUpdate?.();
+                    onClose();
+                  } catch (error) {
+                    console.error("일정 삭제 실패:", error);
+                  } finally {
+                    setIsDeleting(false);
+                  }
+                }}
+              >
+                {isDeleting ? "삭제 중..." : "삭제"}
+              </Button>
               <Button color="blue" onClick={() => setIsEditing(true)}>
                 편집
               </Button>

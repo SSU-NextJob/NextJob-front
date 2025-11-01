@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "../atoms/Button";
 import { Card, CardContent } from "../atoms/Card";
-import { Input } from "../atoms/Input";
-import { Textarea } from "../atoms/Textarea";
-import { createSchedule, getSchedules, type Schedule } from "@/apis/schedules";
-import { useUserStore } from "@/store/userStore";
+import { getSchedules, type Schedule } from "@/apis/schedules";
 import { ScheduleDetailModal } from "../modules/@modal/ScheduleDetailModal";
+import { ScheduleCreateModal } from "../modules/@modal/ScheduleCreateModal";
 
 const DAYS_OF_WEEK = ["일", "월", "화", "수", "목", "금", "토"];
 const MONTHS = [
@@ -25,35 +23,22 @@ const MONTHS = [
   "12월",
 ];
 
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  priority: "low" | "medium" | "high";
-  status: "todo" | "progress" | "done";
-  assignee: { name: string };
-  dueDate: string;
-  startDate: string;
-}
-
 export function CalendarView() {
   const [searchParams] = useSearchParams();
-  const workspaceId = searchParams.get("workspaceId");
-  const { userId } = useUserStore();
+  const _workspaceId = searchParams.get("workspaceId");
 
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(
     new Date(today.getFullYear(), today.getMonth(), 1)
   );
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedTask, setEditedTask] = useState<Task | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
   const [hoveredDay, setHoveredDay] = useState<number | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
+  const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(
+    null
+  );
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createModalDate, setCreateModalDate] = useState("");
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -101,8 +86,7 @@ export function CalendarView() {
 
   const calendarDays = generateCalendarDays();
 
-
-  const fetchSchedules = async () => {
+  const fetchSchedules = useCallback(async () => {
     setIsLoading(true);
     try {
       const startDate = new Date(
@@ -129,18 +113,13 @@ export function CalendarView() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchSchedules();
   }, [currentDate]);
 
   useEffect(() => {
     fetchSchedules();
-  }, []);
+  }, [currentDate, fetchSchedules]);
 
-
-  const getTasksForDate = (year: number, month: number, day: number) => {
+  const getSchedulesForDate = (year: number, month: number, day: number) => {
     const checkDate = new Date(year, month, day);
 
     return schedules.filter((schedule) => {
@@ -155,40 +134,12 @@ export function CalendarView() {
     });
   };
 
-
-  const handleCloseModal = () => {
-    setSelectedTask(null);
-    setEditedTask(null);
-    setIsEditing(false);
-    setIsCreating(false);
-  };
-
   const handleCreateClick = (year: number, month: number, day: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
       day
     ).padStart(2, "0")}`;
-    setIsCreating(true);
-    setSelectedTask(null);
-    setEditedTask({
-      id: `task-${Date.now()}`,
-      title: "",
-      description: "",
-      priority: "medium",
-      status: "todo",
-      assignee: { name: "" },
-      dueDate: dateStr,
-      startDate: dateStr,
-    });
-  };
-
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "설정되지 않음";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("ko-KR", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    setCreateModalDate(dateStr);
+    setIsCreateModalOpen(true);
   };
 
   return (
@@ -238,7 +189,7 @@ export function CalendarView() {
 
             {calendarDays.map((day, index) => {
               const schedulesForDay = day
-                ? getTasksForDate(
+                ? getSchedulesForDate(
                     currentDate.getFullYear(),
                     currentDate.getMonth(),
                     day
@@ -303,7 +254,9 @@ export function CalendarView() {
                             <div
                               key={schedule.scheduleId}
                               className="bg-blue-100 border border-blue-200 rounded px-2 py-1 cursor-pointer hover:bg-blue-200 transition-colors text-xs"
-                              onClick={() => setSelectedScheduleId(schedule.scheduleId)}
+                              onClick={() =>
+                                setSelectedScheduleId(schedule.scheduleId)
+                              }
                             >
                               <div className="truncate text-blue-900">
                                 {schedule.title}
@@ -321,225 +274,12 @@ export function CalendarView() {
         </CardContent>
       </Card>
 
-      {(selectedTask || isCreating) && (
-        <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-          onClick={handleCloseModal}
-        >
-          <div
-            className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-start justify-between mb-4">
-                {isCreating || isEditing ? (
-                  <Input
-                    value={editedTask?.title || ""}
-                    onChange={(e) =>
-                      setEditedTask((prev) =>
-                        prev ? { ...prev, title: e.target.value } : null
-                      )
-                    }
-                    className="text-2xl font-semibold border-none p-0 focus:ring-0"
-                    placeholder="제목 없음"
-                  />
-                ) : (
-                  <h2 className="text-2xl font-semibold text-gray-900">
-                    {selectedTask?.title}
-                  </h2>
-                )}
-                <button
-                  onClick={handleCloseModal}
-                  className="h-8 w-8 rounded hover:bg-gray-100 flex items-center justify-center transition-colors -mt-1 text-black font-bold text-lg"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <div className="text-xs text-gray-500 mb-1 text-left">
-                    담당자
-                  </div>
-                  {isCreating || isEditing ? (
-                    <Input
-                      value={editedTask?.assignee?.name || ""}
-                      onChange={(e) =>
-                        setEditedTask((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                assignee: { name: e.target.value },
-                              }
-                            : null
-                        )
-                      }
-                      className="text-sm"
-                      placeholder="미지정"
-                    />
-                  ) : (
-                    <div className="text-sm text-gray-900">
-                      {selectedTask?.assignee?.name || "미지정"}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500 mb-1 text-left">
-                    생성자
-                  </div>
-                  <div className="text-sm text-gray-900">
-                    {selectedTask?.assignee?.name || "알 수 없음"}
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-xs text-gray-500 mb-1 text-left">
-                    시작일
-                  </div>
-                  {isCreating || isEditing ? (
-                    <Input
-                      type="date"
-                      value={editedTask?.startDate || ""}
-                      onChange={(e) =>
-                        setEditedTask((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                startDate: e.target.value,
-                              }
-                            : null
-                        )
-                      }
-                      className="text-sm cursor-pointer"
-                      onClick={(e) => {
-                        if (e.target instanceof HTMLInputElement) {
-                          e.target.showPicker?.();
-                        }
-                      }}
-                    />
-                  ) : (
-                    <div className="text-sm text-gray-900">
-                      {formatDate(selectedTask?.startDate || "")}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500 mb-1 text-left">
-                    종료일
-                  </div>
-                  {isCreating || isEditing ? (
-                    <Input
-                      type="date"
-                      value={editedTask?.dueDate || ""}
-                      onChange={(e) =>
-                        setEditedTask((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                dueDate: e.target.value,
-                              }
-                            : null
-                        )
-                      }
-                      className="text-sm cursor-pointer"
-                      onClick={(e) => {
-                        if (e.target instanceof HTMLInputElement) {
-                          e.target.showPicker?.();
-                        }
-                      }}
-                    />
-                  ) : (
-                    <div className="text-sm text-gray-900">
-                      {formatDate(selectedTask?.dueDate || "")}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 border-b border-gray-200">
-              <div className="text-xs text-gray-500 mb-2 text-left">설명</div>
-              {isCreating || isEditing ? (
-                <Textarea
-                  value={editedTask?.description || ""}
-                  onChange={(e) =>
-                    setEditedTask((prev) =>
-                      prev
-                        ? {
-                            ...prev,
-                            description: e.target.value,
-                          }
-                        : null
-                    )
-                  }
-                  className="min-h-[150px] resize-none"
-                  placeholder="설명을 입력하세요..."
-                />
-              ) : (
-                <div className="text-sm text-gray-900 whitespace-pre-wrap">
-                  {selectedTask?.description || "설명이 없습니다."}
-                </div>
-              )}
-            </div>
-
-            <div className="p-6 flex justify-end gap-2">
-              {isCreating ? (
-                <Button
-                  color="blue"
-                  disabled={isSubmitting || !editedTask?.title}
-                  onClick={async () => {
-                    if (!editedTask || !workspaceId || !userId) return;
-
-                    setIsSubmitting(true);
-                    try {
-                      await createSchedule({
-                        workspaceId: parseInt(workspaceId),
-                        title: editedTask.title,
-                        content: editedTask.description,
-                        startDate: editedTask.startDate + " 00:00:00",
-                        endDate: editedTask.dueDate + " 23:59:59",
-                        assignees: [], // 추후 담당자 선택 기능 추가 시 수정
-                        userId: userId,
-                      });
-
-                      // 성공 시 모달 닫기 및 일정 목록 새로고침
-                      handleCloseModal();
-                      fetchSchedules();
-                    } catch (error) {
-                      console.error("일정 생성 실패:", error);
-                    } finally {
-                      setIsSubmitting(false);
-                    }
-                  }}
-                >
-                  {isSubmitting ? "생성 중..." : "생성"}
-                </Button>
-              ) : isEditing ? (
-                <>
-                  <Button
-                    color="white"
-                    onClick={() => {
-                      setEditedTask(selectedTask ? { ...selectedTask } : null);
-                      setIsEditing(false);
-                    }}
-                  >
-                    취소
-                  </Button>
-                  <Button color="blue">변경사항 저장</Button>
-                </>
-              ) : (
-                <>
-                  <Button color="red">삭제</Button>
-                  <Button color="blue" onClick={() => setIsEditing(true)}>
-                    편집
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+      {isCreateModalOpen && (
+        <ScheduleCreateModal
+          selectedDate={createModalDate}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={fetchSchedules}
+        />
       )}
 
       {selectedScheduleId && (

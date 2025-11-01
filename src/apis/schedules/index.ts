@@ -104,3 +104,15 @@ export const updateSchedule = async (scheduleId: number, data: UpdateScheduleReq
     body: JSON.stringify(formattedData),
   });
 };
+
+export interface DeleteScheduleResponse {
+  success: boolean;
+  data: null;
+  error: null;
+}
+
+export const deleteSchedule = async (scheduleId: number): Promise<DeleteScheduleResponse> => {
+  return await fetcher(`/schedules/${scheduleId}`, {
+    method: 'DELETE',
+  });
+};

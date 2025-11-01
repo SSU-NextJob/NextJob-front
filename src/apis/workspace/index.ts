@@ -20,3 +20,22 @@ export const getWorkspaceDetail = (workspaceId: string) => {
     method: "GET",
   });
 };
+
+export interface WorkspaceUser {
+  name: string;
+  profileImage: string;
+  userId: number;
+  memberId: number;
+}
+
+export interface WorkspaceUsersResponse {
+  success: boolean;
+  data: WorkspaceUser[];
+  error: null;
+}
+
+export const getWorkspaceUsers = (workspaceId: string) => {
+  return fetcher<WorkspaceUsersResponse>(`/workspaces/${workspaceId}/users`, {
+    method: "GET",
+  });
+};
