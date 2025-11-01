@@ -9,7 +9,7 @@ export interface RecruimentRequest {
   roleType: string;
 }
 
-// 모집 공고 생성 (팀원 모집 - 게시글 작성)
+// 모집 공고 생성 (공고문 작성 - 게시글 작성)
 export const postRecruiment = (data: RecruimentRequest) => {
   return fetcher<{
     success: boolean;

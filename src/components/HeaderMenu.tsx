@@ -30,10 +30,10 @@ export const Header = () => {
   const createProjectMutation = useMutation({
     mutationFn: postCreateProject,
     onSuccess: () => {
-      alert("프로젝트가 성공적으로 생성되었습니다.");
+      alert("프로젝트가 성공적으로 등록되었습니다.");
     },
     onError: (e: any) => {
-      alert(e.message || "프로젝트 생성에 실패했습니다.");
+      alert(e.message || "프로젝트 등록에 실패했습니다.");
     },
   });
 
@@ -110,13 +110,13 @@ export const Header = () => {
           to="/post"
           className={isActive("/post") ? "text-blue-600" : "text-black"}
         >
-          프로젝트 탐색
+          모집 공고
         </Link>
         <Link
           to="/user"
           className={isActive("/user") ? "text-blue-600" : "text-black"}
         >
-          팀원 탐색
+          팀원 캐스팅
         </Link>
         {/* <Link
           to="/workspace"
@@ -136,7 +136,7 @@ export const Header = () => {
 
       {/* Right Section: 버튼 영역 */}
       <div className="flex items-center gap-4">
-        {/* 로그인 상태: 알림, 로그아웃, 프로젝트 생성, 팀원 모집 */}
+        {/* 로그인 상태: 알림, 로그아웃, 새 프로젝트 등록, 공고문 작성 */}
         {userId ? (
           <>
             {/* Notification */}
@@ -190,7 +190,7 @@ export const Header = () => {
             <Button onClick={() => logoutMutation.mutate()} color={"white"}>
               로그아웃
             </Button>
-            {/* 프로젝트 생성, 팀원 모집 */}
+            {/* 새 프로젝트 등록, 팀원 캐스팅 */}
             <Button
               onClick={() =>
                 onOpenModal("createProject", {
@@ -201,10 +201,10 @@ export const Header = () => {
               }
               color={"blue"}
             >
-              프로젝트 생성
+              새 프로젝트 등록
             </Button>
             <Button onClick={() => onOpenModal("recruit")} color={"white"}>
-              팀원 모집
+              공고문 작성
             </Button>
           </>
         ) : (
