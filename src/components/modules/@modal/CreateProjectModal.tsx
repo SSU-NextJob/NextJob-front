@@ -71,7 +71,7 @@ export const CreateProjectModal = ({
       });
       onClose();
     } catch (e) {
-      alert("프로젝트 생성에 실패했습니다.");
+      alert("프로젝트 등록에 실패했습니다.");
     }
   };
 
@@ -93,7 +93,7 @@ export const CreateProjectModal = ({
       <div className="bg-white rounded-xl w-[480px] p-6 shadow-lg">
         {/* Title + Close */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-bold" style={{color: "#333"}}>프로젝트 생성</h2>
+          <h2 className="text-lg font-bold" style={{color: "#333"}}>새 프로젝트 등록</h2>
           <Button className="bg-white" onClick={onClose}>
             X
           </Button>

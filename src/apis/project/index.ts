@@ -45,7 +45,7 @@ export interface ProjectResponse {
   workspaceId?: number; // 워크스페이스 아이디
 }
 
-// 프로젝트 생성
+// 새 프로젝트 등록
 export const postCreateProject = (data: CreateProjectRequest) => {
   return fetcher<{ message: string; project: any }>("/projects/insert", {
     method: "POST",

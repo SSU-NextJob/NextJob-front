@@ -19,7 +19,7 @@ export default function UserPage() {
   return (
     <div className="w-full min-h-screen bg-white mx-auto text-left py-8 px-4 md:px-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">팀원 탐색</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">팀원 캐스팅</h1>
       </div>
 
       <UserSearchForm

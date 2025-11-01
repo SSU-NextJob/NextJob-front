@@ -50,8 +50,8 @@ export const handlers = [
         },
         {
           id: 2,
-          title: "팀원 모집 완료",
-          content: "팀원 모집이 완료되었습니다.",
+          title: "팀원 캐스팅 완료",
+          content: "팀원 캐스팅이 완료되었습니다.",
           isRead: true,
           createdAt: new Date().toISOString(),
         },
