@@ -1,10 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "../../atoms/Button";
 import { Input } from "../../atoms/Input";
 import { Textarea } from "../../atoms/Textarea";
 import { AssigneeDropdown } from "../AssigneeDropdown";
-import { getScheduleDetail, updateSchedule, deleteSchedule, type ScheduleDetail } from "@/apis/schedules";
+import {
+  getScheduleDetail,
+  updateSchedule,
+  deleteSchedule,
+  type ScheduleDetail,
+} from "@/apis/schedules";
 import { getWorkspaceUsers } from "@/apis/workspace";
 import type { WorkspaceUser } from "@/apis/workspace";
 
@@ -14,22 +19,33 @@ interface ScheduleDetailModalProps {
   onUpdate?: () => void;
 }
 
-export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleDetailModalProps) {
+export function ScheduleDetailModal({
+  scheduleId,
+  onClose,
+  onUpdate,
+}: ScheduleDetailModalProps) {
   const [searchParams] = useSearchParams();
   const workspaceId = searchParams.get("workspaceId");
-  
-  const [scheduleDetail, setScheduleDetail] = useState<ScheduleDetail | null>(null);
+
+  const [scheduleDetail, setScheduleDetail] = useState<ScheduleDetail | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedSchedule, setEditedSchedule] = useState<ScheduleDetail | null>(null);
+  const [editedSchedule, setEditedSchedule] = useState<ScheduleDetail | null>(
+    null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [workspaceUsers, setWorkspaceUsers] = useState<WorkspaceUser[]>([]);
   const [selectedAssigneeIds, setSelectedAssigneeIds] = useState<number[]>([]);
 
+  const startDateInputRef = useRef<HTMLInputElement>(null);
+  const endDateInputRef = useRef<HTMLInputElement>(null);
+
   const fetchWorkspaceUsers = useCallback(async () => {
     if (!workspaceId) return;
-    
+
     try {
       const response = await getWorkspaceUsers(workspaceId);
       if (response.success) {
@@ -47,7 +63,7 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
       if (response.success) {
         setScheduleDetail(response.data);
         setEditedSchedule(response.data);
-        setSelectedAssigneeIds(response.data.assignees.map(a => a.userId));
+        setSelectedAssigneeIds(response.data.assignees.map((a) => a.userId));
       }
     } catch (error) {
       console.error("일정 상세 조회 실패:", error);
@@ -97,7 +113,9 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
           className="bg-white rounded-lg shadow-2xl max-w-2xl w-full p-6"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="text-center text-red-500">일정을 불러올 수 없습니다.</div>
+          <div className="text-center text-red-500">
+            일정을 불러올 수 없습니다.
+          </div>
         </div>
       </div>
     );
@@ -149,16 +167,22 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
                   placeholder="담당자를 선택하세요"
                 />
               ) : (
-                <div className="text-sm text-gray-900">
+                <div className="text-sm text-gray-900 text-left">
                   {scheduleDetail.assignees.length > 0
-                    ? scheduleDetail.assignees.map(assignee => assignee.name).join(", ")
+                    ? scheduleDetail.assignees
+                        .map((assignee) => assignee.name)
+                        .join(", ")
                     : "미지정"}
                 </div>
               )}
             </div>
             <div>
-              <div className="text-xs text-gray-500 mb-1 text-left">일정 ID</div>
-              <div className="text-sm text-gray-900">#{scheduleDetail.scheduleId}</div>
+              <div className="text-xs text-gray-500 mb-1 text-left">
+                일정 ID
+              </div>
+              <div className="text-sm text-gray-900 text-left">
+                #{scheduleDetail.scheduleId}
+              </div>
             </div>
           </div>
 
@@ -167,6 +191,7 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
               <div className="text-xs text-gray-500 mb-1 text-left">시작일</div>
               {isEditing ? (
                 <Input
+                  ref={startDateInputRef}
                   type="date"
                   value={editedSchedule?.startDate?.split(" ")[0] || ""}
                   onChange={(e) =>
@@ -179,10 +204,17 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
                         : null
                     )
                   }
+                  onClick={() => {
+                    try {
+                      startDateInputRef.current?.showPicker?.();
+                    } catch (error) {
+                      // showPicker API를 지원하지 않는 브라우저의 경우 무시
+                    }
+                  }}
                   className="text-sm cursor-pointer"
                 />
               ) : (
-                <div className="text-sm text-gray-900">
+                <div className="text-sm text-gray-900 text-left">
                   {formatDate(scheduleDetail.startDate)}
                 </div>
               )}
@@ -191,6 +223,7 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
               <div className="text-xs text-gray-500 mb-1 text-left">종료일</div>
               {isEditing ? (
                 <Input
+                  ref={endDateInputRef}
                   type="date"
                   value={editedSchedule?.endDate?.split(" ")[0] || ""}
                   onChange={(e) =>
@@ -203,10 +236,17 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
                         : null
                     )
                   }
+                  onClick={() => {
+                    try {
+                      endDateInputRef.current?.showPicker?.();
+                    } catch (error) {
+                      // showPicker API를 지원하지 않는 브라우저의 경우 무시
+                    }
+                  }}
                   className="text-sm cursor-pointer"
                 />
               ) : (
-                <div className="text-sm text-gray-900">
+                <div className="text-sm text-gray-900 text-left">
                   {formatDate(scheduleDetail.endDate)}
                 </div>
               )}
@@ -214,7 +254,7 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
           </div>
         </div>
 
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 pb-16 border-b border-gray-200 max-h-[300px] overflow-y-auto">
           <div className="text-xs text-gray-500 mb-2 text-left">내용</div>
           {isEditing ? (
             <Textarea
@@ -233,7 +273,7 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
               placeholder="내용을 입력하세요..."
             />
           ) : (
-            <div className="text-sm text-gray-900 whitespace-pre-wrap">
+            <div className="text-sm text-gray-900 whitespace-pre-wrap text-left">
               {scheduleDetail.content || "내용이 없습니다."}
             </div>
           )}
@@ -251,7 +291,7 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
               >
                 취소
               </Button>
-              <Button 
+              <Button
                 color="blue"
                 disabled={isSubmitting || !editedSchedule?.title}
                 onClick={async () => {
@@ -283,12 +323,12 @@ export function ScheduleDetailModal({ scheduleId, onClose, onUpdate }: ScheduleD
             </>
           ) : (
             <>
-              <Button 
+              <Button
                 color="red"
                 disabled={isDeleting}
                 onClick={async () => {
                   if (!confirm("정말로 이 일정을 삭제하시겠습니까?")) return;
-                  
+
                   setIsDeleting(true);
                   try {
                     await deleteSchedule(scheduleId);
