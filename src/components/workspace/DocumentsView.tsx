@@ -55,6 +55,7 @@ export function DocumentsView() {
 
   const [documents, setDocuments] = useState<Document[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,6 +67,10 @@ export function DocumentsView() {
     currentPage
   );
   const paginatedDocuments = filteredDocuments.slice(startIndex, endIndex);
+
+  const handleInputChange = useCallback((value: string) => {
+    setInputValue(value);
+  }, []);
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
@@ -155,8 +160,12 @@ export function DocumentsView() {
         </Button>
       </Flex>
 
-      {!isLoading && !isEmpty && (
-        <DocumentSearch value={searchQuery} onChange={handleSearch} />
+      {!isLoading && (
+        <DocumentSearch 
+          value={inputValue} 
+          onChange={handleInputChange}
+          onSearch={handleSearch}
+        />
       )}
 
       {isLoading && (
@@ -176,7 +185,10 @@ export function DocumentsView() {
         <DocumentEmptyState
           type="no-search-results"
           searchQuery={searchQuery}
-          onClearSearch={() => setSearchQuery("")}
+          onClearSearch={() => {
+            setSearchQuery("");
+            setInputValue("");
+          }}
         />
       )}
 

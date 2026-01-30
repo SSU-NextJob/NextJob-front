@@ -4,16 +4,26 @@ import { Search } from "lucide-react";
 interface DocumentSearchProps {
   value: string;
   onChange: (value: string) => void;
+  onSearch: (query: string) => void;
   placeholder?: string;
 }
 
 export function DocumentSearch({ 
   value, 
   onChange, 
+  onSearch,
   placeholder = "문서 검색..." 
 }: DocumentSearchProps) {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    onSearch(value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      onSearch(value);
+    }
   };
 
   return (
@@ -27,6 +37,7 @@ export function DocumentSearch({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </Box>
     </form>
