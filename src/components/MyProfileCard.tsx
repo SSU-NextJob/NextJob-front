@@ -170,6 +170,12 @@ const MyProfileCard = ({ userProfile, joinedProjects }: MyProfileProps) => {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
+                    const MAX = 1024 * 1024; // 1MB
+                    if (file.size > MAX) {
+                      alert("이미지 용량은 최대 1MB까지 업로드할 수 있습니다.");
+                      e.currentTarget.value = "";
+                      return;
+                    }
                     setSelectedImage(file);
                     // 미리보기 URL 생성
                     const reader = new FileReader();
